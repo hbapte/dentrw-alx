@@ -11,8 +11,8 @@ import SANLAM from './Images/insurance/sanlam.png'
 const Insurance = () => {
   return (
     <section className="mt-16">
-    <h1 className='my-6 text-center font-bold text-3xl'>Proudly work with this <span className="text-gray-600">Insurance </span> Companies</h1>
-<div class="slider grid grid-cols-8  bg-slate-200 shadow-xl opacity-[7%] h-100 mx-auto overflow-hidden relative ">
+    <h1 className='my-6 text-center font-bold text-3xl'>Proudly to work with  <span className="text-gray-600">Insurance </span> Companies</h1>
+<div class="slider grid grid-cols-8  bg-slate-200 shadow-xl opacity-[90%] h-100 mx-auto overflow-hidden relative ">
 
   {/* <div class="slide-track animate-scroll"> */}
     <div class="slide h-100 w-250">
