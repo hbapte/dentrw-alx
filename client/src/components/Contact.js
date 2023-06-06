@@ -63,115 +63,122 @@ const Contact = () => {
           </p>
         </div>
         <form class="md:col-span-8 px-10 pt-5 pb-3">
-          <div class="mb-3">
-            <label
-              for="name"
-              class="mb-1 block text-base font-medium text-[#07074D]"
-            >
-              Full Name
-            </label>
-            <input
-              type="text"
-              name="name"
-              id="name"
-              placeholder="Full Name"
-              class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-              required
-            />
-          </div>
-          <div class="-mx-3 flex flex-wrap">
-            <div class="w-full px-3 sm:w-1/2">
-              <div class="mb-5">
-                <label
-                  for="phone"
-                  class="mb-1 block text-base font-medium text-[#07074D]"
-                >
-                  Phone Number
-                </label>
-                <input
-                  type="tel"
-                  name="phone"
-                  id="phone"
-                  placeholder="Enter your phone number"
-                  class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                  required
-                />
-              </div>
-            </div>
-            <div class="w-full px-3 sm:w-1/2">
-              <div class="mb-5">
-                <label
-                  for="email"
-                  class="mb-1 block text-base font-medium text-[#07074D]"
-                >
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  placeholder="Enter your email"
-                  class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                  required
-                />
-              </div>
-            </div>
-          </div>
-          <div className="-mx-3 flex flex-wrap">
-            <div className="w-full px-3 sm:w-1/2">
-              <div class="mb-5">
-                <label
-                  for="date"
-                  class="mb-1 block text-base font-medium text-[#07074D]"
-                >
-                  Date
-                </label>
-                <input
-                  type="date"
-                  name="date"
-                  id="date"
-                  class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                />
-              </div>
-            </div>
-            <div class="w-full px-3 sm:w-1/2">
-              <div class="mb-5">
-                <label
-                  for="time"
-                  class="mb-1 block text-base font-medium text-[#07074D]"
-                >
-                  Time
-                </label>
-                <input
-                  type="time"
-                  name="time"
-                  id="time"
-                  class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                />
-              </div>
-            </div>
-          </div>
+  <div class="mb-3">
+    <label for="name" class="mb-1 block text-base font-medium text-[#07074D]">
+      Full Name
+    </label>
+    <input
+      type="text"
+      name="name"
+      id="name"
+      placeholder="Full Name"
+      class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+      required
+    />
+  </div> 
 
-          <div className="w-full mb-3">
-            <label
-              className="mb-1 block text-base font-medium text-[#07074D]"
-              for="text-area"
-            >
-              Your Message
-            </label>
-            <textarea
-              id="text-area"
-              rows="3"
-              className="resize-none w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-            ></textarea>
-          </div>
+  <div class="-mx-3 flex flex-wrap">
+    <div class="w-full px-3 sm:w-1/2">
+      <div class="mb-5">
+        <label for="phone" class="mb-1 block text-base font-medium text-[#07074D]">
+          Phone Number
+        </label>
+        <input
+          type="tel"
+          name="phone"
+          id="phone"
+          placeholder="Enter your phone number"
+          class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+          required
+        />
+      </div>
+    </div>
+    <div class="w-full px-3 sm:w-1/2">
+      <div class="mb-5">
+        <label for="email" class="mb-1 block text-base font-medium text-[#07074D]">
+          Email Address
+        </label>
+        <input
+          type="email"
+          name="email"
+          id="email"
+          placeholder="Enter your email"
+          class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+          required
+        />
+      </div>
+    </div>
+  </div>
+  
 
-          <div className="mt-5" >
-            <button type="submit" className="hover:shadow-form w-full rounded-md bg-blue-500 py-3 px-8 text-center text-base font-semibold text-white outline-none">
-              Book Appointment
-            </button>
-          </div>
-        </form>
+  <div class="-mx-3 mb-5">
+    <label for="dentalServices" class="mb-1 block text-base font-medium text-[#07074D]">
+      Dental Services
+    </label>
+    <select name="dentalServices" id="dentalServices" class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md">
+      <option value="dentalCleaning">Dental Cleaning and Check-up</option>
+      <option value="x-rays">X-rays</option>
+      <option value="fillings">Fillings</option>
+      <option value="crownsBridges">Crowns and Bridges</option>
+      <option value="rootCanal">Root Canal Treatment</option>
+      <option value="teethWhitening">Teeth Whitening</option>
+      <option value="orthodontic">Orthodontic Treatment</option>
+      <option value="periodontal">Periodontal Treatment</option>
+      <option value="dentalImplants">Dental Implants</option>
+      <option value="oralSurgery">Oral Surgery</option>
+    </select>
+  </div>
+  
+  <div class="-mx-3 flex flex-wrap">
+    <div class="w-full px-3 sm:w-1/2">
+      <div class="mb-5">
+        <label for="date" class="mb-1 block text-base font-medium text-[#07074D]">
+          Date
+        </label>
+        <input
+          type="date"
+          name="date"
+          id="date"
+          class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+        />
+      </div>
+    </div>
+    <div class="w-full px-3 sm:w-1/2">
+      <div class="mb-5">
+        <label for="time" class="mb-1 block text-base font-medium text-[#07074D]">
+          Time
+        </label>
+        <input
+          type="time"
+          name="time"
+          id="time"
+          class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+        />
+      </div>
+    </div>
+  </div>
+  
+  <div className="w-full mb-3">
+    <label
+      className="mb-1 block text-base font-medium text-[#07074D]"
+      for="text-area"
+    >
+      Doctor Note
+    </label>
+    <textarea
+      id="text-area"
+      rows="3"
+      className="resize-none w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+    ></textarea>
+  </div>
+  
+  <div className="mt-5">
+    <button type="submit" className="hover:shadow-form w-full rounded-md bg-blue-500 py-3 px-8 text-center text-base font-semibold text-white outline-none">
+      Book Appointment
+    </button>
+  </div>
+</form>
+
       </div>
     </div>
   );
