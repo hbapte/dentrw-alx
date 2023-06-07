@@ -15,7 +15,7 @@ import Sign from "./components/Sign";
 export default function App() {
   return (
     <div>
-      <Hero /
+      <Hero />
       <Services />
       <Insurance />
       <Team />
