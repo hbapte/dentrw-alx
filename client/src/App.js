@@ -10,11 +10,12 @@ import Testimonials from "./components/Testimonials";
 import FAQs from "./components/FAQs";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
+import Sign from "./components/Sign"; 
 
 export default function App() {
   return (
     <div>
-      <Hero />
+      <Hero /
       <Services />
       <Insurance />
       <Team />
