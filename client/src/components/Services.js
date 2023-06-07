@@ -19,7 +19,7 @@ const Hero = () => {
                 Services
               </p>
             </div>
-            <h2 className="max-w-lg mb-6 font-sans text-3xl font-bold leading-none tracking-tight text-gray-900 sm:text-4xl md:mx-auto">
+            <h2 className="max-w-[40rem] mb-6 font-sans text-3xl font-bold leading-none tracking-tight text-gray-900 sm:text-4xl md:mx-auto">
               <span className="relative inline-block">
                 <svg
                   viewBox="0 0 52 24"
@@ -43,7 +43,7 @@ const Hero = () => {
                     height="24"
                   />
                 </svg>
-                <span className="relative">Your </span>
+                <span className="relative"> The </span>
               </span>{" "}
               Suite of dental <span className="text-blue-500">Services</span> we
               offers
