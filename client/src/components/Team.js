@@ -1,7 +1,7 @@
 import React from 'react'
-import Arriana from './Images/arriana.jpg'
-import Chance from './Images/chance.jpg'
-import Gateme from './Images/gateme.jpg'
+import Arriana from './Images/arriana.png'
+import Chance from './Images/chance.png'
+import Gateme from './Images/gateme.png'
 import Theodat from './Images/theodat.jpg'
 
 const Team = () => {
@@ -16,7 +16,7 @@ const Team = () => {
                 <img class="object-cover object-center w-full h-60 mx-auto rounded-lg" src={Gateme} alt="avatar" />
 
                 <div class="mt-2">
-                    <h3 class="text-md font-bold text-gray-700 dark:text-gray-200">GATEME Matata </h3>
+                    <h3 class="text-md font-bold text-gray-700 dark:text-gray-200">GATEME Gaby </h3>
                     <span class="mt-1 font-medium text-gray-600 dark:text-gray-300">Orthodontist</span>
                 </div>
             </div>
@@ -25,7 +25,7 @@ const Team = () => {
                 <img class="object-cover object-center w-full h-60 mx-auto rounded-lg" src={Chance} alt="avatar" />
 
                 <div class="mt-2">
-                    <h3 class="text-md font-bold text-gray-700 dark:text-gray-200">Mahoro Eunice</h3>
+                    <h3 class="text-md font-bold text-gray-700 dark:text-gray-200">MAHORO Eunice</h3>
                     <span class="mt-1 font-medium text-gray-600 dark:text-gray-300">Therapist</span>
                 </div>
             </div>
@@ -34,7 +34,7 @@ const Team = () => {
                 <img class="object-cover object-center w-full  h-60 mx-auto rounded-lg" src={Theodat}  alt="avatar" />
 
                 <div class="mt-2">
-                    <h3 class="text-md font-bold text-gray-700 dark:text-gray-200">Ibaka M. Theodat</h3>
+                    <h3 class="text-md font-bold text-gray-700 dark:text-gray-200">IBAKA M. Theodat</h3>
                     <span class="mt-1 font-medium text-gray-600 dark:text-gray-300">Dental Surgeon</span>
                 </div>
             </div>

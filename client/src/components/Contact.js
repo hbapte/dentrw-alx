@@ -62,7 +62,7 @@ const Contact = () => {
             <span>KG 14 Ave - Remera, Rwanda</span>
           </p>
         </div>
-        <form class="md:col-span-8 px-10 pt-5 pb-3">
+        <form class="md:col-span-8 px-10 pt-4 pb-3">
   <div class="mb-3">
     <label for="name" class="mb-1 block text-base font-medium text-[#07074D]">
       Full Name
@@ -79,7 +79,7 @@ const Contact = () => {
 
   <div class="-mx-3 flex flex-wrap">
     <div class="w-full px-3 sm:w-1/2">
-      <div class="mb-5">
+      <div class="mb-3">
         <label for="phone" class="mb-1 block text-base font-medium text-[#07074D]">
           Phone Number
         </label>
@@ -94,7 +94,7 @@ const Contact = () => {
       </div>
     </div>
     <div class="w-full px-3 sm:w-1/2">
-      <div class="mb-5">
+      <div class="mb-3">
         <label for="email" class="mb-1 block text-base font-medium text-[#07074D]">
           Email Address
         </label>
@@ -111,27 +111,27 @@ const Contact = () => {
   </div>
   
 
-  <div class="-mx-3 mb-5">
+  <div class="-mx-0 mb-3">
     <label for="dentalServices" class="mb-1 block text-base font-medium text-[#07074D]">
       Dental Services
     </label>
     <select name="dentalServices" id="dentalServices" class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md">
-      <option value="dentalCleaning">Dental Cleaning and Check-up</option>
+      <option value="dentalCleaning">Dental Check-ups and Consultation</option>
       <option value="x-rays">X-rays</option>
       <option value="fillings">Fillings</option>
       <option value="crownsBridges">Crowns and Bridges</option>
       <option value="rootCanal">Root Canal Treatment</option>
-      <option value="teethWhitening">Teeth Whitening</option>
+      <option value="teethWhitening">Cleaning and Teeth Whitening</option>
       <option value="orthodontic">Orthodontic Treatment</option>
       <option value="periodontal">Periodontal Treatment</option>
       <option value="dentalImplants">Dental Implants</option>
-      <option value="oralSurgery">Oral Surgery</option>
+      <option value="rct">Root Canal Treatment</option>
     </select>
   </div>
   
   <div class="-mx-3 flex flex-wrap">
     <div class="w-full px-3 sm:w-1/2">
-      <div class="mb-5">
+      <div class="mb-3">
         <label for="date" class="mb-1 block text-base font-medium text-[#07074D]">
           Date
         </label>
@@ -144,7 +144,7 @@ const Contact = () => {
       </div>
     </div>
     <div class="w-full px-3 sm:w-1/2">
-      <div class="mb-5">
+      <div class="mb-3">
         <label for="time" class="mb-1 block text-base font-medium text-[#07074D]">
           Time
         </label>
@@ -167,12 +167,12 @@ const Contact = () => {
     </label>
     <textarea
       id="text-area"
-      rows="3"
+      rows="2"
       className="resize-none w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
     ></textarea>
   </div>
   
-  <div className="mt-5">
+  <div className="mt-4">
     <button type="submit" className="hover:shadow-form w-full rounded-md bg-blue-500 py-3 px-8 text-center text-base font-semibold text-white outline-none">
       Book Appointment
     </button>
