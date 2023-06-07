@@ -12,15 +12,15 @@ const Contact = () => {
             Get In <span className="text-[#3b82f6]">Touch</span>
           </h3>
           <p class="mt-4 leading-6 text-gray-950">
-            Book appointment with our doctors. Our team waits you.
+          Book an appointment with our doctors, Our team is ready and waiting to serve you.
           </p>
 
           <p className="my-4 uppercase font-semibold border-b border-b-black pb-2">
             Clinic Hours
           </p>
-          <p className="font-normal">Monday - Friday: 06:00 - 17:00</p>
-          <p className="font-normal">Saturday: 10:00 - 16:00</p>
-          <p className="mb-8"> Sunday : Closed</p>
+          <p className="font-normal">Monday - Friday: <span className='font-semibold'>06:00 - 17:00</span></p>
+          <p className="font-normal">Saturday: <span className='font-semibold'>10:00 - 16:00</span></p>
+          <p className="mb-8"> Sunday :<span className='font-semibold'> Closed</span></p>
 
           <p className=" mt-3 flex items-center">
             <svg
