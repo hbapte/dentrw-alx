@@ -1,6 +1,6 @@
 import React from 'react'
 
-const sign = () => {
+const Sign = () => {
   return (
     <div>
       <div class="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 lg:px-8">
@@ -153,4 +153,4 @@ const sign = () => {
   )
 }
 
-export default sign
+export default Sign
