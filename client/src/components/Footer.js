@@ -63,7 +63,7 @@ export default function Footer() {
             href="/"
             className="flex justify-center space-x-3 lg:justify-start"
           >
-            <div className="flex items-center justify-center w-12 h-12 rounded-full dark:dark:bg-violet-400">
+            <div className="flex items-center justify-center w-12 h-12 rounded-full">
               {" "}
               <img
                 className="h-8 w-8 flex-shrink-0 rounded-full dark:text-gray-900"
