@@ -6,7 +6,7 @@ import Theodat from './Images/theodat.png'
 
 const Team = () => {
   return (
-    <section class="mt-16 bg-slate-100 dark:bg-gray-900">
+    <section class="mt-16 bg-slate-100 ">
     
     <div class="container px-6 py-12 mx-auto">
     <header class="">
@@ -57,8 +57,8 @@ const Team = () => {
                 <img class="object-cover object-center w-full h-60 mx-auto rounded-lg" src={Gateme} alt="avatar" />
 
                 <div class="mt-2">
-                    <h3 class="text-md font-bold text-gray-700 dark:text-gray-200">GATEME Gaby </h3>
-                    <span class="mt-1 font-medium text-gray-600 dark:text-gray-300">Orthodontist</span>
+                    <h3 class="text-md font-bold text-gray-700">GATEME Gaby </h3>
+                    <span class="mt-1 font-medium text-gray-600 ">Orthodontist</span>
                 </div>
             </div>
 
@@ -66,8 +66,8 @@ const Team = () => {
                 <img class="object-cover object-center w-full h-60 mx-auto rounded-lg" src={Chance} alt="avatar" />
 
                 <div class="mt-2">
-                    <h3 class="text-md font-bold text-gray-700 dark:text-gray-200">MAHORO Eunice</h3>
-                    <span class="mt-1 font-medium text-gray-600 dark:text-gray-300">Therapist</span>
+                    <h3 class="text-md font-bold text-gray-700 ">MAHORO Eunice</h3>
+                    <span class="mt-1 font-medium text-gray-600 ">Therapist</span>
                 </div>
             </div>
 
@@ -75,8 +75,8 @@ const Team = () => {
                 <img class="object-cover object-center w-full  h-60 mx-auto rounded-lg" src={Theodat}  alt="avatar" />
 
                 <div class="mt-2">
-                    <h3 class="text-md font-bold text-gray-700 dark:text-gray-200">IBAKA M. Theodat</h3>
-                    <span class="mt-1 font-medium text-gray-600 dark:text-gray-300">Dental Surgeon</span>
+                    <h3 class="text-md font-bold text-gray-700 ">IBAKA M. Theodat</h3>
+                    <span class="mt-1 font-medium text-gray-600 ">Dental Surgeon</span>
                 </div>
             </div>
 
@@ -84,8 +84,8 @@ const Team = () => {
                 <img class="object-cover object-center w-full h-60 mx-auto rounded-lg" src={Arriana} alt="avatar" />
 
                 <div class="mt-2">
-                    <h3 class="text-md font-bold text-gray-700 dark:text-gray-200">DUKUNDE Arriana</h3>
-                    <span class="mt-1 font-medium text-gray-600 dark:text-gray-300">Assistant</span>
+                    <h3 class="text-md font-bold text-gray-700 ">DUKUNDE Arriana</h3>
+                    <span class="mt-1 font-medium text-gray-600 ">Assistant</span>
                 </div>
             </div>
         </div>
