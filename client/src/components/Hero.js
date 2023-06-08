@@ -7,12 +7,19 @@ const Hero = () => {
     <main>
     <div class="">
   <header class="relative flex  flex-col overflow-hidden px-4 py-4 text-blue-900 md:mx-auto md:flex-row md:items-center">
-    <a href="/" class="flex cursor-pointer items-center whitespace-nowrap text-2xl font-black">
-      {/* <span class="mr-2 text-4xl text-blue-500">
-        <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path fill="currentColor" d="M6.925 16.875Q5.2 16.225 4.1 14.713Q3 13.2 3 11.25q0-1.975.938-3.513Q4.875 6.2 6 5.15q1.125-1.05 2.062-1.6L9 3v2.475q0 .625.45 1.062q.45.438 1.075.438q.35 0 .65-.15q.3-.15.5-.425L12 6q.95.55 1.625 1.35t1.025 1.8l-1.675 1.675q-.05-.6-.287-1.175q-.238-.575-.638-1.05q-.35.2-.738.287q-.387.088-.787.088q-1.1 0-1.987-.612Q7.65 7.75 7.25 6.725q-.95.925-1.6 2.062Q5 9.925 5 11.25q0 .775.275 1.462q.275.688.75 1.213q.05-.5.287-.938q.238-.437.588-.787L9 10.1l2.15 2.1q.05.05.1.125t.1.125l-1.425 1.425q-.05-.075-.087-.125q-.038-.05-.088-.1L9 12.925l-.7.7q-.125.125-.212.287q-.088.163-.088.363q0 .3.175.537q.175.238.45.363ZM9 10.1Zm0 0ZM7.4 22L6 20.6L19.6 7L21 8.4L17.4 12H21v2h-5.6l-.5.5l1.5 1.5H21v2h-2.6l2.1 2.1l-1.4 1.4l-2.1-2.1V22h-2v-4.6l-1.5-1.5l-.5.5V22h-2v-3.6Z" /></svg>
-      </span> */}
-      DentRW
-    </a>
+  <a href="/" className="flex cursor-pointer items-center whitespace-nowrap text-2xl font-black">
+  <span className="mr-2 text-4xl text-blue-500">
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="40" height="40">
+      <path
+        d="M40 90c1-8.7 2.4-17.2 4.2-25.2 2.4-10.5 5.5-18.6 9.4-24.5 4.2-6.4 9.4-9.4 15.9-9.4s11.7 3 15.9 9.4c3.9 5.9 7 14 9.4 24.5 1.8 8 3.2 16.5 4.2 25.2-6.1 0-11 5-11 11s-4.9 11-11 11-11-4.9-11-11c0-6 4.9-11 11-11s11 4.9 11 11c0 .2-.1.3-.1.5-1.4-5.3-5.8-9-10.9-9-5.4 0-9.8 4.4-9.8 9.8 0 2.7 1.1 5.1 2.8 6.8-.2 0-.4-.1-.6-.1-6 0-11 4.9-11 11s4.9 11 11 11zm10-60c2.8 0 5 2.2 5 5s-2.2 5-5 5-5-2.2-5-5 2.2-5 5-5zm20 0c2.8 0 5 2.2 5 5s-2.2 5-5 5-5-2.2-5-5 2.2-5 5-5zM40 80c-1 0-2-.8-2-2s.8-2 2-2 2 .8 2 2-.9 2-2 2zm30 0c-1 0-2-.8-2-2s.8-2 2-2 2 .8 2 2-.9 2-2 2z"
+        fill="#4F46E5"
+      />
+    </svg>
+  </span>
+  DentRW
+</a>
+
     <input type="checkbox" class="peer hidden" id="navbar-open" />
     <label class="absolute top-2 right-2 cursor-pointer md:hidden" for="navbar-open">
       <span class="sr-only">Toggle Navigation</span>
