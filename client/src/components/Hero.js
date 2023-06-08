@@ -9,16 +9,21 @@ const Hero = () => {
   <header class="relative flex  flex-col overflow-hidden px-4 py-4 text-blue-900 md:mx-auto md:flex-row md:items-center">
   <a href="/" className="flex cursor-pointer items-center whitespace-nowrap text-2xl font-black">
   <span className="mr-2 text-4xl text-blue-500">
-  
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="20" height="20">
+
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="40" height="40">
       <path
-        d="M40 90c1-8.7 2.4-17.2 4.2-25.2 2.4-10.5 5.5-18.6 9.4-24.5 4.2-6.4 9.4-9.4 15.9-9.4s11.7 3 15.9 9.4c3.9 5.9 7 14 9.4 24.5 1.8 8 3.2 16.5 4.2 25.2-6.1 0-11 5-11 11s-4.9 11-11 11-11-4.9-11-11c0-6 4.9-11 11-11s11 4.9 11 11c0 .2-.1.3-.1.5-1.4-5.3-5.8-9-10.9-9-5.4 0-9.8 4.4-9.8 9.8 0 2.7 1.1 5.1 2.8 6.8-.2 0-.4-.1-.6-.1-6 0-11 4.9-11 11s4.9 11 11 11zm10-60c2.8 0 5 2.2 5 5s-2.2 5-5 5-5-2.2-5-5 2.2-5 5-5zm20 0c2.8 0 5 2.2 5 5s-2.2 5-5 5-5-2.2-5-5 2.2-5 5-5zM40 80c-1 0-2-.8-2-2s.8-2 2-2 2 .8 2 2-.9 2-2 2zm30 0c-1 0-2-.8-2-2s.8-2 2-2 2 .8 2 2-.9 2-2 2z"
-        fill="#4F46E5"
+        d="M12 2v5.5a2.5 2.5 0 0 1-5 0V2H4a1 1 0 0 0-1 1v18a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1h-3zm-4 0v5.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5V2H8zm8 18H4V9h12v11z"
+        fill="none"
+        stroke="#4F46E5"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   </span>
   DentRW
 </a>
+
 
     <input type="checkbox" class="peer hidden" id="navbar-open" />
     <label class="absolute top-2 right-2 cursor-pointer md:hidden" for="navbar-open">
