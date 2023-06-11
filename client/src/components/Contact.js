@@ -1,17 +1,39 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import emailjs from '@emailjs/browser'
 
 const Contact = () => {
   const form = useRef();
+  const [isSent, setIsSent] = useState(false);
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    let timeout;
+    if (error) {
+      timeout = setTimeout(() => {
+        setError('');
+      }, 8000); 
+    }
+    return () => clearTimeout(timeout);
+  }, [error]);
 
   const sendEmail = (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
-    emailjs.sendForm('service_brguy7p', 'template_zoikpo9', form.current, 'J6Lgb71e3Yjbw7vhN')
+    emailjs
+      .sendForm('service_brguy7p', 'template_zoikpo9', form.current, 'J6Lgb71e3Yjbw7vhN')
       .then((result) => {
-          console.log(result.text);
-      }, (error) => {
-          console.log(error.text);
+        setIsSent(true);
+        setIsLoading(false);
+        form.current.reset();
+        setTimeout(() => {
+          setIsSent(false);
+        }, 5000);
+      })
+      .catch((error) => {
+        setError('An error occurred. Please try again later.');
+        setIsLoading(false);
       });
   };
 
@@ -26,15 +48,24 @@ const Contact = () => {
             Get In <span className="text-[#3b82f6]">Touch</span>
           </h3>
           <p class="mt-4 leading-6 text-gray-950">
-          Book an appointment with our doctors, Our team is ready and waiting to serve you.
+            Book an appointment with our doctors, Our team is ready and waiting
+            to serve you.
           </p>
 
           <p className="my-4 uppercase font-semibold border-b border-b-black pb-2">
             Clinic Hours
           </p>
-          <p className="font-normal">Monday - Friday: <span className='font-semibold'>06:00 - 17:00</span></p>
-          <p className="font-normal">Saturday: <span className='font-semibold'>10:00 - 16:00</span></p>
-          <p className="mb-8"> Sunday :<span className='font-semibold'> Closed</span></p>
+          <p className="font-normal">
+            Monday - Friday:{" "}
+            <span className="font-semibold">06:00 - 17:00</span>
+          </p>
+          <p className="font-normal">
+            Saturday: <span className="font-semibold">10:00 - 16:00</span>
+          </p>
+          <p className="mb-8">
+            {" "}
+            Sunday :<span className="font-semibold"> Closed</span>
+          </p>
 
           <p className=" mt-3 flex items-center">
             <svg
@@ -76,124 +107,159 @@ const Contact = () => {
             <span>KG 14 Ave - Remera, Rwanda</span>
           </p>
         </div>
-        <form ref={form} onSubmit={sendEmail} class="md:col-span-8 px-10 pt-4 pb-3">
-  <div class="mb-3">
-    <label for="user_name" class="mb-1 block text-base font-medium text-[#07074D]">
-      Full Name
-    </label>
-    <input
-      type="text"
-      name="user_name"
-      id="user_name"
-      placeholder="Full Name"
-      class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-      required
-    />
-  </div> 
+        <form
+          ref={form}
+          onSubmit={sendEmail}
+          class="md:col-span-8 px-10 pt-4 pb-3"
+        >
+          <div class="mb-3">
+            <label
+              for="user_name"
+              class="mb-1 block text-base font-medium text-[#07074D]"
+            >
+              Full Name
+            </label>
+            <input
+              type="text"
+              name="user_name"
+              id="user_name"
+              placeholder="Full Name"
+              class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+              required
+            />
+          </div>
 
-  <div class="-mx-3 flex flex-wrap">
-    <div class="w-full px-3 sm:w-1/2">
-      <div class="mb-3">
-        <label for="user_phone" class="mb-1 block text-base font-medium text-[#07074D]">
-          Phone Number
-        </label>
-        <input
-          type="tel"
-          name="user_phone"
-          id="user_phone"
-          placeholder="Enter your phone number"
-          class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-          required
-        />
-      </div>
-    </div>
-    <div class="w-full px-3 sm:w-1/2">
-      <div class="mb-3">
-        <label for="user_email" class="mb-1 block text-base font-medium text-[#07074D]">
-          Email Address
-        </label>
-        <input
-          type="email"
-          name="user_email"
-          id="user_email"
-          placeholder="Enter your email"
-          class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-          required
-        />
-      </div>
-    </div>
-  </div>
-  
+          <div class="-mx-3 flex flex-wrap">
+            <div class="w-full px-3 sm:w-1/2">
+              <div class="mb-3">
+                <label
+                  for="user_phone"
+                  class="mb-1 block text-base font-medium text-[#07074D]"
+                >
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  name="user_phone"
+                  id="user_phone"
+                  placeholder="Enter your phone number"
+                  class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                  required
+                />
+              </div>
+            </div>
+            <div class="w-full px-3 sm:w-1/2">
+              <div class="mb-3">
+                <label
+                  for="user_email"
+                  class="mb-1 block text-base font-medium text-[#07074D]"
+                >
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  name="user_email"
+                  id="user_email"
+                  placeholder="Enter your email"
+                  class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                  required
+                />
+              </div>
+            </div>
+          </div>
 
-  <div class="-mx-0 mb-3">
-    <label for="chosen_service" class="mb-1 block text-base font-medium text-[#07074D]">
-      Dental Services
-    </label>
-    <select name="chosen_service" id="chosen_service" class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md">
-      <option value="dentalCleaning">Dental Check-ups and Consultation</option>
-      <option value="x-rays">X-rays</option>
-      <option value="fillings">Fillings</option>
-      <option value="crownsBridges">Crowns and Bridges</option>
-      <option value="rootCanal">Root Canal Treatment</option>
-      <option value="teethWhitening">Cleaning and Teeth Whitening</option>
-      <option value="orthodontic">Orthodontic Treatment</option>
-      <option value="periodontal">Periodontal Treatment</option>
-      <option value="dentalImplants">Dental Implants</option>
-      <option value="rct">Root Canal Treatment</option>
-    </select>
-  </div>
-  
-  <div class="-mx-3 flex flex-wrap">
-    <div class="w-full px-3 sm:w-1/2">
-      <div class="mb-3">
-        <label for="user_date" class="mb-1 block text-base font-medium text-[#07074D]">
-          Date
-        </label>
-        <input
-          type="date"
-          name="user_date"
-          id="user_date"
-          class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-        />
-      </div>
-    </div>
-    <div class="w-full px-3 sm:w-1/2">
-      <div class="mb-3">
-        <label for="user_time" class="mb-1 block text-base font-medium text-[#07074D]">
-          Time
-        </label>
-        <input
-          type="time"
-          name="user_time"
-          id="user_time"
-          class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-        />
-      </div>
-    </div>
-  </div>
-  
-  <div className="w-full mb-3">
-    <label
-      className="mb-1 block text-base font-medium text-[#07074D]"
-      for="user_message"
-    >
-      Doctor Note
-    </label>
-    <textarea
-      id="user_message"
-      name="user_message"
-      rows="2"
-      className="resize-none w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-    ></textarea>
-  </div>
-  
-  <div className="mt-4">
-    <button type="submit" value="Send" className="hover:shadow-form w-full rounded-md bg-blue-500 py-3 px-8 text-center text-base font-semibold text-white outline-none">
-      Book Appointment
-    </button>
-  </div>
-</form>
+          <div class="-mx-0 mb-3">
+            <label
+              for="chosen_service"
+              class="mb-1 block text-base font-medium text-[#07074D]"
+            >
+              Dental Services
+            </label>
+            <select
+              name="chosen_service"
+              id="chosen_service"
+              class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+            >
+              <option value="dentalCleaning">
+                Dental Check-ups and Consultation
+              </option>
+              <option value="x-rays">X-rays</option>
+              <option value="fillings">Fillings</option>
+              <option value="crownsBridges">Crowns and Bridges</option>
+              <option value="rootCanal">Root Canal Treatment</option>
+              <option value="teethWhitening">
+                Cleaning and Teeth Whitening
+              </option>
+              <option value="orthodontic">Orthodontic Treatment</option>
+              <option value="periodontal">Periodontal Treatment</option>
+              <option value="dentalImplants">Dental Implants</option>
+              <option value="rct">Root Canal Treatment</option>
+            </select>
+          </div>
 
+          <div class="-mx-3 flex flex-wrap">
+            <div class="w-full px-3 sm:w-1/2">
+              <div class="mb-3">
+                <label
+                  for="user_date"
+                  class="mb-1 block text-base font-medium text-[#07074D]"
+                >
+                  Date
+                </label>
+                <input
+                  type="date"
+                  name="user_date"
+                  id="user_date"
+                  class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                />
+              </div>
+            </div>
+            <div class="w-full px-3 sm:w-1/2">
+              <div class="mb-3">
+                <label
+                  for="user_time"
+                  class="mb-1 block text-base font-medium text-[#07074D]"
+                >
+                  Time
+                </label>
+                <input
+                  type="time"
+                  name="user_time"
+                  id="user_time"
+                  class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="w-full mb-3">
+            <label
+              className="mb-1 block text-base font-medium text-[#07074D]"
+              for="user_message"
+            >
+              Doctor Note
+            </label>
+            <textarea
+              id="user_message"
+              name="user_message"
+              rows="2"
+              className="resize-none w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+            ></textarea>
+          </div>
+
+          <div className="mt-4">
+          <button
+          type="submit"
+          value="Send"
+          className="hover:shadow-form hover:opacity-90 w-full rounded-md bg-blue-500 py-3 px-8 text-center text-base font-semibold text-white outline-none"
+          disabled={isLoading}
+        >
+          {isLoading ? "Booking..." : "Book Appointment"}
+        </button>
+        {isSent && <p className="text-green-500 mt-1 text-center">Appointment received successfully, Thank you!</p>}
+      {error && <p className="text-red-500 mt-1 text-center">{error}</p>}
+          </div>
+        </form>
       </div>
     </div>
   );
