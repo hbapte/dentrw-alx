@@ -9,7 +9,7 @@ import Team from "./components/Team";
 import Testimonials from "./components/Testimonials";
 import FAQs from "./components/FAQs";
 import Contact from "./components/Contact";
-import Footer from "./components/Footer";
+// import Footer from "./components/Footer";
 // import Sign from "./components/Sign"; 
 
 export default function App() {
@@ -22,7 +22,7 @@ export default function App() {
       <Testimonials />
       <FAQs />
       <Contact />
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }

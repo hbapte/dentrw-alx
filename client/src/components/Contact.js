@@ -1,6 +1,20 @@
-import React from "react";
+import React, { useRef } from 'react';
+import emailjs from '@emailjs/browser'
 
 const Contact = () => {
+  const form = useRef();
+
+  const sendEmail = (e) => {
+    e.preventDefault();
+
+    emailjs.sendForm('service_brguy7p', 'template_zoikpo9', form.current, 'J6Lgb71e3Yjbw7vhN')
+      .then((result) => {
+          console.log(result.text);
+      }, (error) => {
+          console.log(error.text);
+      });
+  };
+
   return (
     <div className="max-w-screen-lg mx-auto p-2">
       <div className="grid grid-cols-1 md:grid-cols-12 border rounded-md">
@@ -62,15 +76,15 @@ const Contact = () => {
             <span>KG 14 Ave - Remera, Rwanda</span>
           </p>
         </div>
-        <form class="md:col-span-8 px-10 pt-4 pb-3">
+        <form ref={form} onSubmit={sendEmail} class="md:col-span-8 px-10 pt-4 pb-3">
   <div class="mb-3">
-    <label for="name" class="mb-1 block text-base font-medium text-[#07074D]">
+    <label for="user_name" class="mb-1 block text-base font-medium text-[#07074D]">
       Full Name
     </label>
     <input
       type="text"
-      name="name"
-      id="name"
+      name="user_name"
+      id="user_name"
       placeholder="Full Name"
       class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
       required
@@ -80,13 +94,13 @@ const Contact = () => {
   <div class="-mx-3 flex flex-wrap">
     <div class="w-full px-3 sm:w-1/2">
       <div class="mb-3">
-        <label for="phone" class="mb-1 block text-base font-medium text-[#07074D]">
+        <label for="user_phone" class="mb-1 block text-base font-medium text-[#07074D]">
           Phone Number
         </label>
         <input
           type="tel"
-          name="phone"
-          id="phone"
+          name="user_phone"
+          id="user_phone"
           placeholder="Enter your phone number"
           class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
           required
@@ -95,13 +109,13 @@ const Contact = () => {
     </div>
     <div class="w-full px-3 sm:w-1/2">
       <div class="mb-3">
-        <label for="email" class="mb-1 block text-base font-medium text-[#07074D]">
+        <label for="user_email" class="mb-1 block text-base font-medium text-[#07074D]">
           Email Address
         </label>
         <input
           type="email"
-          name="email"
-          id="email"
+          name="user_email"
+          id="user_email"
           placeholder="Enter your email"
           class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
           required
@@ -112,10 +126,10 @@ const Contact = () => {
   
 
   <div class="-mx-0 mb-3">
-    <label for="dentalServices" class="mb-1 block text-base font-medium text-[#07074D]">
+    <label for="chosen_service" class="mb-1 block text-base font-medium text-[#07074D]">
       Dental Services
     </label>
-    <select name="dentalServices" id="dentalServices" class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md">
+    <select name="chosen_service" id="chosen_service" class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md">
       <option value="dentalCleaning">Dental Check-ups and Consultation</option>
       <option value="x-rays">X-rays</option>
       <option value="fillings">Fillings</option>
@@ -132,26 +146,26 @@ const Contact = () => {
   <div class="-mx-3 flex flex-wrap">
     <div class="w-full px-3 sm:w-1/2">
       <div class="mb-3">
-        <label for="date" class="mb-1 block text-base font-medium text-[#07074D]">
+        <label for="user_date" class="mb-1 block text-base font-medium text-[#07074D]">
           Date
         </label>
         <input
           type="date"
-          name="date"
-          id="date"
+          name="user_date"
+          id="user_date"
           class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
         />
       </div>
     </div>
     <div class="w-full px-3 sm:w-1/2">
       <div class="mb-3">
-        <label for="time" class="mb-1 block text-base font-medium text-[#07074D]">
+        <label for="user_time" class="mb-1 block text-base font-medium text-[#07074D]">
           Time
         </label>
         <input
           type="time"
-          name="time"
-          id="time"
+          name="user_time"
+          id="user_time"
           class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
         />
       </div>
@@ -161,19 +175,20 @@ const Contact = () => {
   <div className="w-full mb-3">
     <label
       className="mb-1 block text-base font-medium text-[#07074D]"
-      for="text-area"
+      for="user_message"
     >
       Doctor Note
     </label>
     <textarea
-      id="text-area"
+      id="user_message"
+      name="user_message"
       rows="2"
       className="resize-none w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
     ></textarea>
   </div>
   
   <div className="mt-4">
-    <button type="submit" className="hover:shadow-form w-full rounded-md bg-blue-500 py-3 px-8 text-center text-base font-semibold text-white outline-none">
+    <button type="submit" value="Send" className="hover:shadow-form w-full rounded-md bg-blue-500 py-3 px-8 text-center text-base font-semibold text-white outline-none">
       Book Appointment
     </button>
   </div>
