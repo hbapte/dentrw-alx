@@ -1,22 +1,23 @@
+import { useFormFields, useMailChimpForm } from "use-mailchimp-form";
+// The useFormFields is not necessary. You can use your own form component.  
 
-import { useMailchimp } from 'react-mailchimp-subscribe';
-import React, { useState } from 'react';
+
 
 const Footer = () => {
-  const [email, setEmail] = useState('');
+    const url = "YOUR_SUBSCRIBE_URL";
+    // The url looks like the url below:
+    // https://aaaaaaaaa.us20.list-manage.com/subscribe/post?u=xxxxxxxxxxxxxxxxxx&amp;id=yyyyyyyyyy
+    const {
+        loading,
+        error,
+        success,
+        message,
+        handleSubmit
+      } = useMailChimpForm(url);
+    const { fields, handleFieldChange } = useFormFields({
+      EMAIL: "",
+    });
 
-  const { subscribe, status, message } = useMailchimp({
-    url: 'http://eepurl.com/h1xwCf',
-  });
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (email) {
-      subscribe({ EMAIL: email });
-    }
-  };
- 
   return (
     <footer className="px-4  bg-slate-900 text-gray-300">
       <div className="mt-6 pt-6 flex ">
@@ -34,20 +35,25 @@ const Footer = () => {
         </p>
       </div>
       <div>
-        <form className="flex" onSubmit={handleSubmit}>
-          <label htmlFor="UserEmail" className="sr-only">
+        <form className="flex" onSubmit={event => {
+          event.preventDefault();
+          handleSubmit(fields);
+        }}>
+          <label htmlFor="EMAIL" className="sr-only">
             Email
           </label>
           <div className="flex-1 mr-4 sm:mr-0">
             <div className="relative">
               <input
-                type="email"
-                id="UserEmail"
+                
                 placeholder="hbapte@email.rw"
+                id="EMAIL"
+                autoFocus
+                type="email"
+                value={fields.EMAIL}
+                onChange={handleFieldChange}
                 className="block w-full px-4 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent sm:text-sm"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
+            
               />
               <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                 <svg
@@ -69,15 +75,15 @@ const Footer = () => {
           </div>
           <button
             type="submit"
-            className="bg-blue-700 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded"
+            className="bg-blue-700 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded"
           >
             Subscribe
           </button>
+          {loading && "Subscribing"}
+      {error && message}
+      {success && message}
         </form>
-      </div>
-      {status === 'sending' && <p>Sending...</p>}
-      {status === 'error' && <p>{message}</p>}
-      {status === 'success' && <p>Subscribed!</p>}
+      </div>   
     </div>
 
 

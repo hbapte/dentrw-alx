@@ -1,6 +1,7 @@
 import React from "react";
 import "./index.css";
 
+
 // Components
 import Hero from "./components/Hero";
 import Insurance from "./components/Insurance";
@@ -9,7 +10,8 @@ import Team from "./components/Team";
 import Testimonials from "./components/Testimonials";
 import FAQs from "./components/FAQs";
 import Contact from "./components/Contact";
-// import Footer from "./components/Footer";
+import Subscribe from "./components/Subscribe";
+import Footer from "./components/Footer";
 // import Sign from "./components/Sign"; 
 
 export default function App() {
@@ -21,8 +23,14 @@ export default function App() {
       <Team />
       <Testimonials />
       <FAQs />
+      <Subscribe />
       <Contact />
-      {/* <Footer /> */}
+      < Footer />
+     
+      
+        
+  
+      
     </div>
   );
 }

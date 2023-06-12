@@ -180,20 +180,20 @@ const Contact = () => {
               id="chosen_service"
               class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
             >
-              <option value="dentalCleaning">
+              <option value="checkup_Consultation">
                 Dental Check-ups and Consultation
               </option>
               <option value="x-rays">X-rays</option>
               <option value="fillings">Fillings</option>
-              <option value="crownsBridges">Crowns and Bridges</option>
-              <option value="rootCanal">Root Canal Treatment</option>
+              <option value="crowns_Bridges">Crowns and Bridges</option>
+              <option value="RCT">Root Canal Treatment</option>
               <option value="teethWhitening">
                 Cleaning and Teeth Whitening
               </option>
               <option value="orthodontic">Orthodontic Treatment</option>
               <option value="periodontal">Periodontal Treatment</option>
               <option value="dentalImplants">Dental Implants</option>
-              <option value="rct">Root Canal Treatment</option>
+              
             </select>
           </div>
 
