@@ -10,7 +10,7 @@ import Team from "./components/Team";
 import Testimonials from "./components/Testimonials";
 import FAQs from "./components/FAQs";
 import Contact from "./components/Contact";
-import Subscribe from "./components/Subscribe";
+// import Subscribe from "./components/Subscribe";
 import Footer from "./components/Footer";
 import Features from "./components/Features";
 
@@ -26,7 +26,7 @@ export default function App() {
       <Team />
       <Testimonials />
       <FAQs />
-      <Subscribe />
+      {/* <Subscribe /> */}
       <Contact />
       < Footer />
      
