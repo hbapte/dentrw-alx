@@ -113,7 +113,7 @@ export default function App() {
                   <p class="text-center font-semibold text-gray-700 mb-4">
                     Manager - BPR Rwanda
                   </p>
-                  <p class="text-gray-500 mb-12">
+                  <p class="text-gray-600 mb-12">
                     <svg
                       aria-hidden="true"
                       focusable="false"
