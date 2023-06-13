@@ -3,12 +3,15 @@ import Arriana from './Images/arriana.png'
 import Chance from './Images/chance.png'
 import Gateme from './Images/gateme.png'
 import Theodat from './Images/theodat.png'
+import { Fade } from "react-awesome-reveal";
 
 const Team = () => {
   return (
+
     <section class="mt-16 bg-slate-100 ">
     
     <div class="container px-6 py-12 mx-auto">
+      <Fade>
     <header class="">
           <div className="max-w-xl mb-10 md:mx-auto sm:text-center lg:max-w-2xl md:mb-12">
             <div>
@@ -51,16 +54,20 @@ const Team = () => {
             </p>
           </div>
         </header>
-
+        </Fade>
+ 
         <div class="grid gap-8 mt-12 grid-cols-2 lg:grid-cols-4 xl:grid-cols-4">
+            
             <div class="w-full max-w-xs text-center">
+                
                 <img class="object-cover object-center w-full h-60 mx-auto rounded-lg" src={Gateme} alt="avatar" />
-
+                
                 <div class="mt-2">
                     <h3 class="text-md font-bold text-gray-700">GATEME Gaby </h3>
                     <span class="mt-1 font-medium text-gray-600 ">Orthodontist</span>
                 </div>
             </div>
+           
 
             <div class="w-full max-w-xs text-center">
                 <img class="object-cover object-center w-full h-60 mx-auto rounded-lg" src={Chance} alt="avatar" />
@@ -89,6 +96,7 @@ const Team = () => {
                 </div>
             </div>
         </div>
+       
     </div>
 </section>
   )

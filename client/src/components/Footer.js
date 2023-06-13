@@ -1,23 +1,9 @@
-import { useFormFields, useMailChimpForm } from "use-mailchimp-form";
-// The useFormFields is not necessary. You can use your own form component.  
-
+import { Fade } from "react-awesome-reveal";
+// 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
 
 
 const Footer = () => {
-    const url = "YOUR_SUBSCRIBE_URL";
-    // The url looks like the url below:
-    // https://aaaaaaaaa.us20.list-manage.com/subscribe/post?u=xxxxxxxxxxxxxxxxxx&amp;id=yyyyyyyyyy
-    const {
-        loading,
-        error,
-        success,
-        message,
-        handleSubmit
-      } = useMailChimpForm(url);
-    const { fields, handleFieldChange } = useFormFields({
-      EMAIL: "",
-    });
-
+ 
   return (
     <footer className="px-4  bg-slate-900 text-gray-300">
       <div className="mt-6 pt-6 flex ">
@@ -35,23 +21,17 @@ const Footer = () => {
         </p>
       </div>
       <div>
-        <form className="flex" onSubmit={event => {
-          event.preventDefault();
-          handleSubmit(fields);
-        }}>
+        <form className="flex" >
           <label htmlFor="EMAIL" className="sr-only">
             Email
           </label>
           <div className="flex-1 mr-4 sm:mr-0">
             <div className="relative">
-              <input
-                
+              <input                
                 placeholder="hbapte@email.rw"
                 id="EMAIL"
-                autoFocus
                 type="email"
-                value={fields.EMAIL}
-                onChange={handleFieldChange}
+                
                 className="block w-full px-4 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent sm:text-sm"
             
               />
@@ -79,9 +59,7 @@ const Footer = () => {
           >
             Subscribe
           </button>
-          {loading && "Subscribing"}
-      {error && message}
-      {success && message}
+
         </form>
       </div>   
     </div>
@@ -106,8 +84,10 @@ const Footer = () => {
         />
       </svg>
     </div>
+    <Fade>
 
     <span className="self-center text-2xl font-bold">DentRW</span>
+    </Fade>
   </a>
 </div>
 
@@ -252,10 +232,11 @@ const Footer = () => {
           </div>
         </div>
       </div>
-
+<Fade>
       <div className="py-2 border-t text-sm text-center dark:text-gray-400">
         ©2023 - DentRW
       </div>
+      </Fade>
     </footer>
   );
 }

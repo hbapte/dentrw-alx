@@ -7,12 +7,16 @@ import RootCanal from "./Images/rootcanal.jpeg";
 import Ortho from "./Images/braces.jpeg";
 import Bridge from "./Images/crown.jpeg";
 import Toothache from "./Images/inflamation.jpg";
+import { Fade } from "react-awesome-reveal";
 
 const Hero = () => {
   return (
+  
     <section className="px-5">
       <div class=" ">
+      
         <header class="">
+        <Fade >
           <div className="max-w-xl mb-10 md:mx-auto sm:text-center lg:max-w-2xl md:mb-12">
             <div>
               <p className="inline-block px-3 py-px mb-4 text-xs font-semibold tracking-wider text-teal-900 uppercase rounded-full bg-teal-accent-400">
@@ -54,9 +58,12 @@ const Hero = () => {
               General, Cosmetic, Restorative, Pediatric and Emergency Dentistry.
             </p>
           </div>
+          </Fade >
         </header>
-
+       
+         
         <ul class="grid gap-4 h-30 mt-6 sm:grid-cols-2   lg:grid-cols-4 ">
+        <Fade>
           <li className="bg-slate-200 ">
             <img src={Service1} alt="" class="" />
 
@@ -66,7 +73,9 @@ const Hero = () => {
               </h3>
             </div>
           </li>
+          </Fade>
 
+<Fade >
           <li className="bg-slate-200 ">
             <img src={Xray} alt="" class="" />
 
@@ -74,7 +83,9 @@ const Hero = () => {
               <h3 class="text-m text-center text-gray-700 ">X-ray</h3>
             </div>
           </li>
+          </Fade>
 
+          <Fade>
           <li className="bg-slate-200">
             <img src={Ortho} alt="" class="" />
 
@@ -84,7 +95,8 @@ const Hero = () => {
               </h3>
             </div>
           </li>
-
+          </Fade>
+<Fade>
           <li className="bg-slate-200 ">
             <img src={Bridge} alt="" class="" />
 
@@ -94,7 +106,8 @@ const Hero = () => {
               </h3>
             </div>
           </li>
-
+          </Fade>
+<Fade>
           <li className="bg-slate-200">
             <img src={Toothache} alt="" class="" />
 
@@ -104,7 +117,8 @@ const Hero = () => {
               </h3>
             </div>
           </li>
-
+          </Fade>
+<Fade>
           <li className="bg-slate-200">
             <img src={Extraction} alt="" class="" />
 
@@ -114,7 +128,8 @@ const Hero = () => {
               </h3>
             </div>
           </li>
-
+          </Fade>
+<Fade>
           <li className="bg-slate-200">
             <img src={RootCanal} alt="" class="" />
 
@@ -124,6 +139,8 @@ const Hero = () => {
               </h3>
             </div>
           </li>
+          </Fade>
+          <Fade>
           <li className="bg-slate-200 rounded-[4px]">
             <img src={Consultation} alt="" class=" " />
 
@@ -133,9 +150,11 @@ const Hero = () => {
               </h3>
             </div>
           </li>
+          </Fade>
         </ul>
       </div>
     </section>
+  
   );
 };
 

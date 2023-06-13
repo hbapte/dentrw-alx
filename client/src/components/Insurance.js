@@ -7,11 +7,13 @@ import SORAS from './Images/insurance/Soras.png'
 import BRITAM from './Images/insurance/britam.png'
 import BK from './Images/insurance/BK.png'
 import SANLAM from './Images/insurance/sanlam.png'
+import { Fade } from 'react-awesome-reveal'
 
 const Insurance = () => {
   return (
     <section className="mt-16">
             <header class="">
+              <Fade>
           <div className="max-w-xl mb-10 mx-4 md:mx-auto  sm:text-center lg:max-w-2xl md:mb-12">
             <div>
               <p className="inline-block px-3 py-px mb-4 text-xs font-semibold tracking-wider text-teal-900 uppercase rounded-full bg-teal-accent-400">
@@ -51,6 +53,7 @@ const Insurance = () => {
               
             </p>
           </div>
+          </Fade>
         </header>
 <div class="slider grid grid-cols-4 lg:grid-cols-8   shadow-md opacity-[100%] h-100 mx-auto overflow-hidden relative ">
 

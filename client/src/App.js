@@ -12,6 +12,8 @@ import FAQs from "./components/FAQs";
 import Contact from "./components/Contact";
 import Subscribe from "./components/Subscribe";
 import Footer from "./components/Footer";
+import Features from "./components/Features";
+
 // import Sign from "./components/Sign"; 
 
 export default function App() {
@@ -20,6 +22,7 @@ export default function App() {
       <Hero />
       <Services />
       <Insurance />
+      <Features  /> 
       <Team />
       <Testimonials />
       <FAQs />

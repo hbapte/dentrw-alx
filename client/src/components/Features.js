@@ -1,4 +1,5 @@
 import React from "react";
+import { Fade } from "react-awesome-reveal";
 
 const Features = () => {
   return (
@@ -9,6 +10,7 @@ const Features = () => {
             Features
           </p>
         </div>
+        <Fade>
         <h2 className="max-w-lg mb-6 font-sans text-3xl font-bold leading-none tracking-tight text-gray-900 sm:text-4xl md:mx-auto">
           <span className="relative inline-block">
             <svg
@@ -37,12 +39,17 @@ const Features = () => {
           </span>{" "}
           Comprehensive Dental Care Solution
         </h2>
+        </Fade>
+        <Fade >
         <p className="text-base text-gray-700 md:text-lg">
-        we are dedicated to delivering exceptional dental care with a focus on convenience, prevention, and effective treatments.
-
+          we are dedicated to delivering exceptional dental care with a focus on
+          convenience, prevention, and effective treatments.
         </p>
+        </Fade>
       </div>
+      
       <div className="grid gap-4 row-gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <Fade>
         <div className="flex flex-col justify-between p-5 border rounded shadow-sm">
           <div>
             <div className="flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-indigo-50">
@@ -60,9 +67,12 @@ const Features = () => {
                 />
               </svg>
             </div>
-            <h6 className="mb-2 font-semibold leading-5">Virtual Consultation </h6>
+            <h6 className="mb-2 font-semibold leading-5">
+              Virtual Consultation{" "}
+            </h6>
             <p className="mb-3 text-sm text-gray-900">
-            Embracing Technology for your convenience, we understand that your time is valuable, explore treatments where you are.
+              Embracing Technology for your convenience, we understand that your
+              time is valuable, explore treatments where you are.
             </p>
           </div>
           <a
@@ -73,6 +83,8 @@ const Features = () => {
             Learn more
           </a>
         </div>
+        </Fade>
+        <Fade>
         <div className="flex flex-col justify-between p-5 border rounded shadow-sm">
           <div>
             <div className="flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-indigo-50">
@@ -92,7 +104,8 @@ const Features = () => {
             </div>
             <h6 className="mb-2 font-semibold leading-5">Online Booking</h6>
             <p className="mb-3 text-sm text-gray-900">
-              Streamlining your dental experience, we believe dental care should be easily accessible and hassle-free.
+              Streamlining your dental experience, we believe dental care should
+              be easily accessible and hassle-free.
             </p>
           </div>
           <a
@@ -103,6 +116,8 @@ const Features = () => {
             Learn more
           </a>
         </div>
+        </Fade>
+        <Fade>
         <div className="flex flex-col justify-between p-5 border rounded shadow-sm">
           <div>
             <div className="flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-indigo-50">
@@ -122,7 +137,8 @@ const Features = () => {
             </div>
             <h6 className="mb-2 font-semibold leading-5">Preventive Care</h6>
             <p className="mb-3 text-sm text-gray-900">
-              Foundation for Lifelong Dental Wellness.  We prioritize preventive care as cornerstone of mantaining optimal oral health.
+              Foundation for Lifelong Dental Wellness. We prioritize preventive
+              care as cornerstone of mantaining optimal oral health.
             </p>
           </div>
           <a
@@ -133,6 +149,8 @@ const Features = () => {
             Learn more
           </a>
         </div>
+        </Fade>
+        <Fade>
         <div className="flex flex-col justify-between p-5 border rounded shadow-sm">
           <div>
             <div className="flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-indigo-50">
@@ -152,7 +170,8 @@ const Features = () => {
             </div>
             <h6 className="mb-2 font-semibold leading-5">Physical Treatment</h6>
             <p className="mb-3 text-sm text-gray-900">
-              Whether your require cosmetic, restorative, pediatric, orthodontic procedures and more. Our team awaits you. 
+              Whether your require cosmetic, restorative, pediatric, orthodontic
+              procedures and more. Our team awaits you.
             </p>
           </div>
           <a
@@ -163,6 +182,7 @@ const Features = () => {
             Learn more
           </a>
         </div>
+        </Fade>
       </div>
     </div>
   );

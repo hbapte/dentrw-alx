@@ -4,6 +4,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
+import { Fade } from "react-awesome-reveal";
 
 
 import { Autoplay, Pagination, Navigation } from "swiper";
@@ -15,6 +16,7 @@ export default function App() {
    
               
       <div className="container mx-auto p-6 mt-1" id="app">
+           <Fade>
            <header class="">
           <div className="max-w-xl mb-0 mx-auto sm:text-center lg:max-w-2xl md:mb-12">
             <div>
@@ -56,6 +58,8 @@ export default function App() {
             </p>
           </div>
         </header>
+        </Fade>
+
         <Swiper
           className=""        
           loop={true}

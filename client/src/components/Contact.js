@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import emailjs from '@emailjs/browser'
+import { Fade } from "react-awesome-reveal";
 
 const Contact = () => {
   const form = useRef();
@@ -38,6 +39,7 @@ const Contact = () => {
   };
 
   return (
+    
     <div className="max-w-screen-lg mx-auto p-2">
       <div className="grid grid-cols-1 md:grid-cols-12 border rounded-md">
         <div className="bg-slate-100 md:col-span-4 p-7 text-gray-900">
@@ -107,6 +109,8 @@ const Contact = () => {
             <span>KG 14 Ave - Remera, Rwanda</span>
           </p>
         </div>
+
+        
         <form
           ref={form}
           onSubmit={sendEmail}
@@ -248,6 +252,7 @@ const Contact = () => {
           </div>
 
           <div className="mt-4">
+          <Fade>
           <button
           type="submit"
           value="Send"
@@ -256,13 +261,17 @@ const Contact = () => {
         >
           {isLoading ? "Booking..." : "Book Appointment"}
         </button>
+        </Fade>
         {isSent && <p className="text-green-500 mt-1 text-center">Appointment received successfully, Thank you!</p>}
       {error && <p className="text-red-500 mt-1 text-center">{error}</p>}
           </div>
         </form>
+        
       </div>
     </div>
+    
   );
 };
+
 
 export default Contact;

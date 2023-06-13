@@ -1,19 +1,25 @@
 import React from "react";
+import { Fade } from "react-awesome-reveal";
 
 const FAQs = () => {
   return (
     <section className="bg-white pb-7 text-slate-900">
       <div className="container  flex flex-col justify-center p-3 mx-auto md:p-8">
+        <Fade>
         <h2 className="mb-10 mt-10 text-3xl font-bold leading-none text-center sm:mx-4">
           {" "}
           Frequently Asked Questions
         </h2>
+        </Fade>
         <div className="flex flex-col divide-y divide-gray-300 sm:mx-12 lg:px-12 xl:px-32 mb-10">
+        <Fade>
           <details>
+            
             <summary className="py-2 outline-none cursor-pointer focus:font-semibold">
               {" "}
              What Services does DentRw offer?
             </summary>
+           
             <div className="px-4 pb-4">
               <p>
                 {" "}
@@ -22,6 +28,8 @@ const FAQs = () => {
               </p>
             </div>
           </details>
+          </Fade>
+          <Fade>
           <details>
             <summary className="py-2 outline-none cursor-pointer focus:font-semibold">
               {" "}
@@ -38,6 +46,8 @@ const FAQs = () => {
               </p>
             </div>
           </details>
+          </Fade>
+          <Fade>
           <details>
             <summary className="py-2 outline-none cursor-pointer focus:font-semibold">
               {" "}
@@ -55,6 +65,7 @@ const FAQs = () => {
               </p>
             </div>
           </details>
+          </Fade>
         </div>
       </div>
     </section>
