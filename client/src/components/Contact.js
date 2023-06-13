@@ -256,7 +256,7 @@ const Contact = () => {
           <button
           type="submit"
           value="Send"
-          className="hover:shadow-form hover:opacity-90 w-full rounded-md bg-blue-800 py-3 px-8 text-center text-base font-semibold text-white outline-none"
+          className="hover:shadow-form hover:opacity-90 w-full rounded-md bg-blue-600 py-3 px-8 text-center text-base font-semibold text-white outline-none"
           disabled={isLoading}
         >
           {isLoading ? "Booking..." : "Book Appointment"}

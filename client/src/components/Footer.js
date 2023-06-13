@@ -71,7 +71,7 @@ const Footer = () => {
       </div>
       <div className="py-2 grid lg:grid-cols-2 gap-7 items-center">
         <div>
-          <p className="text-sm text-gray-200">
+          <p className="text-sm text-gray-400">
             Subscribe and be the first to know about the latest oral health
             tips, special offers, events, and discounts in your inbox.
           </p>

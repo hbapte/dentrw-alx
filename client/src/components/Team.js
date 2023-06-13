@@ -48,7 +48,7 @@ const Team = () => {
               Our Expert <span className="text-blue-500"> Team </span> 
             </h2>
 
-            <p class="max-w-[43rem] text-md mx-auto mt-4 text-gray-700">
+            <p class="max-w-[43rem] text-md mx-auto mt-4 text-gray-600">
             Our dedicated team of dental professionals is committed to providing you with the best dental care possible. <span className=" hidden lg:inline">
             Each member of our team is highly skilled and experienced in their respective areas of expertise, ensuring that you receive personalized and high-quality treatment.</span>
             </p>
