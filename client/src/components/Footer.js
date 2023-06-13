@@ -61,10 +61,10 @@ const Footer = () => {
   };
 
   return (
-    <footer className="px-4  bg-slate-900 text-gray-300">
+    <footer className="px-4  bg-slate-900 text-white">
       <div className="mt-6 pt-6 flex ">
         <div class="mb-4 ">
-          <h2 class="text-xl font-bold text-slate-200">
+          <h2 class="text-xl font-bold text-slate-100">
             Subscribe to our newsletter!
           </h2>
         </div>
