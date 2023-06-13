@@ -23,7 +23,7 @@ const Contact = () => {
     setIsLoading(true);
 
     emailjs
-      .sendForm('service_xisoyix', 'template_o8b8bzr', form.current, 'j8sLMRFlfDsn_8dVLit0X')
+      .sendForm('service_xisoyix', 'template_o8b8bzr', form.current, 'y5LmTUdhgknXetKeT')
       .then((result) => {
         setIsSent(true);
         setIsLoading(false);
