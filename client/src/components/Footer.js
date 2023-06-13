@@ -1,9 +1,65 @@
+import React, { useState } from "react";
+import axios from "axios";
 import { Fade } from "react-awesome-reveal";
 // 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
 
-
 const Footer = () => {
- 
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [subscribed, setSubscribed] = useState(false);
+
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    // Reset  error message
+    setErrorMessage("");
+
+    // Validation of email input
+    if (!email) {
+      setErrorMessage("Email is required.");
+      return;
+    }
+
+    // ConvertKit API key and form ID
+    const API_KEY = "YW9GegPZXKzE53M7vqmLvw";
+    const FORM_ID = "5258337";
+
+    setLoading(true);
+
+    try {
+      const response = await axios.post(
+        `https://api.convertkit.com/v3/forms/${FORM_ID}/subscribe`,
+        {
+          api_key: API_KEY,
+          email,
+        }
+      );
+      console.log("Email sent successfully!");
+      setEmail(""); // Resetting the email input field after successful submission
+      setLoading(false);
+      setSubscribed(true);
+
+     
+      setTimeout(() => {
+        setSubscribed(false);
+      }, 3000);
+    } catch (error) {
+      console.error("Error sending email:", error);
+      setErrorMessage("Error occurred. Please try again!");
+      setLoading(false);
+
+     
+      setTimeout(() => {
+        setErrorMessage("");
+      }, 3000);
+    }
+  };
+
   return (
     <footer className="px-4  bg-slate-900 text-gray-300">
       <div className="mt-6 pt-6 flex ">
@@ -14,116 +70,149 @@ const Footer = () => {
         </div>
       </div>
       <div className="py-2 grid lg:grid-cols-2 gap-7 items-center">
-      <div>
-        <p className="text-sm text-gray-500">
-          Subscribe and be the first to know about the latest oral health
-          tips, special offers, events, and discounts in your inbox.
-        </p>
-      </div>
-      <div>
-        <form className="flex" >
-          <label htmlFor="EMAIL" className="sr-only">
-            Email
-          </label>
-          <div className="flex-1 mr-4 sm:mr-0">
-            <div className="relative">
-              <input                
-                placeholder="hbapte@email.rw"
-                id="EMAIL"
-                type="email"
-                
-                className="block w-full px-4 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent sm:text-sm"
-            
-              />
-              <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                <svg
-                  className="w-4 h-4 text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
+        <div>
+          <p className="text-sm text-gray-500">
+            Subscribe and be the first to know about the latest oral health
+            tips, special offers, events, and discounts in your inbox.
+          </p>
+        </div>
+        <div>
+          <form onSubmit={handleSubmit} className="flex">
+            <label htmlFor="EMAIL" className="sr-only">
+              Email
+            </label>
+            <div className="flex-1 mr-4 sm:mr-0">
+              <div className="relative">
+                <input
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={handleEmailChange}
+                  className="block w-full px-4 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent sm:text-sm"
+                />
+                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                  <svg
+                    className="w-4 h-4 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </div>
               </div>
             </div>
-          </div>
-          <button
-            type="submit"
-            className="bg-blue-700 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded"
-          >
-            Subscribe
-          </button>
-
-        </form>
-      </div>   
-    </div>
-
-
+            <button
+              type="submit"
+              disabled={loading}
+              className="bg-blue-700 sm:ml-1 hover:bg-blue-400 text-white font-semibold py-2 px-4 rounded"
+            >
+              {loading ? "Subscribing..." : "Subscribe"}
+            </button>
+          </form>
+          {errorMessage && (
+            <p className="text-red-500 text-xs">{errorMessage}</p>
+          )}
+          {subscribed && (
+            <p className="text-green-500 mt-2 text-xs">
+              Subscribed successfully!
+            </p>
+          )}
+        </div>
+      </div>
 
       <div className="container  flex flex-col justify-between py-10 mx-auto space-y-8 lg:flex-row lg:space-y-0">
-      <div className="lg:w-1/3">
-  <a
-    rel="noopener noreferrer"
-    href="/"
-    className="flex justify-center space-x-2 lg:justify-start"
-  >
-    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="30" height="30" fill="none">
-        <path
-          d="M9.19807 4.45825C8.55418 4.22291 7.94427 4 7 4C5 4 4 6 4 8.5C4 10.0985 4.40885 11.0838 4.83441 12.1093C5.0744 12.6877 5.31971 13.2788 5.5 14C5.649 14.596 5.7092 15.4584 5.77321 16.3755C5.92401 18.536 6.096 21 7.5 21C8.39898 21 8.79286 19.5857 9.22652 18.0286C9.75765 16.1214 10.3485 14 12 14C13.6515 14 14.2423 16.1214 14.7735 18.0286C15.2071 19.5857 15.601 21 16.5 21C17.904 21 18.076 18.536 18.2268 16.3755C18.2908 15.4584 18.351 14.596 18.5 14C18.6803 13.2788 18.9256 12.6877 19.1656 12.1093C19.5912 11.0838 20 10.0985 20 8.5C20 6 19 4 17 4C16.0557 4 15.4458 4.22291 14.8019 4.45825C14.082 4.72136 13.3197 5 12 5C10.6803 5 9.91796 4.72136 9.19807 4.45825Z"
-          stroke="blue"
-          strokeWidth="1"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    </div>
-    <Fade>
-
-    <span className="self-center text-2xl font-bold">DentRW</span>
-    </Fade>
-  </a>
-</div>
-
+        <div className="lg:w-1/3">
+          <a
+            rel="noopener noreferrer"
+            href="/"
+            className="flex justify-center space-x-2 lg:justify-start"
+          >
+            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="30"
+                height="30"
+                fill="none"
+              >
+                <path
+                  d="M9.19807 4.45825C8.55418 4.22291 7.94427 4 7 4C5 4 4 6 4 8.5C4 10.0985 4.40885 11.0838 4.83441 12.1093C5.0744 12.6877 5.31971 13.2788 5.5 14C5.649 14.596 5.7092 15.4584 5.77321 16.3755C5.92401 18.536 6.096 21 7.5 21C8.39898 21 8.79286 19.5857 9.22652 18.0286C9.75765 16.1214 10.3485 14 12 14C13.6515 14 14.2423 16.1214 14.7735 18.0286C15.2071 19.5857 15.601 21 16.5 21C17.904 21 18.076 18.536 18.2268 16.3755C18.2908 15.4584 18.351 14.596 18.5 14C18.6803 13.2788 18.9256 12.6877 19.1656 12.1093C19.5912 11.0838 20 10.0985 20 8.5C20 6 19 4 17 4C16.0557 4 15.4458 4.22291 14.8019 4.45825C14.082 4.72136 13.3197 5 12 5C10.6803 5 9.91796 4.72136 9.19807 4.45825Z"
+                  stroke="blue"
+                  strokeWidth="1"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+            <Fade>
+              <span className="self-center text-2xl font-bold">DentRW</span>
+            </Fade>
+          </a>
+        </div>
 
         <div className="text-slate-400 grid grid-cols-2 text-sm gap-x-3 gap-y-8 lg:w-2/3 sm:grid-cols-4">
           <div className="space-y-3 ">
             <h3 className="dark:text-gray-50 font-semibold">SERVICES</h3>
             <ul className="space-y-1">
               <li>
-                <a rel="noreferrer noopener"   className="hover:underline hover:text-gray-300"  href="/">
+                <a
+                  rel="noreferrer noopener"
+                  className="hover:underline hover:text-gray-300"
+                  href="/"
+                >
                   X-rays
                 </a>
               </li>
               <li>
-                <a rel="noreferrer noopener"   className="hover:underline hover:text-gray-300"  href="/">
+                <a
+                  rel="noreferrer noopener"
+                  className="hover:underline hover:text-gray-300"
+                  href="/"
+                >
                   Filling
                 </a>
               </li>
               <li>
-                <a rel="noreferrer noopener"   className="hover:underline hover:text-gray-300"   href="/">
+                <a
+                  rel="noreferrer noopener"
+                  className="hover:underline hover:text-gray-300"
+                  href="/"
+                >
                   Implants
                 </a>
               </li>
               <li>
-                <a rel="noreferrer noopener"   className="hover:underline hover:text-gray-300"  href="/">
+                <a
+                  rel="noreferrer noopener"
+                  className="hover:underline hover:text-gray-300"
+                  href="/"
+                >
                   Cleaning
                 </a>
               </li>
               <li>
-                <a rel="noreferrer noopener"   className="hover:underline hover:text-gray-300"  href="/">
+                <a
+                  rel="noreferrer noopener"
+                  className="hover:underline hover:text-gray-300"
+                  href="/"
+                >
                   Restoration
                 </a>
               </li>
 
               <li>
-                <a rel="noreferrer noopener"   className="hover:underline hover:text-gray-300"   href="/">
+                <a
+                  rel="noreferrer noopener"
+                  className="hover:underline hover:text-gray-300"
+                  href="/"
+                >
                   Consultation
                 </a>
               </li>
@@ -133,22 +222,38 @@ const Footer = () => {
             <h3 className="dark:text-gray-50 font-semibold">COMPANY</h3>
             <ul className="space-y-1">
               <li>
-                <a rel="noreferrer noopener"  className="hover:underline hover:text-gray-300"  href="/">
+                <a
+                  rel="noreferrer noopener"
+                  className="hover:underline hover:text-gray-300"
+                  href="/"
+                >
                   Team
                 </a>
               </li>
               <li>
-                <a rel="noreferrer noopener"  className="hover:underline hover:text-gray-300"  href="/">
+                <a
+                  rel="noreferrer noopener"
+                  className="hover:underline hover:text-gray-300"
+                  href="/"
+                >
                   Privacy
                 </a>
               </li>
               <li>
-                <a rel="noreferrer noopener" className="hover:underline hover:text-gray-300" href="/">
+                <a
+                  rel="noreferrer noopener"
+                  className="hover:underline hover:text-gray-300"
+                  href="/"
+                >
                   About us
                 </a>
               </li>
               <li>
-                <a rel="noreferrer noopener" className="hover:underline hover:text-gray-300"  href="/">
+                <a
+                  rel="noreferrer noopener"
+                  className="hover:underline hover:text-gray-300"
+                  href="/"
+                >
                   Terms & Conditions
                 </a>
               </li>
@@ -158,22 +263,38 @@ const Footer = () => {
             <h3 className="dark:text-gray-50 font-semibold">HELP DESK</h3>
             <ul className="space-y-1">
               <li>
-                <a rel="noreferrer noopener" className="hover:underline hover:text-gray-300" href="/">
+                <a
+                  rel="noreferrer noopener"
+                  className="hover:underline hover:text-gray-300"
+                  href="/"
+                >
                   FAQS
                 </a>
               </li>
               <li>
-                <a rel="noreferrer noopener" className="hover:underline hover:text-gray-300" href="/">
+                <a
+                  rel="noreferrer noopener"
+                  className="hover:underline hover:text-gray-300"
+                  href="/"
+                >
                   Pricing
                 </a>
               </li>
               <li>
-                <a rel="noreferrer noopener" className="hover:underline hover:text-gray-300" href="/">
+                <a
+                  rel="noreferrer noopener"
+                  className="hover:underline hover:text-gray-300"
+                  href="/"
+                >
                   Booking
                 </a>
               </li>
               <li>
-                <a rel="noreferrer noopener" className="hover:underline hover:text-gray-300" href="/">
+                <a
+                  rel="noreferrer noopener"
+                  className="hover:underline hover:text-gray-300"
+                  href="/"
+                >
                   Insurance
                 </a>
               </li>
@@ -232,13 +353,13 @@ const Footer = () => {
           </div>
         </div>
       </div>
-<Fade>
-      <div className="py-2 border-t text-sm text-center dark:text-gray-400">
-        ©2023 - DentRW
-      </div>
+      <Fade>
+        <div className="py-2 border-t text-sm text-center dark:text-gray-400">
+          ©2023 - DentRW
+        </div>
       </Fade>
     </footer>
   );
-}
+};
 
 export default Footer;
