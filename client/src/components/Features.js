@@ -104,8 +104,8 @@ const Features = () => {
             </div>
             <h6 className="mb-2 font-semibold leading-5">Online Booking</h6>
             <p className="mb-3 text-sm text-gray-900">
-              Streamlining your dental experience, we believe dental care should
-              be easily accessible and hassle-free.
+              Streamlining your dental experience. We come to believe dental care should
+              be easily accessible everytime and hassle-free.
             </p>
           </div>
           <a
