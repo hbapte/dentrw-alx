@@ -92,3 +92,22 @@ const NewsletterForm = () => {
 
 export default NewsletterForm;
 
+
+
+ {/* <input type="checkbox" class="peer hidden" id="navbar-open" />
+    <label class="absolute top-4 right-4 cursor-pointer md:hidden" for="navbar-open">
+      <span class="sr-only">Toggle Navigation</span>
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </label>
+    <nav aria-label="Header Navigation" class="peer-checked:mt-8 peer-checked:max-h-56 flex max-h-0 w-full flex-col items-center justify-between overflow-hidden transition-all md:ml-12 md:max-h-full md:flex-row md:items-start">
+      <ul class="flex flex-col items-center space-y-2 md:ml-auto md:flex-row md:space-y-0">
+        <li class="font-bold md:mr-12"><Link to="/services">Services</Link></li>
+        <li class="md:mr-12 hover:text-blue-500"><Link to="/support">Support</Link></li>
+        <li class="md:mr-12 hover:text-blue-500" ><Link to="/feature">Features</Link></li>
+        <li class="md:mr-12 hover:text-blue-500">
+          <button class="rounded-full border-2 border-blue-900 hover:border-blue-500 px-6 py-1 text-blue-900 transition-colors hover:bg-blue-600 hover:text-white">Book Now</button>
+        </li>
+      </ul>
+    </nav> */}
