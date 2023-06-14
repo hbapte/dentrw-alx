@@ -1,5 +1,6 @@
 import React from 'react'
 import homepicture from './Images/home.png'
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import { Fade } from "react-awesome-reveal";
 
 const Hero = () => {
@@ -7,8 +8,11 @@ const Hero = () => {
     <main>
 
     <div class="">
+      <Router>
   <header class="relative flex  flex-col overflow-hidden px-4 py-4 text-blue-900 md:mx-auto md:flex-row md:items-center">
-  <a href="/" className="flex cursor-pointer items-center whitespace-nowrap text-xl font-black">
+  <Link to="/" className="flex cursor-pointer items-center whitespace-nowrap text-xl font-black">
+  
+
   <span className="mr-1 text-2xl text-blue-500">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="30" height="28" fill="none">
       <path
@@ -20,7 +24,7 @@ const Hero = () => {
       />
     </svg>
   </span>DentRW
-</a>
+  </Link>
 
     <input type="checkbox" class="peer hidden" id="navbar-open" />
     <label class="absolute top-4 right-4 cursor-pointer md:hidden" for="navbar-open">
@@ -31,15 +35,16 @@ const Hero = () => {
     </label>
     <nav aria-label="Header Navigation" class="peer-checked:mt-8 peer-checked:max-h-56 flex max-h-0 w-full flex-col items-center justify-between overflow-hidden transition-all md:ml-12 md:max-h-full md:flex-row md:items-start">
       <ul class="flex flex-col items-center space-y-2 md:ml-auto md:flex-row md:space-y-0">
-        <li class="font-bold md:mr-12"><a href="/">Services</a></li>
-        <li class="md:mr-12 hover:text-blue-500"><a href="/">Support</a></li>
-        <li class="md:mr-12 hover:text-blue-500" ><a href="/">Features</a></li>
+        <li class="font-bold md:mr-12"><Link to="/services">Services</Link></li>
+        <li class="md:mr-12 hover:text-blue-500"><Link to="/support">Support</Link></li>
+        <li class="md:mr-12 hover:text-blue-500" ><Link to="/feature">Features</Link></li>
         <li class="md:mr-12 hover:text-blue-500">
           <button class="rounded-full border-2 border-blue-900 hover:border-blue-500 px-6 py-1 text-blue-900 transition-colors hover:bg-blue-600 hover:text-white">Book Now</button>
         </li>
       </ul>
     </nav>
   </header>
+  </Router>
  
 
   <div class="mx-auto h-full px-4 py-10 sm:max-w-xl md:max-w-full md:px-24 md:py-36 lg:px-8">
