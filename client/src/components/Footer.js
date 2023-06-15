@@ -44,7 +44,6 @@ const Footer = () => {
       setLoading(false);
       setSubscribed(true);
 
-     
       setTimeout(() => {
         setSubscribed(false);
       }, 3000);
@@ -53,7 +52,6 @@ const Footer = () => {
       setErrorMessage("Error occurred. Please try again!");
       setLoading(false);
 
-     
       setTimeout(() => {
         setErrorMessage("");
       }, 3000);

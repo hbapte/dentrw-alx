@@ -1,19 +1,19 @@
-import React, { useRef, useState, useEffect } from 'react';
-import emailjs from '@emailjs/browser'
+import React, { useRef, useState, useEffect } from "react";
+import emailjs from "@emailjs/browser";
 import { Fade } from "react-awesome-reveal";
 
 const Contact = () => {
   const form = useRef();
   const [isSent, setIsSent] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     let timeout;
     if (error) {
       timeout = setTimeout(() => {
-        setError('');
-      }, 8000); 
+        setError("");
+      }, 8000);
     }
     return () => clearTimeout(timeout);
   }, [error]);
@@ -23,7 +23,12 @@ const Contact = () => {
     setIsLoading(true);
 
     emailjs
-      .sendForm('service_xisoyix', 'template_o8b8bzr', form.current, 'y5LmTUdhgknXetKeT')
+      .sendForm(
+        "service_xisoyix",
+        "template_o8b8bzr",
+        form.current,
+        "y5LmTUdhgknXetKeT"
+      )
       .then((result) => {
         setIsSent(true);
         setIsLoading(false);
@@ -33,13 +38,12 @@ const Contact = () => {
         }, 5000);
       })
       .catch((error) => {
-        setError('An error occurred. Please try again later.');
+        setError("An error occurred. Please try again later.");
         setIsLoading(false);
       });
   };
 
   return (
-    
     <div className="max-w-screen-lg mx-auto p-2">
       <div className="grid grid-cols-1 md:grid-cols-12 border rounded-md">
         <div className="bg-slate-100 md:col-span-4 p-7 text-gray-900">
@@ -110,14 +114,12 @@ const Contact = () => {
           </p>
         </div>
 
-        
         <form
-
           ref={form}
           onSubmit={sendEmail}
           class="md:col-span-8 px-10 pt-4 pb-3"
         >
-          <div class="mb-3 " name='contact' id='contact'>
+          <div class="mb-3 " name="contact" id="contact">
             <label
               for="user_name"
               class="mb-1 block text-base font-medium text-[#07074D]"
@@ -198,7 +200,6 @@ const Contact = () => {
               <option value="orthodontic">Orthodontic Treatment</option>
               <option value="periodontal">Periodontal Treatment</option>
               <option value="dentalImplants">Dental Implants</option>
-              
             </select>
           </div>
 
@@ -253,26 +254,27 @@ const Contact = () => {
           </div>
 
           <div className="mt-4">
-          <Fade>
-          <button
-          type="submit"
-          value="Send"
-          className="hover:shadow-form hover:opacity-90 w-full rounded-md bg-blue-600 py-3 px-8 text-center text-base font-semibold text-white outline-none"
-          disabled={isLoading}
-        >
-          {isLoading ? "Booking..." : "Book Appointment"}
-        </button>
-        </Fade>
-        {isSent && <p className="text-green-500 mt-1 text-center">Appointment received successfully, Thank you!</p>}
-      {error && <p className="text-red-500 mt-1 text-center">{error}</p>}
+            <Fade>
+              <button
+                type="submit"
+                value="Send"
+                className="hover:shadow-form hover:opacity-90 w-full rounded-md bg-blue-600 py-3 px-8 text-center text-base font-semibold text-white outline-none"
+                disabled={isLoading}
+              >
+                {isLoading ? "Booking..." : "Book Appointment"}
+              </button>
+            </Fade>
+            {isSent && (
+              <p className="text-green-500 mt-1 text-center">
+                Appointment received successfully, Thank you!
+              </p>
+            )}
+            {error && <p className="text-red-500 mt-1 text-center">{error}</p>}
           </div>
         </form>
-        
       </div>
     </div>
-    
   );
 };
-
 
 export default Contact;

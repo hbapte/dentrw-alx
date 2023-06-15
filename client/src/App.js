@@ -14,7 +14,6 @@ import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import Features from "./components/Features";
 
-// import Sign from "./components/Sign"; 
 
 export default function App() {
   return (
@@ -29,11 +28,6 @@ export default function App() {
       <FAQs />
       <Contact />
       < Footer />
-     
-      
-        
-  
-      
     </div>
   );
 }
