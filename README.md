@@ -6,16 +6,16 @@ DentRW is a responsive web application for a Dental Clinic. It provides various 
 
 Check out the live website: [https://dentrw.vercel.app/](https://dentrw.vercel.app/)
 
+Get the demo [here](  )
+
 ## Table of Contents
 - [Features](#features)
 - [Technologies Used](#technologies-used)
-- [Installation](#installation)
-- [Contributing](#contributing)
 - [License](#license)
 - [Acknowledgements](#acknowledgements)
-- [Contact](#contact)
 - [Room for Improvement](#room-for-improvement)
-- [Project Status](#project-status)
+- [Author and Contact](#contact)
+
 
 ## Features
 
@@ -57,6 +57,16 @@ I would like to express my gratitude to the following resources, libraries, and 
 
 Special thanks to the AlX Graduation program for providing the opportunity to showcase my skills and knowledge through this project.
 
+
+
+## Room for Improvement
+
+- **Enhanced User Experience:** Continuously gather user feedback and implement improvements to enhance the overall user experience and usability of the website.
+
+- **Expand Feature Set:** Explore additional features that can benefit the dental clinic and its patients, such as an online payment system or integration with electronic health records.
+
+If you have any suggestions or ideas for improving DentRW, please don't hesitate to reach out or contribute to the project.
+
 ## Contact
 
 For any inquiries or further information about DentRW, please reach out to me:
@@ -66,11 +76,3 @@ For any inquiries or further information about DentRW, please reach out to me:
 - Email: [ijbapte@gmail.com](mailto:ijbapte@gmail.com)
 
 Feel free to visit the live website at [https://dentrw.vercel.app/](https://dentrw.vercel.app/) and experience DentRW firsthand.
-
-## Room for Improvement
-
-- **Enhanced User Experience:** Continuously gather user feedback and implement improvements to enhance the overall user experience and usability of the website.
-
-- **Expand Feature Set:** Explore additional features that can benefit the dental clinic and its patients, such as an online payment system or integration with electronic health records.
-
-If you have any suggestions or ideas for improving DentRW, please don't hesitate to reach out or contribute to the project.
