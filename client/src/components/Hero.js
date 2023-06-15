@@ -7,11 +7,11 @@ const Hero = () => {
   return (
     <main>
       <div class="" name="home">
-        <div class="mx-auto h-full px-4 py-10 sm:max-w-xl md:max-w-full md:px-24 md:py-36 lg:px-8">
+        <div class="mx-auto md:h-full px-4 py-10 sm:max-w-xl md:max-w-full md:px-24 md:py-36 lg:px-8">
           <div class="flex flex-col items-center justify-between lg:flex-row">
             <div class="">
               <div class="lg:max-w-xl lg:pr-5">
-                <h2 class="mb-6 max-w-lg text-5xl font-light leading-snug tracking-tight text-blue-600 sm:text-8xl">
+                <h2 class="md:mt-0 mt-16  mb-6 max-w-lg text-5xl font-light leading-snug tracking-tight text-blue-600 sm:text-8xl">
                   Meet your <br />
                   <span class="my-1 inline-block border-b-8 border-blue-600 font-bold text-blue-600">
                     {" "}
