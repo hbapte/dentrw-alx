@@ -9,6 +9,7 @@ Check out the live website: [https://dentrw.vercel.app/](https://dentrw.vercel.a
 
 
 ## Table of Contents
+
 - [Features](#features)
 - [Technologies Used](#technologies-used)
 - [License](#license)
@@ -28,9 +29,10 @@ Check out the live website: [https://dentrw.vercel.app/](https://dentrw.vercel.a
 - **Newsletter Subscription:** Visitors can subscribe to the clinic's newsletter to receive updates, promotions, and important announcements.
 
 - **Data Collection Automation:** The website utilizes services like EmailJS and ConvertKit to automate the collection of data and email reply.
+
 ## Technologies Used
 
-- **Tailwind CSS:** A utility-first CSS framework used for building the user interface of the website. It provides a modern and responsive design system. 
+- **Tailwind CSS:** A utility-first CSS framework used for building the user interface of the website. It provides a modern and responsive design system.
 
 - **React:** A popular JavaScript library for building user interfaces. React offers efficient component-based development and helps create interactive web applications.
 
@@ -60,13 +62,13 @@ I would like to express my gratitude to the following resources, libraries, and 
 - [Free Frontend](https://freefrontend.com/) - UI Components and inspiration.
 - [Componentland](https://component.land) - UI Components and inspiration.
 
-Special thanks to the AlX Graduation program for providing the opportunity to showcase my skills and knowledge through this project.
+Special thanks to the AlX Graduation program for providing the opportunity to showcase my skills and knowledge through this project. I appreciate the staff, mentor, and colleagues.
 
 
 
 ## Room for Improvement
 
-- **Expand Feature Set:** Explore additional features that can benefit the dental clinic and its patients, such as an <b>online payment system</b> or <b>integration with electronic health records</b>.
+- **Expand Feature Set:** Explore additional features that can benefit the dental clinic and its patients, such as an <>online payment system or integration with electronic health records
 
 - **Enhanced User Experience:** Continuously gather user feedback and implement improvements to enhance the overall user experience and usability of the website.
 
