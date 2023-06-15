@@ -9,10 +9,10 @@ import Bridge from "./Images/crown.jpeg";
 import Toothache from "./Images/inflamation.jpg";
 import { Fade } from "react-awesome-reveal";
 
-const Hero = () => {
+const Services = () => {
   return (
-    <section className="px-5">
-      <div class=" " name="service">
+    <section className="px-5 " id="service">
+      <div class=" ">
         <header class="">
           <Fade>
             <div className="max-w-xl mb-10 md:mx-auto sm:text-center lg:max-w-2xl md:mb-12">
@@ -155,4 +155,4 @@ const Hero = () => {
   );
 };
 
-export default Hero;
+export default Services;
