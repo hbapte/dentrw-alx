@@ -6,7 +6,7 @@ DentRW is a responsive web application for a Dental Clinic. It provides various 
 
 Check out the live website: [https://dentrw.vercel.app/](https://dentrw.vercel.app/)
 
-Get the demo [here](  )
+
 
 ## Table of Contents
 - [Features](#features)
