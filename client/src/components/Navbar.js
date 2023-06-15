@@ -69,7 +69,7 @@ const Navbar = () => {
         onClick={scrollToTop}
       >
         {" "}
-        <span className="mr-1 text-2xl text-blue-500">
+        <span className="mr-1 text-xl text-blue-500">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -95,8 +95,8 @@ const Navbar = () => {
             <li key={id}>
               <Link
                 to={link}
-                className={`cursor-pointer hover:text-blue-500 ${
-                  showNavbar ? "text-blue-900" : "text-blue-400"
+                className={`cursor-pointer font-semibold hover:text-blue-400 ${
+                  showNavbar ? "text-blue-600" : "text-blue-900"
                 }`}
                 smooth={true}
                 duration={500}
@@ -114,7 +114,7 @@ const Navbar = () => {
           onClick={toggleMenu}
         >
           <svg
-            className={`h-6 w-6 text-blue-900 ${
+            className={`h-6 w-6 font-semibold  text-blue-900 ${
               showNavbar ? "text-blue-900" : "text-blue-400"
             }`}
             viewBox="0 0 24 24"
@@ -130,12 +130,12 @@ const Navbar = () => {
           </svg>
         </button>
         {showMenu && (
-          <ul className="absolute top-12 right-0 z-50 w-48 py-2 bg-white border border-gray-300 rounded shadow-md">
+          <ul className="absolute top-14 right-0 z-50 w-48 py-2 bg-white border border-gray-300 rounded shadow-md">
             {links.map(({ id, link, label }) => (
               <li key={id}>
                 <Link
                   to={link}
-                  className="block px-4 py-2 text-blue-900 hover:text-blue-500"
+                  className="block px-4 py-2 font-semibold mt-1 text-blue-900 hover:text-blue-500"
                   smooth={true}
                   duration={500}
                   onClick={toggleMenu}
