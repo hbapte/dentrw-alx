@@ -1,51 +1,13 @@
 import React from 'react'
 import homepicture from './Images/home.png'
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import { Fade } from "react-awesome-reveal";
 
 const Hero = () => {
+
+
   return (
     <main>
-
-    <div class="">
-      <Router>
-  <header class="relative flex  flex-col overflow-hidden px-4 py-4 text-blue-900 md:mx-auto md:flex-row md:items-center">
-  <Link to="/" className="flex cursor-pointer items-center whitespace-nowrap text-xl font-black">
-  
-
-  <span className="mr-1 text-2xl text-blue-500">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="30" height="28" fill="none">
-      <path
-        d="M9.19807 4.45825C8.55418 4.22291 7.94427 4 7 4C5 4 4 6 4 8.5C4 10.0985 4.40885 11.0838 4.83441 12.1093C5.0744 12.6877 5.31971 13.2788 5.5 14C5.649 14.596 5.7092 15.4584 5.77321 16.3755C5.92401 18.536 6.096 21 7.5 21C8.39898 21 8.79286 19.5857 9.22652 18.0286C9.75765 16.1214 10.3485 14 12 14C13.6515 14 14.2423 16.1214 14.7735 18.0286C15.2071 19.5857 15.601 21 16.5 21C17.904 21 18.076 18.536 18.2268 16.3755C18.2908 15.4584 18.351 14.596 18.5 14C18.6803 13.2788 18.9256 12.6877 19.1656 12.1093C19.5912 11.0838 20 10.0985 20 8.5C20 6 19 4 17 4C16.0557 4 15.4458 4.22291 14.8019 4.45825C14.082 4.72136 13.3197 5 12 5C10.6803 5 9.91796 4.72136 9.19807 4.45825Z"
-        stroke="#1E3A8A"
-        strokeWidth="0.812"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  </span>DentRW
-  </Link>
-
-    <input type="checkbox" class="peer hidden" id="navbar-open" />
-    <label class="absolute top-4 right-4 cursor-pointer md:hidden" for="navbar-open">
-      <span class="sr-only">Toggle Navigation</span>
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-      </svg>
-    </label>
-    <nav aria-label="Header Navigation" class="peer-checked:mt-8 peer-checked:max-h-56 flex max-h-0 w-full flex-col items-center justify-between overflow-hidden transition-all md:ml-12 md:max-h-full md:flex-row md:items-start">
-      <ul class="flex flex-col items-center space-y-2 md:ml-auto md:flex-row md:space-y-0">
-        <li class="font-bold md:mr-12"><Link to="/services">Services</Link></li>
-        <li class="md:mr-12 hover:text-blue-500"><Link to="/support">Support</Link></li>
-        <li class="md:mr-12 hover:text-blue-500" ><Link to="/feature">Features</Link></li>
-        <li class="md:mr-12 hover:text-blue-500">
-          <button class="rounded-full border-2 border-blue-900 hover:border-blue-500 px-6 py-1 text-blue-900 transition-colors hover:bg-blue-600 hover:text-white">Book Now</button>
-        </li>
-      </ul>
-    </nav>
-  </header>
-  </Router>
- 
+  <div class="" name="home">
 
   <div class="mx-auto h-full px-4 py-10 sm:max-w-xl md:max-w-full md:px-24 md:py-36 lg:px-8">
     <div class="flex flex-col items-center justify-between lg:flex-row">

@@ -13,7 +13,7 @@ const Hero = () => {
   return (
   
     <section className="px-5">
-      <div class=" ">
+      <div class=" " name="service">
       
         <header class="">
         <Fade >
