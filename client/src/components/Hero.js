@@ -1,6 +1,8 @@
 import React from 'react'
 import homepicture from './Images/home.png'
 import { Fade } from "react-awesome-reveal";
+import { Link } from "react-scroll";
+
 
 const Hero = () => {
 
@@ -23,9 +25,25 @@ const Hero = () => {
           <p class="text-base text-gray-700">Harmonizing Oral health and creating beautiful smiles. Bringing confidence and wellness to your life through modern dental care!</p>
         </div>
         <div class="mt-10 flex flex-col items-center md:flex-row">
-          <a href="/" class="mb-3 inline-flex h-12 w-full items-center justify-center rounded bg-blue-700 px-6 font-medium tracking-wide text-white shadow-md transition duration-200 md:mr-4 md:mb-0 md:w-auto focus:outline-none hover:bg-blue-800">Book Appointment</a>
-          <a href="/" aria-label="" class="underline-offset-2 inline-flex items-center text-xl font-bold text-blue-600 underline transition-colors duration-200 hover:underline">Get Started</a>
-        </div>
+  <Link
+    to="contact"
+    smooth={true}
+    duration={500}
+    offset={-100}
+    className="mb-3 inline-flex h-12 w-full items-center justify-center rounded bg-blue-700 px-6 font-medium tracking-wide text-white shadow-md transition duration-200 md:mr-4 md:mb-0 md:w-auto focus:outline-none hover:bg-blue-800"
+  >
+    Book Appointment
+  </Link>
+  <Link
+    to="service"
+    smooth={true}
+    duration={500}
+    offset={-100}
+    className="underline-offset-2 inline-flex items-center text-xl font-bold text-blue-600 underline transition-colors duration-200 hover:underline"
+  >
+    Get Started
+  </Link>
+</div>
         <div class="mt-12 flex flex-col space-y-3 divide-gray-300 text-sm text-gray-700 sm:flex-row sm:space-y-0 sm:divide-x">
           <div class="flex max-w-xs space-x-2 px-4">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

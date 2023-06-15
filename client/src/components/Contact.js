@@ -112,11 +112,12 @@ const Contact = () => {
 
         
         <form
+
           ref={form}
           onSubmit={sendEmail}
           class="md:col-span-8 px-10 pt-4 pb-3"
         >
-          <div class="mb-3">
+          <div class="mb-3 " name='contact' id='contact'>
             <label
               for="user_name"
               class="mb-1 block text-base font-medium text-[#07074D]"

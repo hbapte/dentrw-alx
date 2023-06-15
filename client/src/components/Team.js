@@ -8,7 +8,7 @@ import { Fade } from "react-awesome-reveal";
 const Team = () => {
   return (
 
-    <section class="mt-16 bg-slate-100 ">
+    <section class="mt-16  bg-slate-100 " id='team'>
     
     <div class="container px-6 py-12 mx-auto">
       <Fade>

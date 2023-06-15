@@ -11,7 +11,7 @@ import { Fade } from 'react-awesome-reveal'
 
 const Insurance = () => {
   return (
-    <section className="mt-16">
+    <section className="mt-16 " id='insurance'>
             <header class="">
               <Fade>
           <div className="max-w-xl mb-10 mx-4 md:mx-auto  sm:text-center lg:max-w-2xl md:mb-12">
