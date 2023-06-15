@@ -30,7 +30,7 @@ Get the demo [here](  )
 - **Data Collection Automation:** The website utilizes services like EmailJS and ConvertKit to automate the collection of data and email reply.
 ## Technologies Used
 
-- **Tailwind CSS:** A utility-first CSS framework used for building the user interface of the website. It provides a modern and responsive design system.
+- **Tailwind CSS:** A utility-first CSS framework used for building the user interface of the website. It provides a modern and responsive design system. 
 
 - **React:** A popular JavaScript library for building user interfaces. React offers efficient component-based development and helps create interactive web applications.
 
