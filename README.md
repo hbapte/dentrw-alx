@@ -1,8 +1,8 @@
-# DentRW - Dental Clinic Website
+# DentRW - Dental Clinic Website || ALX Final Project
 
-![Screenshot](https://i.ibb.co/fn3bzhs/21695375.jpg)
+![Screenshot](/client/src/components/Images/screenshot.jpg)
 
-DentRW is a responsive web application for a Dental Clinic. It provides various features including appointment booking, newsletter subscription, and automation for data collection. This project was developed as part of the AlX Graduation program by me, Ishimwe Jean Baptiste.
+DentRW is a responsive web application for a Dental Clinic. It provides various features including appointment booking, newsletter subscription, and automation for data collection. This project was developed as AlX Final Project of Software Program - Frontend by me, Ishimwe Jean Baptiste.
 
 Check out the live website: [https://dentrw.vercel.app/](https://dentrw.vercel.app/)
 
@@ -23,6 +23,7 @@ Get the demo [here](  )
 
 - **Appointment Booking:** Patients can easily book appointments online through the website. The booking system provides a user-friendly interface for selecting preferred dates and times.
 
+- **24/7 Chatbot:** With help of Typebot, Get live chat with typebot anytime , best assistant chatbot
 
 - **Newsletter Subscription:** Visitors can subscribe to the clinic's newsletter to receive updates, promotions, and important announcements.
 
@@ -36,6 +37,10 @@ Get the demo [here](  )
 - **ConvertKit:** An email marketing platform that enables easy management of email subscriptions, automation, and campaigns.
 
 - **EmailJS:** A service that allows sending emails directly from the client-side using JavaScript. It simplifies the process of sending automated emails and integrates with popular email providers.
+
+- **Typebot:** Online Chatbot assistant with easy customization
+
+- **Google Analytic** : Collecting Website visit count and behaviour for planning and analysis
 
 
 
@@ -61,9 +66,10 @@ Special thanks to the AlX Graduation program for providing the opportunity to sh
 
 ## Room for Improvement
 
+- **Expand Feature Set:** Explore additional features that can benefit the dental clinic and its patients, such as an <b>online payment system</b> or <b>integration with electronic health records</b>.
+
 - **Enhanced User Experience:** Continuously gather user feedback and implement improvements to enhance the overall user experience and usability of the website.
 
-- **Expand Feature Set:** Explore additional features that can benefit the dental clinic and its patients, such as an online payment system or integration with electronic health records.
 
 If you have any suggestions or ideas for improving DentRW, please don't hesitate to reach out or contribute to the project.
 
