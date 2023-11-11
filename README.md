@@ -48,7 +48,7 @@ Check out the live website: [https://dentrw.vercel.app/](https://dentrw.vercel.a
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
 
 ## Acknowledgements
 
