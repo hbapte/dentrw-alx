@@ -59,7 +59,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="px-4  bg-slate-900 text-white">
+    <footer className="px-4  bg-[#0A2540] text-white">
       <div className="mt-6 pt-6 flex ">
         <div class="mb-4 ">
           <h2 class="text-xl font-bold text-slate-100">
@@ -352,9 +352,17 @@ const Footer = () => {
         </div>
       </div>
       <Fade>
-        <div className="py-2 border-t text-sm text-center dark:text-gray-400">
+        <div className="py-2 border-t text-sm px-1 flex justify-between">
+
+        <div className="text-left dark:text-gray-400">
           ©2023 - DentRW
         </div>
+        <div>
+          Developed by <a className="text-blue-600" target="_blank" rel="noreferrer noopener" href="https://hbapte.me"> Hbapte </a>
+        </div>
+        </div>
+
+        
       </Fade>
     </footer>
   );
