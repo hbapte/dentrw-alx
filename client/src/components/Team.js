@@ -59,7 +59,7 @@ const Team = () => {
           </header>
         </Fade>
 
-        <div class="grid gap-8 mt-12 grid-cols-2 lg:grid-cols-4 xl:grid-cols-4">
+        <div class="grid gap-8 mt-12  md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4">
           <div class="w-full max-w-xs text-center">
             <img
               class="object-cover object-center w-full h-60 mx-auto rounded-lg"
@@ -105,7 +105,7 @@ const Team = () => {
             <img
               class="object-cover object-center w-full h-60 mx-auto rounded-lg"
               src={Arriana}
-              alt="avatar"
+              alt="Arriana avatar"
             />
 
             <div class="mt-2">
