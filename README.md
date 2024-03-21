@@ -81,6 +81,7 @@ For any inquiries or further information about DentRW, please reach out to me:
 
 - **Ishimwe Jean Baptiste**
 - GitHub: [hbapte](https://github.com/hbapte)
+- Portfolio: [https://hbapte.vercel.app/](https://hbapte.vercel.app/) 
 - Email: [ijbapte@gmail.com](mailto:ijbapte@gmail.com)
 
 Feel free to visit the live website at [https://dentrw.vercel.app/](https://dentrw.vercel.app/) and experience DentRW firsthand.

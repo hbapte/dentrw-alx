@@ -358,7 +358,7 @@ const Footer = () => {
           ©2023 - DentRW
         </div>
         <div>
-          Developed by <a className="text-blue-600 text-xs sm:text-sm mr-0 sm:mr-14" target="_blank" rel="noreferrer noopener" href="https://hbapte.me"> Hbapte </a>
+          Developed by <a className="text-blue-600 text-xs sm:text-sm mr-0 sm:mr-14" target="_blank" rel="noreferrer noopener" href="https://hbapte.vercel.app/"> Hbapte </a>
         </div>
         </div>
 
