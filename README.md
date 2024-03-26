@@ -2,11 +2,9 @@
 
 ![Screenshot](/client/src/components/Images/screenshot.jpg)
 
-DentRW is a responsive web application for a Dental Clinic. It provides various features including appointment booking, newsletter subscription, and automation for data collection. This project was developed as AlX Final Project of Software Program - Frontend by me, Ishimwe Jean Baptiste.
+> DentRW is a responsive web application for a Dental Clinic. It provides various features including appointment booking, newsletter subscription, and automation for data collection. This project was developed as AlX Final Project of Software Program - Frontend by me, Ishimwe Jean Baptiste.
 
 Check out the live website: [https://dentrw.vercel.app/](https://dentrw.vercel.app/)
-
-
 
 ## Table of Contents
 
@@ -44,8 +42,6 @@ Check out the live website: [https://dentrw.vercel.app/](https://dentrw.vercel.a
 
 - **Google Analytic** : Collecting Website visit count and behaviour for planning and analysis
 
-
-
 ## License
 
 This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
@@ -64,14 +60,11 @@ I would like to express my gratitude to the following resources, libraries, and 
 
 Special thanks to the AlX Graduation program for providing the opportunity to showcase my skills and knowledge through this project. I appreciate the staff, mentor, and colleagues.
 
-
-
 ## Room for Improvement
 
-- **Expand Feature Set:** Explore additional features that can benefit the dental clinic and its patients, such as an <>online payment system or integration with electronic health records
+- **Expand Feature Set:** Explore additional features that can benefit the dental clinic and its patients, such as an online payment system or integration with electronic health records
 
 - **Enhanced User Experience:** Continuously gather user feedback and implement improvements to enhance the overall user experience and usability of the website.
-
 
 If you have any suggestions or ideas for improving DentRW, please don't hesitate to reach out or contribute to the project.
 
@@ -81,7 +74,7 @@ For any inquiries or further information about DentRW, please reach out to me:
 
 - **Ishimwe Jean Baptiste**
 - GitHub: [hbapte](https://github.com/hbapte)
-- Portfolio: [https://hbapte.vercel.app/](https://hbapte.vercel.app/) 
+- Portfolio: [https://hbapte.vercel.app/](https://hbapte.vercel.app/)
 - Email: [ijbapte@gmail.com](mailto:ijbapte@gmail.com)
 
 Feel free to visit the live website at [https://dentrw.vercel.app/](https://dentrw.vercel.app/) and experience DentRW firsthand.
