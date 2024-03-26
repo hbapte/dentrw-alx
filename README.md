@@ -2,7 +2,7 @@
 
 ![Screenshot](/client/src/components/Images/screenshot.jpg)
 
-> DentRW is a responsive web application for a Dental Clinic. It provides various features including appointment booking, newsletter subscription, and automation for data collection. This project was developed as AlX Final Project of Software Program - Frontend by me, Ishimwe Jean Baptiste.
+DentRW is a responsive web application for a Dental Clinic. It provides various features including appointment booking, newsletter subscription, and automation for data collection. This project was developed as AlX Final Project of Software Program - Frontend by me, Ishimwe Jean Baptiste.
 
 Check out the live website: [https://dentrw.vercel.app/](https://dentrw.vercel.app/)
 
@@ -14,7 +14,6 @@ Check out the live website: [https://dentrw.vercel.app/](https://dentrw.vercel.a
 - [Acknowledgements](#acknowledgements)
 - [Room for Improvement](#room-for-improvement)
 - [Author and Contact](#contact)
-
 
 ## Features
 
@@ -44,7 +43,7 @@ Check out the live website: [https://dentrw.vercel.app/](https://dentrw.vercel.a
 
 ## License
 
-This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
+This project is licensed under the [MIT License](/LICENCE).
 
 ## Acknowledgements
 
