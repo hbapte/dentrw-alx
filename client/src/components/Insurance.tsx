@@ -1,18 +1,18 @@
-import React from "react";
-import RSSB from "./Images/insurance/rssb.png";
-import MMI from "./Images/insurance/mmi.png";
-import PRIME from "./Images/insurance/prime.png";
-import RADIANT from "./Images/insurance/radiant.png";
-import SORAS from "./Images/insurance/Soras.png";
-import BRITAM from "./Images/insurance/britam.png";
-import BK from "./Images/insurance/BK.png";
-import SANLAM from "./Images/insurance/sanlam.png";
 import { Fade } from "react-awesome-reveal";
+
+const RSSB = "./Images/insurance/rssb.png";
+const MMI = "./Images/insurance/mmi.png";
+const PRIME = "./Images/insurance/prime.png";
+const RADIANT = "./Images/insurance/radiant.png";
+const SORAS = "./Images/insurance/Soras.png";
+const BRITAM = "./Images/insurance/britam.png";
+const BK = "./Images/insurance/BK.png";
+const SANLAM = "./Images/insurance/sanlam.png";
 
 const Insurance = () => {
   return (
     <section className="mt-16 " id="insurance">
-      <header class="">
+      <header className="">
         <Fade>
           <div className="max-w-xl mb-10 mx-4 md:mx-auto  sm:text-center lg:max-w-2xl md:mb-12">
             <div>
@@ -50,13 +50,13 @@ const Insurance = () => {
               companies for your coverage
             </h2>
 
-            <p class="max-w-[40rem] text-md mx-auto mt-4 text-gray-500"></p>
+            <p className="max-w-[40rem] text-md mx-auto mt-4 text-gray-500"></p>
           </div>
         </Fade>
       </header>
-      <div class="slider grid grid-cols-4 lg:grid-cols-8   shadow-md opacity-[100%] h-100 mx-auto overflow-hidden relative ">
-        {/* <div class="slide-track animate-scroll"> */}
-        <div class="slide h-100 w-250">
+      <div className="slider grid grid-cols-4 lg:grid-cols-8   shadow-md opacity-[100%] h-100 mx-auto overflow-hidden relative ">
+        {/* <div className="slide-track animate-scroll"> */}
+        <div className="slide h-100 w-250">
           <img
             src={RSSB}
             className="object-cover"
@@ -65,27 +65,27 @@ const Insurance = () => {
             alt=""
           />
         </div>
-        <div class="slide h-100 w-250">
+        <div className="slide h-100 w-250">
           <img src={SANLAM} height="100" width="250" alt="" />
         </div>
-        <div class="slide h-100 w-250">
+        <div className="slide h-100 w-250">
           <img src={MMI} height="10" width="250" alt="" />
         </div>
-        <div class="slide h-100 w-250">
+        <div className="slide h-100 w-250">
           <img src={BRITAM} className="" alt="" />
         </div>
-        <div class="slide h-100 w-250">
+        <div className="slide h-100 w-250">
           <img src={SORAS} height="100" width="250" alt="" />
         </div>
 
-        <div class="slide h-100 w-250">
+        <div className="slide h-100 w-250">
           <img src={PRIME} height="100" width="250" alt="Prime Insurance" />
         </div>
-        <div class="slide h-100 w-250">
+        <div className="slide h-100 w-250">
           <img src={RADIANT} height="50" width="250" alt="" />
         </div>
 
-        <div class="slide h-100 w-250">
+        <div className="slide h-100 w-250">
           <img src={BK} height="100" width="250" alt="" />
         </div>
       </div>

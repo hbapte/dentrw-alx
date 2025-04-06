@@ -1,5 +1,5 @@
 //import React, { useRef, useState } from "react";
-import Olvier from "./Images/olivier.png";
+
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -7,6 +7,8 @@ import "swiper/css/navigation";
 import { Fade } from "react-awesome-reveal";
 
 import { Autoplay, Pagination, Navigation } from "swiper";
+
+const Olvier = "./Images/olivier.png";
 
 export default function App() {
   return (

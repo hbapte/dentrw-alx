@@ -1,31 +1,31 @@
-import React from "react";
-import homepicture from "./Images/home.png";
 import { Fade } from "react-awesome-reveal";
 import { Link } from "react-scroll";
+
+const homepicture = "/Images/home.png";
 
 const Hero = () => {
   return (
     <main>
-      <div class="" name="home">
-        <div class="mx-auto h-full px-4 py-10 sm:max-w-xl md:max-w-full md:px-24 md:py-36 lg:px-8">
-          <div class="flex flex-col items-center justify-between lg:flex-row">
-            <div class="">
-              <div class="lg:max-w-xl lg:pr-5">
-                <h2 class="md:mt-0 mt-24  mb-6 max-w-lg text-5xl font-light leading-snug tracking-tight text-blue-600 sm:text-8xl">
+      <div className="" id="home">
+        <div className="mx-auto  h-full px-4 py-10 sm:max-w-xl md:max-w-full md:px-24 md:py-36 lg:px-8">
+          <div className="flex flex-col items-center justify-between lg:flex-row">
+            <div className="">
+              <div className="lg:max-w-xl lg:pr-5">
+                <h2 className="md:mt-0 mt-24  mb-6 max-w-lg text-5xl font-light leading-snug tracking-tight text-blue-600 sm:text-8xl">
                   Meet your <br />
-                  <span class="my-1 inline-block border-b-8 border-blue-600 font-bold text-blue-600">
+                  <span className="my-1 inline-block border-b-8 border-blue-600 font-bold text-blue-600">
                     {" "}
                     Dentist{" "}
                   </span>
                 </h2>
 
-                <p class="text-base text-gray-700">
+                <p className="text-base text-gray-700">
                   Harmonizing Oral health and creating beautiful smiles.
                   Bringing confidence and wellness to your life through modern
                   dental care!
                 </p>
               </div>
-              <div class="mt-10 flex flex-col items-center md:flex-row">
+              <div className="mt-10 flex flex-col items-center md:flex-row">
                 <Link
                   to="contact"
                   smooth={true}
@@ -45,11 +45,11 @@ const Hero = () => {
                   Get Started
                 </Link>
               </div>
-              <div class="mt-12 flex flex-col space-y-3 divide-gray-300 text-sm text-gray-700 sm:flex-row sm:space-y-0 sm:divide-x">
-                <div class="flex max-w-xs space-x-2 px-4">
+              <div className="mt-12 flex flex-col space-y-3 divide-gray-300 text-sm text-gray-700 sm:flex-row sm:space-y-0 sm:divide-x">
+                <div className="flex max-w-xs space-x-2 px-4">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="h-12 w-12 text-emerald-600"
+                    className="h-12 w-12 text-emerald-600"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -66,10 +66,10 @@ const Hero = () => {
                     care
                   </p>
                 </div>
-                <div class="flex max-w-xs space-x-2 px-4">
+                <div className="flex max-w-xs space-x-2 px-4">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="h-12 w-12 text-blue-600"
+                    className="h-12 w-12 text-blue-600"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -85,10 +85,10 @@ const Hero = () => {
                 </div>
               </div>
             </div>
-            <div class="relative hidden lg:ml-32 lg:block lg:w-1/2">
+            <div className="relative hidden lg:ml-32 lg:block lg:w-1/2">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="mx-auto my-6 h-10 w-10 animate-bounce rounded-full bg-blue-50 p-2 lg:hidden"
+                className="mx-auto my-6 h-10 w-10 animate-bounce rounded-full bg-blue-50 p-2 lg:hidden"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -100,10 +100,10 @@ const Hero = () => {
                   d="M16 17l-4 4m0 0l-4-4m4 4V3"
                 />
               </svg>
-              <div class="w-fit rounded-[6rem] mx-auto overflow-hidden rounded-tl-none rounded-br-none bg-blue-400">
+              <div className="w-fit rounded-[6rem] mx-auto overflow-hidden rounded-tl-none rounded-br-none bg-blue-400">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="absolute -left-10 -top-20 h-28 w-28 rounded-xl bg-white text-gray-400"
+                  className="absolute -left-10 -top-20 h-28 w-28 rounded-xl bg-white text-gray-400"
                   viewBox="0 0 20 20"
                   fill="currentColor"
                 >
@@ -115,7 +115,7 @@ const Hero = () => {
                 </svg>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="absolute right-0 -bottom-20 h-28 w-28 rounded-xl bg-white text-gray-400"
+                  className="absolute right-0 -bottom-20 h-28 w-28 rounded-xl bg-white text-gray-400"
                   viewBox="0 0 20 20"
                   fill="currentColor"
                 >
@@ -126,7 +126,7 @@ const Hero = () => {
                   />
                 </svg>
                 <Fade>
-                  <img class="-mb-20" src={homepicture} alt="hero portrait" />
+                  <img className="-mb-20" src={homepicture} alt="hero portrait" />
                 </Fade>
               </div>
             </div>
