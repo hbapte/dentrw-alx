@@ -11,11 +11,10 @@
   "author": "Ishimwe Jean Baptiste",
   "license": "MIT",
   "dependencies": {
-    "@types/bcrypt": "^5.0.2",
     "@types/express": "^4.17.21",
     "@types/node": "^20.12.2",
     "@types/nodemailer": "^6.4.14",
-    "bcrypt": "^5.1.1",
+    "bcryptjs": "^3.0.2",
     "cloudinary": "^2.2.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -31,7 +30,6 @@
     "nodemailer": "^6.9.13",
     "nodemon": "^3.1.0",
     "path": "^0.12.7",
-    "sinon": "^17.0.1",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
     "tsc-node": "^0.0.3",
@@ -39,8 +37,6 @@
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
-    "@types/expect": "^24.3.0",
-
     "@types/passport-jwt": "^4.0.1",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.6",
