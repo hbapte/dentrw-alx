@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import User from '../../../database/models/user';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 const resetPasswordController = async (req: Request, res: Response) => {
   const { token, newPassword } = req.body;

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import User from '../../../database/models/user';
-import bcrypt from 'bcrypt'; 
+import bcrypt from "bcryptjs";
 import sendVerificationEmail from '../utils/sendVerificationEmail';
 
 const registerController = async (req: Request, res: Response) => {
