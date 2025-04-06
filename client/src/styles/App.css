@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@plugin "tailwindcss-animate";
+@plugin '@tailwindcss/typography';
+
+@config "../../tailwind.config.ts";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+
+* {
+  ::-moz-selection { 
+    color: white;
+    background: #10b981;
+  }
+  
+  ::selection {
+    color: white;
+    background: #10b981;
+  }
+  scroll-behavior: smooth;
+}
+
