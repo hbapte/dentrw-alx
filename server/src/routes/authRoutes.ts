@@ -1,23 +1,43 @@
-import express from "express";
-import { registerController } from "../modules/user/controllers/registerController";
-import loginController from "../modules/user/controllers/loginController";
-import { requestNewVerificationLinkController } from "../modules/user/controllers/requestNewVerificationLinkController";
-import resetPasswordController from "../modules/user/controllers/resetPasswordController";
-import forgotPasswordController from "../modules/user/controllers/forgotPasswordController";
-import verifyResetTokenController  from "../modules/user/controllers/verifyResetTokenController";
-import verifyEmailController from "../modules/user/controllers/verifyEmailController";
-import googleLoginController from "../modules/user/controllers/googleLoginController";
+import express from "express"
+import {
+  registerController,
+  loginController,
+  verifyEmailController,
+  resendVerificationController,
+  forgotPasswordController,
+  resetPasswordController,
+  logoutController,
+  getCurrentUserController,
+} from "../modules/auth/controllers/authControllers"
+import { googleLoginController } from "../modules/auth/controllers/googleAuthController"
+import { authenticateToken } from "../middlewares/auth.middleware"
+import {
+  loginRateLimiter,
+  registrationRateLimiter,
+  passwordResetRateLimiter,
+} from "../middlewares/rateLimiter.middleware"
+import {
+  validate,
+  registerSchema,
+  loginSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
+} from "../middlewares/validation.middleware"
 
-const authRouter = express.Router();
+const authRouter = express.Router()
 
-authRouter.post("/register", registerController);
-authRouter.post("/login", loginController);
-authRouter.post('/google-login', googleLoginController);
-authRouter.get("/verify", verifyEmailController);
-authRouter.post("/request-new-verification-link", requestNewVerificationLinkController);
-authRouter.post("/forgot-password", forgotPasswordController);
-authRouter.get("/verify-reset-token", verifyResetTokenController);
-authRouter.post("/reset-password", resetPasswordController);
+// Public routes with rate limiting and validation
+authRouter.post("/register", registrationRateLimiter, validate(registerSchema), registerController)
+authRouter.post("/login", loginRateLimiter, validate(loginSchema), loginController)
+authRouter.post("/google-login", loginRateLimiter, googleLoginController)
+authRouter.get("/verify-email/:token", verifyEmailController)
+authRouter.post("/resend-verification", loginRateLimiter, resendVerificationController)
+authRouter.post("/forgot-password", passwordResetRateLimiter, validate(forgotPasswordSchema), forgotPasswordController)
+authRouter.post("/reset-password/:token", passwordResetRateLimiter, validate(resetPasswordSchema), resetPasswordController)
+authRouter.post("/logout", logoutController)
 
-export default authRouter;
+// Protected routes
+authRouter.get("/me", authenticateToken, getCurrentUserController)
+
+export default authRouter
 
