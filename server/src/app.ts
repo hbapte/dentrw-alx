@@ -1,4 +1,5 @@
 
+// server\src\app.ts
 import express, { Express } from "express";
 import dotenv from "dotenv";
 import "./config/db";
@@ -21,6 +22,14 @@ dotenv.config();
 const port = process.env.PORT || 3000; 
 const app: Express = express();
 app.use(cors());
+
+
+// Near the top of your app.ts
+console.log('Starting application...');
+console.log(`Environment: ${process.env.NODE_ENV}`);
+console.log(`PORT: ${process.env.PORT}`);
+
+
 
 
 // Middleware
@@ -82,6 +91,12 @@ app.use((err: any, req: express.Request, res: express.Response) => {
   })
 })
 
+
+// After database connection
+console.log('Database connected successfully');
+
+// Before starting the server
+console.log(`Attempting to start server on port ${port}...`);
 
 swaggerSetup(app);
 app.use((req, res) => { res.status(404).json({resStatus: false, resMsg: `[${req.method}] on [${req.path}] Prohibited` });});
