@@ -81,10 +81,28 @@ export const loginRateLimiter = createRateLimiter({
 // Rate limiter for registration
 export const registrationRateLimiter = createRateLimiter({
   keyPrefix: 'rl:register',
-  points: 3,           // 3 registration attempts
+  points: 20,           // 3 registration attempts
   duration: 60 * 60,   // per hour
   message: 'Too many registration attempts, please try again after 1 hour.'
 });
+
+// Rate limiter for password change
+export const passwordChangeRateLimiter = createRateLimiter({
+  keyPrefix: 'rl:pwchange',
+  points: 5,           // 5 password change attempts
+  duration: 60 * 60,   // per hour
+  message: 'Too many password change attempts, please try again after 1 hour.'
+});
+
+
+// Rate limiter for forgot password
+export const forgotPasswordRateLimiter = createRateLimiter({
+  keyPrefix: 'rl:forgotpw',
+  points: 5,           // 5 forgot password attempts
+  duration: 60 * 60,   // per hour
+  message: 'Too many forgot password attempts, please try again after 1 hour.'
+});
+
 
 // Rate limiter for password reset
 export const passwordResetRateLimiter = createRateLimiter({
@@ -93,6 +111,8 @@ export const passwordResetRateLimiter = createRateLimiter({
   duration: 60 * 60,   // per hour
   message: 'Too many password reset attempts, please try again after 1 hour.'
 });
+
+
 
 // General API rate limiter
 export const apiRateLimiter = createRateLimiter({
