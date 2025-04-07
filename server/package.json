@@ -2,7 +2,7 @@
   "name": "server",
   "version": "1.0.0",
   "description": "DentRW backend services",
-  "main": "dist/index.js",
+  "main": "dist/app.js",
   "scripts": {
     "build": "tsc",
     "start": "ts-node src/app.ts",
@@ -53,7 +53,8 @@
     "tsc-node": "^0.0.3",
     "twilio": "^5.5.1",
     "typescript": "^5.4.3",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "ts-node": "^10.9.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.24.0",
@@ -67,7 +68,6 @@
     "@types/swagger-ui-express": "^4.1.8",
     "eslint": "^9.24.0",
     "globals": "^16.0.0",
-    "ts-node": "^10.9.2",
     "typescript-eslint": "^8.29.0"
   }
 }
