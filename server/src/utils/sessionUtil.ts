@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Request, Response } from "express"
 import redisClient from "../config/redis.config"
 import { generateToken, blacklistToken } from "./tokenUtil"

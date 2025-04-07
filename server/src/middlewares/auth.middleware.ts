@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Request, Response, NextFunction } from "express"
 import jwt from "jsonwebtoken"
 import { JWT_SECRET } from "../config/auth.config"
@@ -9,6 +10,7 @@ interface JwtPayload {
 
 // Extend Express Request type to include user
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     interface Request {
       user?: any
@@ -36,6 +38,7 @@ export const authenticateToken = async (req: Request, res: Response, next: NextF
     req.user = user
     next()
   } catch (error) {
+    console.error("Token verification error:", error)
     return res.status(401).json({ error: "Invalid token." })
   }
 }

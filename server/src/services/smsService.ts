@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import twilio from "twilio"
 import dotenv from "dotenv"
 

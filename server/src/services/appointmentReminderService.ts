@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import appointmentRepository from "../modules/appointments/repositories/appointmentRepository"
 import { sendAppointmentReminderEmail } from "./emailService"
 import { sendAppointmentReminderSMS } from "./smsService"
@@ -108,6 +109,7 @@ export const checkFollowUpNeeds = async (): Promise<{
 }> => {
   try {
     // Get medical records that need follow-up
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const medicalRecordRepository = require("../../medicalRecords/repositories/medicalRecordRepository").default
     const followUpRecords = await medicalRecordRepository.getFollowUpRecords(7) // Check for follow-ups in the next 7 days
 

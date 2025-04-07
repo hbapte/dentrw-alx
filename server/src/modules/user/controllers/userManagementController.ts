@@ -139,6 +139,7 @@ export const updateUser = asyncHandler(async (req: Request, res: Response) => {
   }
 
   // Update user
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const updateData: any = {}
   if (names) updateData.names = names
   if (username) updateData.username = username

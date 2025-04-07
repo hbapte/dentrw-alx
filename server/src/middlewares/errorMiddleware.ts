@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Request, Response, NextFunction } from "express"
 import httpStatus from "http-status"
 import { errorResponse } from "../utils/responseHandler"
@@ -22,7 +23,7 @@ export const notFoundHandler = (req: Request, res: Response, next: NextFunction)
 }
 
 // Global error handler
-export const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
+export const errorHandler = (err: any, req: Request, res: Response) => {
   const statusCode = err.statusCode || httpStatus.INTERNAL_SERVER_ERROR
   const message = err.message || "Internal Server Error"
 

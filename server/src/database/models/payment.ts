@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose, { type Document, type Model, Schema } from "mongoose"
 
 export interface Payment extends Document {

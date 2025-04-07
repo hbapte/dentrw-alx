@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose, { type Types } from "mongoose"
 import type { Request } from "express"
 

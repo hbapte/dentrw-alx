@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose, { type Document, type Model, Schema, type Types } from "mongoose"
 import bcrypt from "bcryptjs"
 

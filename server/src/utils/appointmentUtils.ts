@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { format, parseISO, isAfter, isBefore, isEqual } from "date-fns"
 
 /**

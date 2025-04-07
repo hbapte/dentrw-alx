@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import MedicalRecord from "../../../database/models/medicalRecord"
 import type { Types } from "mongoose"
 

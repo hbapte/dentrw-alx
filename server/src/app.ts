@@ -1,9 +1,10 @@
-import express, { Express, Request, Response } from "express";
+
+import express, { Express } from "express";
 import dotenv from "dotenv";
 import "./config/db";
 import cors from "cors";
 import indexRouter from "./routes/index";
-const cookieParser = require('cookie-parser');
+import cookieParser from 'cookie-parser';
 import swaggerSetup from './config/swagger';
 import morgan from "morgan"
 import httpStatus from "http-status"
@@ -66,7 +67,8 @@ app.use((req, res) => {
 })
 
 // Error handling middleware
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+app.use((err: any, req: express.Request, res: express.Response) => {
   console.error(err.stack)
 
   const statusCode = err.statusCode || httpStatus.INTERNAL_SERVER_ERROR
@@ -82,7 +84,7 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 
 
 swaggerSetup(app);
-app.use((req, res, next) => { res.status(404).json({resStatus: false, resMsg: `[${req.method}] on [${req.path}] Prohibited` });});
+app.use((req, res) => { res.status(404).json({resStatus: false, resMsg: `[${req.method}] on [${req.path}] Prohibited` });});
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);

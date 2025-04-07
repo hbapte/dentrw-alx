@@ -1,4 +1,5 @@
-import jwt from "jsonwebtoken"
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import jwt, { Secret, SignOptions } from "jsonwebtoken"
 import { v4 as uuidv4 } from "uuid"
 import { JWT_SECRET, JWT_EXPIRES_IN } from "../config/auth.config"
 import redisClient from "../config/redis.config"
@@ -11,7 +12,7 @@ interface TokenPayload {
 
 // Generate JWT token
 export const generateToken = (payload: TokenPayload): string => {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN })
+  return jwt.sign(payload,   JWT_SECRET as Secret, { expiresIn: JWT_EXPIRES_IN } as SignOptions)
 }
 
 // Verify JWT token
@@ -19,6 +20,7 @@ export const verifyToken = (token: string): TokenPayload | null => {
   try {
     return jwt.verify(token, JWT_SECRET) as TokenPayload
   } catch (error) {
+    console.error("Error verifying token:", error)
     return null
   }
 }

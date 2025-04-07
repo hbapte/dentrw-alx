@@ -68,6 +68,7 @@ export const updateDoctor = asyncHandler(async (req: Request, res: Response) => 
   }
 
   // Update doctor
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const updateData: any = {}
   if (specialization) updateData.specialization = specialization
   if (qualifications) updateData.qualifications = qualifications

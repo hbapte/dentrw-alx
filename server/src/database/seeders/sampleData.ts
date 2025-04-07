@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose from "mongoose"
 import bcrypt from "bcryptjs"
 import User from "../models/user"
@@ -357,6 +358,7 @@ const seedAppointments = async (patientProfiles: any[], doctorProfiles: any[]) =
 }
 
 // Seed payments
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const seedPayments = async (appointments: any[], patientProfiles: any[]) => {
   try {
     const payments = []

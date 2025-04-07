@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Patient from "../../../database/models/patient"
 import User from "../../../database/models/user"
 import type { Types } from "mongoose"

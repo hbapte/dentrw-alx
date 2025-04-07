@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Appointment from "../../../database/models/appointment"
 import type { Types } from "mongoose"
 

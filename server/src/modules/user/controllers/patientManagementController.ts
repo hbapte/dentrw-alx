@@ -52,6 +52,7 @@ export const updatePatient = asyncHandler(async (req: Request, res: Response) =>
   }
 
   // Update patient
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const updateData: any = {}
   if (dateOfBirth) updateData.dateOfBirth = new Date(dateOfBirth)
   if (gender) updateData.gender = gender
