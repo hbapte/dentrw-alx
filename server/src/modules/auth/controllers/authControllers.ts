@@ -3,10 +3,9 @@ import httpStatus from "http-status"
 import User from "../../../database/models/user"
 import Patient from "../../../database/models/patient"
 import { v4 as uuidv4 } from "uuid"
-import sendVerificationEmail from "../../../services/sendVerificationEmail"
 import jwt from "jsonwebtoken"
 import { JWT_SECRET, JWT_EXPIRES_IN, COOKIE_MAX_AGE, RESET_PASSWORD_EXPIRES } from "../../../config/auth.config"
-import { sendPasswordResetEmail } from "../../../services/emailService"
+import { sendPasswordResetEmail, sendVerificationEmail } from "../../../services/emailService"
 import { logAction } from "../../../utils/auditLogUtil"
 
 // Register a new user
