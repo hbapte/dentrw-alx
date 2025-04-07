@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { SetStateAction, useState } from "react";
 import axios from "axios";
 import { Fade } from "react-awesome-reveal";
 // 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
@@ -9,11 +9,11 @@ const Footer = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [subscribed, setSubscribed] = useState(false);
 
-  const handleEmailChange = (event) => {
+  const handleEmailChange = (event: { target: { value: SetStateAction<string>; }; }) => {
     setEmail(event.target.value);
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
 
     // Reset  error message
@@ -32,7 +32,7 @@ const Footer = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post(
+      await axios.post(
         `https://api.convertkit.com/v3/forms/${FORM_ID}/subscribe`,
         {
           api_key: API_KEY,
@@ -61,8 +61,8 @@ const Footer = () => {
   return (
     <footer className="px-4  bg-[#0A2540] text-white">
       <div className="mt-6 pt-6 flex ">
-        <div class="mb-4 ">
-          <h2 class="text-xl font-bold text-slate-100">
+        <div className="mb-4 ">
+          <h2 className="text-xl font-bold text-slate-100">
             Subscribe to our newsletter!
           </h2>
         </div>
