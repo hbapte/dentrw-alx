@@ -62,3 +62,35 @@ export const sendAppointmentConfirmationSMS = async (
   return sendSMS(phoneNumber, message)
 }
 
+// Send follow-up reminder SMS
+export const sendFollowUpReminderSMS = async (
+  phoneNumber: string,
+  patientName: string,
+  doctorName: string,
+  diagnosis: string,
+) => {
+  const message = `Hello ${patientName}, this is a reminder that you are due for a follow-up appointment with Dr. ${doctorName} regarding your ${diagnosis}. Please call us to schedule your appointment.`
+
+  return sendSMS(phoneNumber, message)
+}
+
+// Send medical record notification SMS
+export const sendMedicalRecordSMS = async (phoneNumber: string, patientName: string) => {
+  const message = `Hello ${patientName}, your dental treatment record has been updated. You can view the details by logging into your patient portal.`
+
+  return sendSMS(phoneNumber, message)
+}
+
+// Send appointment cancellation SMS
+export const sendAppointmentCancellationSMS = async (
+  phoneNumber: string,
+  patientName: string,
+  doctorName: string,
+  date: string,
+  time: string,
+) => {
+  const message = `Hello ${patientName}, your appointment with Dr. ${doctorName} on ${date} at ${time} has been cancelled. Please contact us to reschedule.`
+
+  return sendSMS(phoneNumber, message)
+}
+

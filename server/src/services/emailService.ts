@@ -68,6 +68,41 @@ export const sendPasswordResetEmail = async (email: string, token: string, name:
   return transporter.sendMail(mailOptions)
 }
 
+
+
+// Send appointment reminder email
+export const sendAppointmentReminderEmail = async (
+  email: string,
+  name: string,
+  doctorName: string,
+  date: string,
+  time: string,
+  appointmentType: string,
+) => {
+  const mailOptions = {
+    from: `"DentRW" <${process.env.EMAIL_USER}>`,
+    to: email,
+    subject: "Appointment Reminder",
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Hello ${name},</h2>
+        <p>This is a friendly reminder about your upcoming appointment:</p>
+        <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0;">
+          <p><strong>Doctor:</strong> ${doctorName}</p>
+          <p><strong>Date:</strong> ${date}</p>
+          <p><strong>Time:</strong> ${time}</p>
+          <p><strong>Type:</strong> ${appointmentType}</p>
+        </div>
+        <p>Please arrive 10 minutes before your scheduled appointment time. If you need to reschedule or cancel, please contact us as soon as possible.</p>
+        <p>Best regards,<br>The DentRW Team</p>
+      </div>
+    `,
+  }
+
+  return transporter.sendMail(mailOptions)
+}
+
+
 // Send appointment confirmation email
 export const sendAppointmentConfirmationEmail = async (
   email: string,
@@ -100,5 +135,71 @@ export const sendAppointmentConfirmationEmail = async (
   return transporter.sendMail(mailOptions)
 }
 
+
+
+// Send medical record notification email
+export const sendMedicalRecordEmail = async (
+  email: string,
+  name: string,
+  doctorName: string,
+  date: string,
+  diagnosis: string,
+) => {
+  const mailOptions = {
+    from: `"DentRW" <${process.env.EMAIL_USER}>`,
+    to: email,
+    subject: "Your Dental Treatment Record",
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Hello ${name},</h2>
+        <p>Your dental treatment record has been updated with the following information:</p>
+        <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0;">
+          <p><strong>Doctor:</strong> ${doctorName}</p>
+          <p><strong>Date:</strong> ${date}</p>
+          <p><strong>Diagnosis:</strong> ${diagnosis}</p>
+        </div>
+        <p>You can view your complete medical record by logging into your patient portal.</p>
+        <p>If you have any questions about your treatment, please don't hesitate to contact us.</p>
+        <p>Best regards,<br>The DentRW Team</p>
+      </div>
+    `,
+  }
+
+  return transporter.sendMail(mailOptions)
+}
+
+// Send follow-up reminder email
+export const sendFollowUpReminderEmail = async (
+  email: string,
+  name: string,
+  doctorName: string,
+  followUpDate: string,
+  diagnosis: string,
+) => {
+  const mailOptions = {
+    from: `"DentRW" <${process.env.EMAIL_USER}>`,
+    to: email,
+    subject: "Follow-up Appointment Reminder",
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Hello ${name},</h2>
+        <p>This is a reminder that you are due for a follow-up appointment for your dental treatment:</p>
+        <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0;">
+          <p><strong>Doctor:</strong> ${doctorName}</p>
+          <p><strong>Recommended Follow-up Date:</strong> ${followUpDate}</p>
+          <p><strong>Regarding:</strong> ${diagnosis}</p>
+        </div>
+        <p>Please log in to your patient portal or contact our office to schedule your follow-up appointment.</p>
+        <p>Regular follow-ups are important for maintaining your dental health.</p>
+        <p>Best regards,<br>The DentRW Team</p>
+      </div>
+    `,
+  }
+
+  return transporter.sendMail(mailOptions)
+}
+
 export default sendVerificationEmail
+
+
 
