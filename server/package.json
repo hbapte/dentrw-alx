@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "start": "nodemon src/app.ts",
+    "start": "ts-node src/app.ts",
     "dev": "nodemon --exec ts-node src/app.ts",
     "seed": "ts-node src/database/seeders/runSeeder.ts",
     "seed:fresh": "ts-node src/database/seeders/runSeeder.ts --fresh",
