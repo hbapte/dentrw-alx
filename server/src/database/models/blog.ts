@@ -48,7 +48,7 @@ const blogSchema: Schema = new Schema(
 )
 
 // Pre-save hook to generate slug from title
-blogSchema.pre("save", function (next) {
+blogSchema.pre("save", function (this: Blog, next) {
   if (this.isModified("title")) {
     this.slug = this.title
       .toLowerCase()
