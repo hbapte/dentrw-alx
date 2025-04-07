@@ -16,13 +16,9 @@ import {
   registrationRateLimiter,
   passwordResetRateLimiter,
 } from "../middlewares/rateLimiter.middleware"
-import {
-  validate,
-  registerSchema,
-  loginSchema,
-  forgotPasswordSchema,
-  resetPasswordSchema,
-} from "../middlewares/validation.middleware"
+import { validate} from "../middlewares/validation.middleware"
+
+import { registerSchema,loginSchema,forgotPasswordSchema,resetPasswordSchema} from "../validations/authValidation"
 
 const authRouter = express.Router()
 
