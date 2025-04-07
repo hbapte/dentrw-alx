@@ -1,12 +1,15 @@
+// server\src\modules\auth\controllers\authControllers.ts
 import type { Request, Response } from "express"
 import httpStatus from "http-status"
 import User from "../../../database/models/user"
 import Patient from "../../../database/models/patient"
 import { v4 as uuidv4 } from "uuid"
-import jwt from "jsonwebtoken"
+
 import { JWT_SECRET, JWT_EXPIRES_IN, COOKIE_MAX_AGE, RESET_PASSWORD_EXPIRES } from "../../../config/auth.config"
 import { sendPasswordResetEmail, sendVerificationEmail } from "../../../services/emailService"
 import { logAction } from "../../../utils/auditLogUtil"
+import jwt from "jsonwebtoken"
+import { Secret, SignOptions } from "jsonwebtoken"
 
 // Register a new user
 export const registerController = async (req: Request, res: Response) => {
@@ -142,8 +145,12 @@ export const loginController = async (req: Request, res: Response) => {
     }
 
     // Generate JWT token
-    const token = jwt.sign({ userId: user._id, role: user.role }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN })
-
+// Then in your login function:
+const token = jwt.sign(
+  { userId: user._id.toString(), role: user.role },
+  JWT_SECRET as Secret,
+  { expiresIn: JWT_EXPIRES_IN } as SignOptions
+)
     // Set cookie
     res.cookie("jwt", token, {
       httpOnly: true,

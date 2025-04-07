@@ -2,7 +2,7 @@ import { OAuth2Client } from "google-auth-library"
 import User from "../database/models/user"
 import Patient from "..//database/models/patient"
 import { v4 as uuidv4 } from "uuid"
-import jwt from "jsonwebtoken"
+import jwt, { Secret, SignOptions } from "jsonwebtoken"
 import { JWT_SECRET, JWT_EXPIRES_IN } from "../config/auth.config"
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
@@ -75,8 +75,11 @@ export const handleGoogleLogin = async (googleUserInfo: GoogleUserInfo) => {
     }
 
     // Generate JWT token
-    const token = jwt.sign({ userId: user._id, role: user.role }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN })
-
+const token = jwt.sign(
+  { userId: user._id.toString(), role: user.role },
+  JWT_SECRET as Secret,
+  { expiresIn: JWT_EXPIRES_IN } as SignOptions
+)
     // Update last login
     user.lastLogin = new Date()
     await user.save()
