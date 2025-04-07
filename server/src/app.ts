@@ -18,7 +18,7 @@ import {
 import { apiRateLimiter } from "./middlewares/rateLimiter.middleware";
 
 dotenv.config(); 
-const port = process.env.PORT;
+const port = process.env.PORT || 3000; 
 const app: Express = express();
 app.use(cors());
 
