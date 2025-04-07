@@ -6,8 +6,11 @@ dotenv.config()
 const resetDatabase = async () => {
   try {
     // Force the database name to be consistent
-    const dbName = "DentRW" // Use the exact case that already exists
-    const mongoURI = process.env.MONGODB_DEV_URI || `mongodb://localhost:27017/${dbName}`
+    const mongoURI = process.env.MONGODB_DEV_URI || `mongodb://localhost:27017/dentRW`
+
+    if (!mongoURI) {
+      throw new Error("MongoDB connection URI is not defined")
+    }
 
     console.log("Connecting to MongoDB...")
     await mongoose.connect(mongoURI)

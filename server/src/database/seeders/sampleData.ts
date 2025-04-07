@@ -6,7 +6,7 @@ import Doctor from "../models/doctor"
 import Appointment from "../models/appointment"
 import MedicalRecord from "../models/medicalRecord"
 import Payment from "../models/payment"
-// import Blog from "../models/blog"
+import Blog from "../models/blog"
 import { v4 as uuidv4 } from "uuid"
 import dotenv from "dotenv"
 
@@ -32,7 +32,7 @@ const clearCollections = async () => {
     await Appointment.deleteMany({})
     await MedicalRecord.deleteMany({})
     await Payment.deleteMany({})
-    // await Blog.deleteMany({})
+    await Blog.deleteMany({})
     console.log("All collections cleared")
   } catch (error) {
     console.error("Error clearing collections:", error)
@@ -44,7 +44,7 @@ const seedUsers = async () => {
   try {
     const hashedPassword = await bcrypt.hash("Password123!", 10)
 
-    // Create admin user
+    // Create admin user - explicitly omit googleId
     const admin = new User({
       names: "Admin User",
       email: "admin@dentrw.com",
@@ -56,6 +56,7 @@ const seedUsers = async () => {
       phoneNumber: "+250700000000",
       phoneVerified: true,
       active: true,
+      // Do NOT include googleId field at all
     })
 
     await admin.save()
@@ -73,6 +74,7 @@ const seedUsers = async () => {
         phoneNumber: "+250700000001",
         phoneVerified: true,
         active: true,
+        // Do NOT include googleId field
       },
       {
         names: "Dr. Marie Uwase",
@@ -85,6 +87,7 @@ const seedUsers = async () => {
         phoneNumber: "+250700000002",
         phoneVerified: true,
         active: true,
+        // Do NOT include googleId field
       },
       {
         names: "Dr. Robert Karemera",
@@ -97,6 +100,7 @@ const seedUsers = async () => {
         phoneNumber: "+250700000003",
         phoneVerified: true,
         active: true,
+        // Do NOT include googleId field
       },
     ]
 
@@ -121,6 +125,7 @@ const seedUsers = async () => {
         phoneNumber: "+250700000004",
         phoneVerified: true,
         active: true,
+        // Do NOT include googleId field
       },
       {
         names: "John Nkusi",
@@ -133,6 +138,7 @@ const seedUsers = async () => {
         phoneNumber: "+250700000005",
         phoneVerified: true,
         active: true,
+        // Do NOT include googleId field
       },
       {
         names: "Sarah Uwimana",
@@ -145,6 +151,7 @@ const seedUsers = async () => {
         phoneNumber: "+250700000006",
         phoneVerified: true,
         active: true,
+        // Do NOT include googleId field
       },
       {
         names: "Eric Habimana",
@@ -157,6 +164,7 @@ const seedUsers = async () => {
         phoneNumber: "+250700000007",
         phoneVerified: true,
         active: true,
+        // Do NOT include googleId field
       },
       {
         names: "Grace Mukamana",
@@ -169,6 +177,7 @@ const seedUsers = async () => {
         phoneNumber: "+250700000008",
         phoneVerified: true,
         active: true,
+        // Do NOT include googleId field
       },
     ]
 
@@ -188,6 +197,7 @@ const seedUsers = async () => {
   }
 }
 
+// Rest of the file remains the same...
 // Seed doctor profiles
 const seedDoctorProfiles = async (doctors: any[]) => {
   try {
@@ -427,69 +437,69 @@ const seedMedicalRecords = async (appointments: any[]) => {
 }
 
 // Seed blogs
-// const seedBlogs = async (admin: any, doctors: any[]) => {
-//   try {
-//     const blogs = []
-//     const categories = ["Dental Health", "Oral Hygiene", "Dental Procedures", "Children's Dental Health", "Nutrition"]
-//     const languages = ["en", "fr", "rw"]
+const seedBlogs = async (admin: any, doctors: any[]) => {
+  try {
+    const blogs = []
+    const categories = ["Dental Health", "Oral Hygiene", "Dental Procedures", "Children's Dental Health", "Nutrition"]
+    const languages = ["en", "fr", "rw"]
 
-//     const blogTitles = [
-//       "The Importance of Regular Dental Check-ups",
-//       "How to Properly Brush Your Teeth",
-//       "Understanding Dental Implants",
-//       "Dental Care for Children",
-//       "Foods That Promote Dental Health",
-//       "Preventing Gum Disease",
-//       "The Truth About Root Canals",
-//       "Teeth Whitening: What You Need to Know",
-//     ]
+    const blogTitles = [
+      "The Importance of Regular Dental Check-ups",
+      "How to Properly Brush Your Teeth",
+      "Understanding Dental Implants",
+      "Dental Care for Children",
+      "Foods That Promote Dental Health",
+      "Preventing Gum Disease",
+      "The Truth About Root Canals",
+      "Teeth Whitening: What You Need to Know",
+    ]
 
-//     // Create 8 blog posts
-//     for (let i = 0; i < 8; i++) {
-//       const author = i % 2 === 0 ? admin : doctors[i % doctors.length]
-//       const title = blogTitles[i]
+    // Create 8 blog posts
+    for (let i = 0; i < 8; i++) {
+      const author = i % 2 === 0 ? admin : doctors[i % doctors.length]
+      const title = blogTitles[i]
 
-//       const blog = new Blog({
-//         title,
-//         slug: title
-//           .toLowerCase()
-//           .replace(/[^\w ]+/g, "")
-//           .replace(/ +/g, "-"),
-//         content: `
-// # ${title}
+      const blog = new Blog({
+        title,
+        slug: title
+          .toLowerCase()
+          .replace(/[^\w ]+/g, "")
+          .replace(/ +/g, "-"),
+        content: `
+# ${title}
 
-// ## Introduction
-// This is a sample blog post about ${title.toLowerCase()}.
+## Introduction
+This is a sample blog post about ${title.toLowerCase()}.
 
-// ## Main Content
-// Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, 
-// nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl. Nullam auctor, nisl eget ultricies tincidunt,
-// nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl.
+## Main Content
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, 
+nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl. Nullam auctor, nisl eget ultricies tincidunt,
+nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl.
 
-// ## Conclusion
-// Regular dental care is essential for maintaining good oral health.
-//         `,
-//         author: author._id,
-//         category: categories[i % categories.length],
-//         tags: ["dental", "health", "teeth"],
-//         status: i % 5 === 0 ? "draft" : "published",
-//         publishedAt: i % 5 === 0 ? undefined : new Date(),
-//         language: languages[i % languages.length],
-//         views: Math.floor(Math.random() * 1000),
-//         likes: Math.floor(Math.random() * 100),
-//       })
+## Conclusion
+Regular dental care is essential for maintaining good oral health.
+        `,
+        author: author._id,
+        category: categories[i % categories.length],
+        tags: ["dental", "health", "teeth"],
+        status: i % 5 === 0 ? "draft" : "published",
+        publishedAt: i % 5 === 0 ? undefined : new Date(),
+        language: languages[i % languages.length],
+        views: Math.floor(Math.random() * 1000),
+        likes: Math.floor(Math.random() * 100),
+      })
 
-//       await blog.save()
-//       blogs.push(blog)
-//     }
+      await blog.save()
+      blogs.push(blog)
+    }
 
-//     console.log("Blogs seeded successfully")
-//     return blogs
-//   } catch (error) {
-//     console.error("Error seeding blogs:", error)
-//     throw error
-//   }
-// }
+    console.log("Blogs seeded successfully")
+    return blogs
+  } catch (error) {
+    console.error("Error seeding blogs:", error)
+    throw error
+  }
+}
 
 // Main seeding function
 const seedDatabase = async () => {
@@ -503,7 +513,7 @@ const seedDatabase = async () => {
     const appointments = await seedAppointments(patientProfiles, doctorProfiles)
     await seedPayments(appointments, patientProfiles)
     await seedMedicalRecords(appointments)
-    // await seedBlogs(admin, doctors)
+    await seedBlogs(admin, doctors)
 
     console.log("Database seeded successfully")
     process.exit(0)
