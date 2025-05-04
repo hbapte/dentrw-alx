@@ -1,3 +1,4 @@
+// server\src\database\models\appointment.ts
 import mongoose, { type Document, type Model, Schema } from "mongoose"
 
 export interface Appointment extends Document {
