@@ -1,15 +1,14 @@
-
-// client\src\App.tsx
-import '../src/styles/App.css'
-import AppRouter from './routes'
+import { Toaster } from "react-hot-toast"
+import AppRouter from "./routes"
+import "./styles/App.css"
+import { BrowserRouter } from "react-router-dom"
 
 function App() {
-
-
   return (
-    <>
-    <AppRouter />  
-    </>
+    <BrowserRouter>
+      <Toaster position="top-right" />
+      <AppRouter />
+    </BrowserRouter>
   )
 }
 
