@@ -1,3 +1,4 @@
+// server\src\routes\index.ts
 import express from "express"
 import authRouter from "./authRoutes"
 import profileRouter from "./profileRoutes"
@@ -7,6 +8,7 @@ import patientManagementRouter from "./patientManagementRoutes"
 import doctorManagementRouter from "./doctorManagementRoutes"
 import appointmentRouter from "./appointmentRoutes"
 import medicalRecordRouter from "./medicalRecordRoutes"
+import paymentRouter from "./paymentRoutes"
 
 const router = express.Router()
 
@@ -18,6 +20,7 @@ router.use("/patients", patientManagementRouter)
 router.use("/doctors", doctorManagementRouter)
 router.use("/appointments", appointmentRouter)
 router.use("/medical-records", medicalRecordRouter)
+router.use("/payments", paymentRouter) 
 
 export default router
 
