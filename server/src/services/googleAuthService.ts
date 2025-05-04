@@ -1,9 +1,11 @@
+// server\src\services\googleAuthService.ts
 import { OAuth2Client } from "google-auth-library"
 import User from "../database/models/user"
-import Patient from "..//database/models/patient"
-import { v4 as uuidv4 } from "uuid"
-import jwt, { Secret, SignOptions } from "jsonwebtoken"
-import { JWT_SECRET, JWT_EXPIRES_IN } from "../config/auth.config"
+import Patient from "../database/models/patient"
+import RefreshToken from "../database/models/refreshToken"
+import { addDays } from "date-fns"
+import type { Request } from "express"
+import { generateTokenPair } from "../utils/tokenUtil"
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 
@@ -39,10 +41,11 @@ export const verifyGoogleToken = async (token: string): Promise<GoogleUserInfo |
   }
 }
 
-export const handleGoogleLogin = async (googleUserInfo: GoogleUserInfo) => {
+export const handleGoogleLogin = async (googleUserInfo: GoogleUserInfo, req: Request) => {
   try {
     // Check if user exists
     let user = await User.findOne({ email: googleUserInfo.email })
+    let isNewUser = false
 
     if (user) {
       // Update user information if needed
@@ -51,8 +54,17 @@ export const handleGoogleLogin = async (googleUserInfo: GoogleUserInfo) => {
         user.picture = googleUserInfo.picture
         await user.save()
       }
+
+      // Check if user is active
+      if (!user.active) {
+        return {
+          success: false,
+          error: "Your account has been deactivated. Please contact support.",
+        }
+      }
     } else {
       // Create new user
+      isNewUser = true
       user = new User({
         names: googleUserInfo.name,
         email: googleUserInfo.email,
@@ -60,8 +72,9 @@ export const handleGoogleLogin = async (googleUserInfo: GoogleUserInfo) => {
         picture: googleUserInfo.picture,
         emailVerified: true, // Google already verified the email
         role: "patient",
-        emailVerificationToken: uuidv4(), // Just for initialization
-        emailVerificationTokenCreated: new Date(),
+        preferredLanguage: "en",
+        active: true,
+        tokenVersion: 0,
       })
 
       await user.save()
@@ -74,12 +87,20 @@ export const handleGoogleLogin = async (googleUserInfo: GoogleUserInfo) => {
       await newPatient.save()
     }
 
-    // Generate JWT token
-const token = jwt.sign(
-  { userId: user._id.toString(), role: user.role },
-  JWT_SECRET as Secret,
-  { expiresIn: JWT_EXPIRES_IN } as SignOptions
-)
+    // Generate tokens using the same method as regular login
+    const { accessToken, refreshToken } = generateTokenPair(user._id.toString(), user.role, user.tokenVersion)
+
+    // Store refresh token
+    const expiresAt = addDays(new Date(), 7) // 7 days
+    await RefreshToken.create({
+      userId: user._id,
+      token: refreshToken,
+      tokenVersion: user.tokenVersion,
+      userAgent: req.headers["user-agent"],
+      ipAddress: req.ip,
+      expiresAt,
+    })
+
     // Update last login
     user.lastLogin = new Date()
     await user.save()
@@ -97,14 +118,16 @@ const token = jwt.sign(
     return {
       success: true,
       user: userData,
-      token,
+      accessToken,
+      refreshToken,
+      isNewUser,
     }
   } catch (error) {
     console.error("Error handling Google login:", error)
     return {
       success: false,
       error: "Failed to process Google login",
+      debug: error,
     }
   }
 }
-
