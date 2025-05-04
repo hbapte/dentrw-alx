@@ -1,46 +1,58 @@
-// server\src\middlewares\validation.middleware.ts
 import type { Request, Response, NextFunction } from "express"
 import Joi from "joi"
+import { validationErrorResponse } from "../utils/api-response"
 
-// Validation middleware factory
-export const validate = (schema: Joi.ObjectSchema) => {
+/**
+ * Enhanced validation middleware that integrates with our API response format
+ * @param schema - Joi validation schema
+ * @param source - Source of data to validate (body, query, params)
+ */
+export const validate = (schema: Joi.ObjectSchema, source: 'body' | 'query' | 'params' = 'body') => {
   return (req: Request, res: Response, next: NextFunction) => {
-    const { error } = schema.validate(req.body, {
+    const startTime = req.startTime || performance.now()
+    
+    // Get data to validate based on source
+    const data = req[source]
+    
+    // Validate data against schema
+    const { error, value } = schema.validate(data, {
       abortEarly: false,
       stripUnknown: true,
     })
 
     if (error) {
-      const errorMessage = error.details.map((detail) => detail.message).join(", ")
+      // Format validation errors for better readability
+      const details: Record<string, string> = {}
+      
+      error.details.forEach((detail) => {
+        const key = detail.path.join('.')
+        details[key] = detail.message
+      })
 
-      return res.status(400).json({
-        error: "Validation error",
-        details: errorMessage,
+      return validationErrorResponse(res, "Validation failed", details, {
+        startTime,
+        help: "Please check the request data and try again with valid values."
       })
     }
 
+    // Replace request data with validated data
+    req[source] = value
+    
     next()
   }
 }
 
+/**
+ * Middleware to validate request body
+ */
+export const validateBody = (schema: Joi.ObjectSchema) => validate(schema, 'body')
 
+/**
+ * Middleware to validate query parameters
+ */
+export const validateQuery = (schema: Joi.ObjectSchema) => validate(schema, 'query')
 
-// Update profile validation schema
-export const updateProfileSchema = Joi.object({
-  names: Joi.string().min(3).max(100).messages({
-    "string.min": "Name must be at least 3 characters long",
-    "string.max": "Name cannot exceed 100 characters",
-  }),
-  username: Joi.string().min(3).max(30).alphanum().messages({
-    "string.min": "Username must be at least 3 characters long",
-    "string.max": "Username cannot exceed 30 characters",
-    "string.alphanum": "Username must only contain alphanumeric characters",
-  }),
-  phoneNumber: Joi.string()
-    .pattern(/^\+?[0-9]{10,15}$/)
-    .messages({ "string.pattern.base": "Please provide a valid phone number" }),
-  preferredLanguage: Joi.string().valid("en", "fr", "rw"),
-})
-
-
-
+/**
+ * Middleware to validate URL parameters
+ */
+export const validateParams = (schema: Joi.ObjectSchema) => validate(schema, 'params')

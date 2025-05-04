@@ -73,7 +73,7 @@ export const createRateLimiter = (options: {
 // Rate limiter for login attempts
 export const loginRateLimiter = createRateLimiter({
   keyPrefix: 'rl:login',
-  points: 5,           // 5 login attempts
+  points: 9,           // 5 login attempts
   duration: 15 * 60,   // per 15 minutes
   message: 'Too many login attempts, please try again after 15 minutes.'
 });
@@ -107,7 +107,7 @@ export const forgotPasswordRateLimiter = createRateLimiter({
 // Rate limiter for password reset
 export const passwordResetRateLimiter = createRateLimiter({
   keyPrefix: 'rl:pwreset',
-  points: 3,           // 3 password reset attempts
+  points: 6,           // 3 password reset attempts
   duration: 60 * 60,   // per hour
   message: 'Too many password reset attempts, please try again after 1 hour.'
 });
