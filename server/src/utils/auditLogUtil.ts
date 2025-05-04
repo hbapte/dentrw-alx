@@ -26,7 +26,7 @@ export const logAction = async (
   details?: any,
 ): Promise<void> => {
   try {
-    const userId = req.user?._id
+    const userId = req.user?.userId
 
     const log = new AuditLog({
       userId,
