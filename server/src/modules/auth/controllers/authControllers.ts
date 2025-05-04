@@ -3,16 +3,60 @@ import type { Request, Response } from "express"
 import httpStatus from "http-status"
 import User from "../../../database/models/user"
 import Patient from "../../../database/models/patient"
-import { v4 as uuidv4 } from "uuid"
+import RefreshToken from "../../../database/models/refreshToken"
+import { addDays } from "date-fns"
 
-import { JWT_SECRET, JWT_EXPIRES_IN, COOKIE_MAX_AGE, RESET_PASSWORD_EXPIRES } from "../../../config/auth.config"
+import { COOKIE_MAX_AGE, REFRESH_COOKIE_MAX_AGE, RESET_PASSWORD_EXPIRES } from "../../../config/auth.config"
 import { sendPasswordResetEmail, sendVerificationEmail } from "../../../services/emailService"
 import { logAction } from "../../../utils/auditLogUtil"
-import jwt from "jsonwebtoken"
-import { Secret, SignOptions } from "jsonwebtoken"
+import {
+  generateTokenPair,
+  verifyRefreshToken,
+  generateVerificationToken,
+  blacklistToken,
+  getTokenExpiryTime,
+  generateActionToken,
+  verifyActionToken,
+} from "../../../utils/tokenUtil"
+import { authenticateTOTP } from "../../../services/totpService"
+import {
+  successResponse,
+  badRequestResponse,
+  unauthorizedResponse,
+  notFoundResponse,
+  internalErrorResponse,
+  conflictResponse,
+} from "../../../utils/api-response"
+
+// Helper function to set cookies
+const setTokenCookies = (res: Response, accessToken: string, refreshToken: string) => {
+  // Access token cookie
+  res.cookie("jwt", accessToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: COOKIE_MAX_AGE,
+  })
+
+  // Refresh token cookie (only sent to refresh endpoint)
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    path: "/api/auth/refresh", // Only sent to refresh endpoint
+    maxAge: REFRESH_COOKIE_MAX_AGE,
+  })
+}
+
+// Helper function to clear cookies
+const clearTokenCookies = (res: Response) => {
+  res.clearCookie("jwt")
+  res.clearCookie("refreshToken", { path: "/api/auth/refresh" })
+}
 
 // Register a new user
 export const registerController = async (req: Request, res: Response) => {
+  const startTime = performance.now()
   const { names, email, username, password, phoneNumber, preferredLanguage } = req.body
 
   try {
@@ -22,15 +66,12 @@ export const registerController = async (req: Request, res: Response) => {
     })
 
     if (existingUser) {
-      return res.status(httpStatus.BAD_REQUEST).json({
-        status: httpStatus.BAD_REQUEST,
-        message: username ? "Username or email already exists" : "Email already exists",
-        data: null,
-      })
+      const message = username ? "Username or email already exists" : "Email already exists"
+      return conflictResponse(res, message, null, { startTime })
     }
 
     // Create verification token
-    const emailVerificationToken = uuidv4()
+    const emailVerificationToken = generateVerificationToken()
 
     // Create new user
     const newUser = new User({
@@ -43,6 +84,7 @@ export const registerController = async (req: Request, res: Response) => {
       phoneNumber,
       preferredLanguage: preferredLanguage || "en",
       role: "patient",
+      tokenVersion: 0,
     })
 
     await newUser.save()
@@ -60,25 +102,31 @@ export const registerController = async (req: Request, res: Response) => {
     // Log the action
     await logAction(req, "register", "user", newUser._id.toString())
 
-    res.status(httpStatus.CREATED).json({
-      status: httpStatus.CREATED,
-      message: "User registered successfully. Please check your email for verification.",
-      data: {
-        userId: newUser._id,
+    return successResponse(
+      res,
+      { userId: newUser._id },
+      "User registered successfully. Please check your email for verification.",
+      {
+        statusCode: httpStatus.CREATED,
+        startTime,
+        links: {
+          verifyEmail: `/api/auth/verify-email/${emailVerificationToken}`,
+          resendVerification: `/api/auth/resend-verification`,
+        },
       },
-    })
+    )
   } catch (error) {
     console.error("Error registering user:", error)
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-      status: httpStatus.INTERNAL_SERVER_ERROR,
-      message: "Internal server error",
-      data: null,
+    return internalErrorResponse(res, "Internal server error", {
+      startTime,
+      debug: process.env.NODE_ENV === "development" ? error : undefined,
     })
   }
 }
 
 // Login user
 export const loginController = async (req: Request, res: Response) => {
+  const startTime = performance.now()
   const { email, password } = req.body
 
   try {
@@ -86,78 +134,77 @@ export const loginController = async (req: Request, res: Response) => {
     const user = await User.findOne({ email })
 
     if (!user) {
-      return res.status(httpStatus.UNAUTHORIZED).json({
-        status: httpStatus.UNAUTHORIZED,
-        message: "Invalid email or password",
-        data: null,
-      })
+      return unauthorizedResponse(res, "Invalid email or password", { startTime })
     }
 
     // Check if email is verified
     if (!user.emailVerified) {
-      return res.status(httpStatus.UNAUTHORIZED).json({
-        status: httpStatus.UNAUTHORIZED,
-        message: "Please verify your email before logging in",
-        data: {
-          needsVerification: true,
-          userId: user._id,
-        },
+      return unauthorizedResponse(res, "Please verify your email before logging in", {
+        startTime,
+        debug: { needsVerification: true, userId: user._id },
       })
     }
 
     // Check if user is active
     if (!user.active) {
-      return res.status(httpStatus.UNAUTHORIZED).json({
-        status: httpStatus.UNAUTHORIZED,
-        message: "Your account has been deactivated. Please contact support.",
-        data: null,
-      })
+      return unauthorizedResponse(res, "Your account has been deactivated. Please contact support.", { startTime })
     }
 
     // Check if user has Google auth only
     if (user.googleId && !user.password) {
-      return res.status(httpStatus.BAD_REQUEST).json({
-        status: httpStatus.BAD_REQUEST,
-        message: "Please use Google Sign-In to log in.",
-        data: {
-          useGoogle: true,
-        },
-      })
+      return badRequestResponse(res, "Please use Google Sign-In to log in.", { useGoogle: true }, { startTime })
     }
 
     // Verify password
     if (!user.password) {
-      return res.status(httpStatus.UNAUTHORIZED).json({
-        status: httpStatus.UNAUTHORIZED,
-        message: "Invalid email or password",
-        data: null,
-      })
+      return unauthorizedResponse(res, "Invalid email or password", { startTime })
     }
 
     const isPasswordValid = await user.comparePassword(password)
 
     if (!isPasswordValid) {
-      return res.status(httpStatus.UNAUTHORIZED).json({
-        status: httpStatus.UNAUTHORIZED,
-        message: "Invalid email or password",
-        data: null,
-      })
+      return unauthorizedResponse(res, "Invalid email or password", { startTime })
     }
 
-    // Generate JWT token
-// Then in your login function:
-const token = jwt.sign(
-  { userId: user._id.toString(), role: user.role },
-  JWT_SECRET as Secret,
-  { expiresIn: JWT_EXPIRES_IN } as SignOptions
-)
-    // Set cookie
-    res.cookie("jwt", token, {
-      httpOnly: true,
-      maxAge: COOKIE_MAX_AGE,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+    // Check if 2FA is enabled
+    if (user.totpEnabled) {
+      // Generate a temporary token for 2FA verification
+      const tempToken = generateActionToken(user._id.toString(), "2fa-pending", "5m")
+
+      return successResponse(
+        res,
+        {
+          requiresTwoFactor: true,
+          tempToken,
+          userId: user._id,
+        },
+        "2FA verification required",
+        {
+          statusCode: httpStatus.OK,
+          startTime,
+          links: {
+            verifyTwoFactor: `/api/auth/verify-2fa`,
+          },
+        },
+      )
+    }
+
+    // Generate tokens
+    const { accessToken, refreshToken } = generateTokenPair(user._id.toString(), user.role, user.tokenVersion)
+
+    // Store refresh token
+    const expiresAt = addDays(new Date(), 7) // 7 days
+    await RefreshToken.create({
+      userId: user._id,
+      token: refreshToken,
+      tokenVersion: user.tokenVersion,
+      userAgent: req.headers["user-agent"],
+      ipAddress: req.ip,
+      expiresAt,
     })
+
+    // Set cookies
+    setTokenCookies(res, accessToken, refreshToken)
 
     // Update last login
     user.lastLogin = new Date()
@@ -178,266 +225,80 @@ const token = jwt.sign(
       phoneNumber: user.phoneNumber,
     }
 
-    res.status(httpStatus.OK).json({
-      status: httpStatus.OK,
-      message: "Login successful",
-      data: {
+    return successResponse(
+      res,
+      {
         user: userData,
-        token,
+        token: accessToken, // For clients that don't use cookies
       },
-    })
+      "Login successful",
+      {
+        statusCode: httpStatus.OK,
+        startTime,
+        links: {
+          profile: `/api/users/me`,
+          logout: `/api/auth/logout`,
+        },
+      },
+    )
   } catch (error) {
     console.error("Error logging in user:", error)
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-      status: httpStatus.INTERNAL_SERVER_ERROR,
-      message: "Internal server error",
-      data: null,
+    return internalErrorResponse(res, "Internal server error", {
+      startTime,
+      debug: process.env.NODE_ENV === "development" ? error : undefined,
     })
   }
 }
 
-// Verify email
-export const verifyEmailController = async (req: Request, res: Response) => {
-  const { token } = req.params
+// Verify 2FA code
+export const verifyTwoFactorController = async (req: Request, res: Response) => {
+  const startTime = performance.now()
+  const { tempToken, code } = req.body
 
   try {
-    const user = await User.findOne({ emailVerificationToken: token })
-
-    if (!user) {
-      return res.status(httpStatus.BAD_REQUEST).json({
-        status: httpStatus.BAD_REQUEST,
-        message: "Invalid verification token",
-        data: null,
-      })
+    // Verify the temporary token
+    const decoded = verifyActionToken(tempToken, "2fa-pending")
+    if (!decoded) {
+      return unauthorizedResponse(res, "Invalid or expired token", { startTime })
     }
 
-    // Check if token is expired (24 hours)
-    const tokenCreatedAt = new Date(user.emailVerificationTokenCreated).getTime()
-    const now = new Date().getTime()
-    const tokenAge = now - tokenCreatedAt
-
-    if (tokenAge > 24 * 60 * 60 * 1000) {
-      return res.status(httpStatus.BAD_REQUEST).json({
-        status: httpStatus.BAD_REQUEST,
-        message: "Verification token has expired",
-        data: {
-          expired: true,
-          userId: user._id,
-        },
-      })
+    // Find the user
+    const user = await User.findById(decoded.userId)
+    if (!user || !user.active || !user.totpEnabled || !user.totpSecret) {
+      return unauthorizedResponse(res, "Invalid user or 2FA not enabled", { startTime })
     }
 
-    // Update user
-    user.emailVerified = true
-    user.emailVerificationToken = ""
+    // Verify the TOTP code
+    const isValidCode = authenticateTOTP(user.totpSecret, code)
+    if (!isValidCode) {
+      return unauthorizedResponse(res, "Invalid verification code", { startTime })
+    }
+
+    // Generate tokens
+    const { accessToken, refreshToken } = generateTokenPair(user._id.toString(), user.role, user.tokenVersion)
+
+    // Store refresh token
+    const expiresAt = addDays(new Date(), 7) // 7 days
+    await RefreshToken.create({
+      userId: user._id,
+      token: refreshToken,
+      tokenVersion: user.tokenVersion,
+      userAgent: req.headers["user-agent"],
+      ipAddress: req.ip,
+      expiresAt,
+    })
+
+    // Set cookies
+    setTokenCookies(res, accessToken, refreshToken)
+
+    // Update last login
+    user.lastLogin = new Date()
     await user.save()
 
     // Log the action
-    await logAction(req, "verify_email", "user", user._id.toString())
+    await logAction(req, "2fa-login", "user", user._id.toString())
 
-    res.status(httpStatus.OK).json({
-      status: httpStatus.OK,
-      message: "Email verified successfully",
-      data: null,
-    })
-  } catch (error) {
-    console.error("Error verifying email:", error)
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-      status: httpStatus.INTERNAL_SERVER_ERROR,
-      message: "Internal server error",
-      data: null,
-    })
-  }
-}
-
-// Resend verification email
-export const resendVerificationController = async (req: Request, res: Response) => {
-  const { email } = req.body
-
-  try {
-    const user = await User.findOne({ email })
-
-    if (!user) {
-      return res.status(httpStatus.NOT_FOUND).json({
-        status: httpStatus.NOT_FOUND,
-        message: "User not found",
-        data: null,
-      })
-    }
-
-    if (user.emailVerified) {
-      return res.status(httpStatus.BAD_REQUEST).json({
-        status: httpStatus.BAD_REQUEST,
-        message: "Email already verified",
-        data: null,
-      })
-    }
-
-    // Generate new token
-    const emailVerificationToken = uuidv4()
-
-    // Update user
-    user.emailVerificationToken = emailVerificationToken
-    user.emailVerificationTokenCreated = new Date()
-    await user.save()
-
-    // Send verification email
-    await sendVerificationEmail(email, emailVerificationToken, user.names)
-
-    // Log the action
-    await logAction(req, "resend_verification", "user", user._id.toString())
-
-    res.status(httpStatus.OK).json({
-      status: httpStatus.OK,
-      message: "Verification email sent successfully",
-      data: null,
-    })
-  } catch (error) {
-    console.error("Error resending verification email:", error)
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-      status: httpStatus.INTERNAL_SERVER_ERROR,
-      message: "Internal server error",
-      data: null,
-    })
-  }
-}
-
-// Forgot password
-export const forgotPasswordController = async (req: Request, res: Response) => {
-  const { email } = req.body
-
-  try {
-    const user = await User.findOne({ email })
-
-    if (!user) {
-      return res.status(httpStatus.NOT_FOUND).json({
-        status: httpStatus.NOT_FOUND,
-        message: "User not found",
-        data: null,
-      })
-    }
-
-    // Generate reset token
-    const resetToken = uuidv4()
-
-    // Update user
-    user.resetPasswordToken = resetToken
-    user.resetPasswordExpires = new Date(Date.now() + RESET_PASSWORD_EXPIRES)
-    await user.save()
-
-    // Send reset email
-    await sendPasswordResetEmail(email, resetToken, user.names)
-
-    // Log the action
-    await logAction(req, "forgot_password", "user", user._id.toString())
-
-    res.status(httpStatus.OK).json({
-      status: httpStatus.OK,
-      message: "Password reset email sent successfully",
-      data: null,
-    })
-  } catch (error) {
-    console.error("Error sending password reset email:", error)
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-      status: httpStatus.INTERNAL_SERVER_ERROR,
-      message: "Internal server error",
-      data: null,
-    })
-  }
-}
-
-// Reset password
-export const resetPasswordController = async (req: Request, res: Response) => {
-  const { token } = req.params
-  const { password } = req.body
-
-  try {
-    const user = await User.findOne({
-      resetPasswordToken: token,
-      resetPasswordExpires: { $gt: Date.now() },
-    })
-
-    if (!user) {
-      return res.status(httpStatus.BAD_REQUEST).json({
-        status: httpStatus.BAD_REQUEST,
-        message: "Invalid or expired reset token",
-        data: null,
-      })
-    }
-
-    // Update user password
-    user.password = password
-    user.resetPasswordToken = undefined
-    user.resetPasswordExpires = undefined
-    await user.save()
-
-    // Log the action
-    await logAction(req, "reset_password", "user", user._id.toString())
-
-    res.status(httpStatus.OK).json({
-      status: httpStatus.OK,
-      message: "Password reset successfully",
-      data: null,
-    })
-  } catch (error) {
-    console.error("Error resetting password:", error)
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-      status: httpStatus.INTERNAL_SERVER_ERROR,
-      message: "Internal server error",
-      data: null,
-    })
-  }
-}
-
-// Logout
-export const logoutController = (req: Request, res: Response) => {
-  try {
-    // Clear cookie
-    res.clearCookie("jwt")
-
-    // Log the action if user is authenticated
-    if (req.user) {
-      logAction(req, "logout", "user", req.user._id.toString())
-    }
-
-    res.status(httpStatus.OK).json({
-      status: httpStatus.OK,
-      message: "Logged out successfully",
-      data: null,
-    })
-  } catch (error) {
-    console.error("Error logging out:", error)
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-      status: httpStatus.INTERNAL_SERVER_ERROR,
-      message: "Internal server error",
-      data: null,
-    })
-  }
-}
-
-// Get current user
-export const getCurrentUserController = async (req: Request, res: Response) => {
-  try {
-    const user = req.user
-
-    if (!user) {
-      return res.status(httpStatus.UNAUTHORIZED).json({
-        status: httpStatus.UNAUTHORIZED,
-        message: "Not authenticated",
-        data: null,
-      })
-    }
-
-    // Get additional profile data based on role
-    let profileData = null
-
-    if (user.role === "patient") {
-      profileData = await Patient.findOne({ user: user._id })
-    } else if (user.role === "doctor") {
-      profileData = await Patient.findOne({ user: user._id })
-    }
-
-    // Return user data (excluding sensitive information)
+    // Return user data
     const userData = {
       id: user._id,
       names: user.names,
@@ -447,23 +308,414 @@ export const getCurrentUserController = async (req: Request, res: Response) => {
       picture: user.picture,
       preferredLanguage: user.preferredLanguage,
       phoneNumber: user.phoneNumber,
-      profile: profileData,
     }
 
-    res.status(httpStatus.OK).json({
-      status: httpStatus.OK,
-      message: "User data retrieved successfully",
-      data: {
+    return successResponse(
+      res,
+      {
         user: userData,
+        token: accessToken,
       },
-    })
+      "2FA verification successful",
+      {
+        statusCode: httpStatus.OK,
+        startTime,
+        links: {
+          profile: `/api/users/me`,
+          logout: `/api/auth/logout`,
+        },
+      },
+    )
   } catch (error) {
-    console.error("Error getting current user:", error)
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-      status: httpStatus.INTERNAL_SERVER_ERROR,
-      message: "Internal server error",
-      data: null,
+    console.error("Error verifying 2FA:", error)
+    return internalErrorResponse(res, "Internal server error", {
+      startTime,
+      debug: process.env.NODE_ENV === "development" ? error : undefined,
     })
   }
 }
 
+// Refresh token
+export const refreshTokenController = async (req: Request, res: Response) => {
+  const startTime = performance.now()
+
+  try {
+    // Get refresh token from cookie
+    const refreshTokenFromCookie = req.cookies.refreshToken
+
+    if (!refreshTokenFromCookie) {
+      return unauthorizedResponse(res, "Refresh token not found", { startTime })
+    }
+
+    // Verify refresh token
+    const decoded = verifyRefreshToken(refreshTokenFromCookie)
+    if (!decoded) {
+      clearTokenCookies(res)
+      return unauthorizedResponse(res, "Invalid refresh token", { startTime })
+    }
+
+    // Find user
+    const user = await User.findById(decoded.userId)
+    if (!user || !user.active) {
+      clearTokenCookies(res)
+      return unauthorizedResponse(res, "User not found or inactive", { startTime })
+    }
+
+    // Check token version
+    if (user.tokenVersion !== decoded.tokenVersion) {
+      clearTokenCookies(res)
+      return unauthorizedResponse(res, "Token has been revoked", { startTime })
+    }
+
+    // Find token in database
+    const tokenDoc = await RefreshToken.findOne({
+      userId: user._id,
+      token: refreshTokenFromCookie,
+      isRevoked: false,
+    })
+
+    if (!tokenDoc) {
+      clearTokenCookies(res)
+      return unauthorizedResponse(res, "Token not found or revoked", { startTime })
+    }
+
+    // Generate new tokens
+    const { accessToken, refreshToken } = generateTokenPair(user._id.toString(), user.role, user.tokenVersion)
+
+    // Revoke old token
+    tokenDoc.isRevoked = true
+    await tokenDoc.save()
+
+    // Store new refresh token
+    const expiresAt = addDays(new Date(), 7) // 7 days
+    await RefreshToken.create({
+      userId: user._id,
+      token: refreshToken,
+      tokenVersion: user.tokenVersion,
+      userAgent: req.headers["user-agent"],
+      ipAddress: req.ip,
+      expiresAt,
+    })
+
+    // Set cookies
+    setTokenCookies(res, accessToken, refreshToken)
+
+    // Log the action
+    await logAction(req, "token-refresh", "user", user._id.toString())
+
+    return successResponse(res, { token: accessToken }, "Token refreshed successfully", {
+      statusCode: httpStatus.OK,
+      startTime,
+    })
+  } catch (error) {
+    console.error("Error refreshing token:", error)
+    clearTokenCookies(res)
+    return unauthorizedResponse(res, "Error refreshing token", {
+      startTime,
+      debug: process.env.NODE_ENV === "development" ? error : undefined,
+    })
+  }
+}
+
+// Logout user
+export const logoutController = async (req: Request, res: Response) => {
+  const startTime = performance.now()
+
+  try {
+    // Get tokens
+    const accessToken = req.cookies.jwt
+    const refreshToken = req.cookies.refreshToken
+
+    // Validate tokens
+    if (!accessToken && !refreshToken) {
+      return badRequestResponse(res, "Access token or refresh token is required", null, { startTime })
+    }
+
+    // Clear cookies
+    clearTokenCookies(res)
+
+    // If we have a refresh token, revoke it
+    if (refreshToken) {
+      // Find and revoke the token in the database
+      await RefreshToken.updateOne({ token: refreshToken }, { isRevoked: true })
+
+      // Get user ID from token
+      const decoded = verifyRefreshToken(refreshToken)
+      if (decoded) {
+        // Log the action
+        await logAction(req, "logout", "user", decoded.userId)
+      }
+    }
+
+    // If we have an access token, blacklist it
+    if (accessToken) {
+      const expiryTime = getTokenExpiryTime(accessToken)
+      if (expiryTime > 0) {
+        await blacklistToken(accessToken, expiryTime)
+      }
+    }
+
+    return successResponse(res, null, "Logged out successfully", {
+      statusCode: httpStatus.OK,
+      startTime,
+      links: {
+        login: `/api/auth/login`,
+      },
+    })
+  } catch (error) {
+    console.error("Error logging out:", error)
+    return internalErrorResponse(res, "Error logging out", {
+      startTime,
+      debug: process.env.NODE_ENV === "development" ? error : undefined,
+    })
+  }
+}
+
+// Verify email
+export const verifyEmailController = async (req: Request, res: Response) => {
+  const startTime = performance.now()
+  const { token } = req.params
+
+  try {
+    // Find user with this verification token
+    const user = await User.findOne({ emailVerificationToken: token })
+
+    if (!user) {
+      return badRequestResponse(res, "Invalid verification token", null, { startTime })
+    }
+
+    // Check if token is expired (24 hours)
+    const tokenCreated = new Date(user.emailVerificationTokenCreated)
+    const now = new Date()
+    const tokenAge = now.getTime() - tokenCreated.getTime()
+    const tokenMaxAge = 24 * 60 * 60 * 1000 // 24 hours in milliseconds
+
+    if (tokenAge > tokenMaxAge) {
+      return badRequestResponse(
+        res,
+        "Verification token has expired",
+        { expired: true, userId: user._id },
+        { startTime },
+      )
+    }
+
+    // Update user
+    user.emailVerified = true
+    user.emailVerificationToken = ""
+    await user.save()
+
+    // Log the action
+    await logAction(req, "verify-email", "user", user._id.toString())
+
+    return successResponse(res, null, "Email verified successfully", {
+      statusCode: httpStatus.OK,
+      startTime,
+      links: {
+        login: `/api/auth/login`,
+      },
+    })
+  } catch (error) {
+    console.error("Error verifying email:", error)
+    return internalErrorResponse(res, "Internal server error", {
+      startTime,
+      debug: process.env.NODE_ENV === "development" ? error : undefined,
+    })
+  }
+}
+
+// Resend verification email
+export const resendVerificationController = async (req: Request, res: Response) => {
+  const startTime = performance.now()
+  const { email } = req.body
+
+  try {
+    // Find user by email
+    const user = await User.findOne({ email })
+
+    if (!user) {
+      return notFoundResponse(res, "User not found", { startTime })
+    }
+
+    if (user.emailVerified) {
+      return badRequestResponse(res, "Email already verified", null, { startTime })
+    }
+
+    // Generate new verification token
+    const emailVerificationToken = generateVerificationToken()
+    user.emailVerificationToken = emailVerificationToken
+    user.emailVerificationTokenCreated = new Date()
+    await user.save()
+
+    // Send verification email
+    await sendVerificationEmail(email, emailVerificationToken, user.names)
+
+    // Log the action
+    await logAction(req, "resend-verification", "user", user._id.toString())
+
+    return successResponse(res, null, "Verification email sent successfully", {
+      statusCode: httpStatus.OK,
+      startTime,
+    })
+  } catch (error) {
+    console.error("Error resending verification:", error)
+    return internalErrorResponse(res, "Internal server error", {
+      startTime,
+      debug: process.env.NODE_ENV === "development" ? error : undefined,
+    })
+  }
+}
+
+// Forgot password
+export const forgotPasswordController = async (req: Request, res: Response) => {
+  const startTime = performance.now()
+  const { email } = req.body
+
+  try {
+    // Find user by email
+    const user = await User.findOne({ email })
+
+    // For security reasons, always return success even if user not found
+    if (!user) {
+      return successResponse(res, null, "If your email is registered, you will receive a password reset link", {
+        statusCode: httpStatus.OK,
+        startTime,
+      })
+    }
+
+    // Generate reset token
+    const resetToken = generateVerificationToken()
+    const resetExpires = new Date(Date.now() + RESET_PASSWORD_EXPIRES)
+
+    // Update user
+    user.resetPasswordToken = resetToken
+    user.resetPasswordExpires = resetExpires
+    await user.save()
+
+    // Send password reset email
+    await sendPasswordResetEmail(email, resetToken, user.names)
+
+    // Log the action
+    await logAction(req, "forgot-password", "user", user._id.toString())
+
+    return successResponse(res, null, "If your email is registered, you will receive a password reset link", {
+      statusCode: httpStatus.OK,
+      startTime,
+    })
+  } catch (error) {
+    console.error("Error processing forgot password:", error)
+    // Still return success for security reasons
+    return successResponse(res, null, "If your email is registered, you will receive a password reset link", {
+      statusCode: httpStatus.OK,
+      startTime,
+      debug: process.env.NODE_ENV === "development" ? error : undefined,
+    })
+  }
+}
+
+// Reset password
+export const resetPasswordController = async (req: Request, res: Response) => {
+  const startTime = performance.now()
+  const { token } = req.params
+  const { password } = req.body
+
+  try {
+    // Find user with this reset token
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: new Date() },
+    })
+
+    if (!user) {
+      return badRequestResponse(res, "Invalid or expired reset token", null, { startTime })
+    }
+
+    // Update password and invalidate all tokens
+    user.password = password
+    user.resetPasswordToken = undefined
+    user.resetPasswordExpires = undefined
+
+    // Increment token version to invalidate all existing refresh tokens
+    await user.incrementTokenVersion()
+    await user.save()
+
+    // Revoke all refresh tokens for this user
+    await RefreshToken.updateMany({ userId: user._id }, { isRevoked: true })
+
+    // Log the action
+    await logAction(req, "reset-password", "user", user._id.toString())
+
+    return successResponse(res, null, "Password reset successfully", {
+      statusCode: httpStatus.OK,
+      startTime,
+      links: {
+        login: `/api/auth/login`,
+      },
+    })
+  } catch (error) {
+    console.error("Error resetting password:", error)
+    return internalErrorResponse(res, "Internal server error", {
+      startTime,
+      debug: process.env.NODE_ENV === "development" ? error : undefined,
+    })
+  }
+}
+
+// Get current user
+export const getCurrentUserController = async (req: Request, res: Response) => {
+  const startTime = performance.now()
+
+  try {
+    // User is attached to request by authenticateToken middleware
+    const userId = req.user?.userId
+
+    if (!userId) {
+      return unauthorizedResponse(res, "Not authenticated", { startTime })
+    }
+
+    // Find user by ID
+    const user = await User.findById(userId).select(
+      "-password -tokenVersion -resetPasswordToken -resetPasswordExpires -emailVerificationToken",
+    )
+
+    if (!user) {
+      return notFoundResponse(res, "User not found", { startTime })
+    }
+
+    // Return user data
+    return successResponse(
+      res,
+      {
+        user: {
+          id: user._id,
+          names: user.names,
+          email: user.email,
+          username: user.username,
+          role: user.role,
+          picture: user.picture,
+          preferredLanguage: user.preferredLanguage,
+          phoneNumber: user.phoneNumber,
+          phoneVerified: user.phoneVerified,
+          emailVerified: user.emailVerified,
+          totpEnabled: user.totpEnabled,
+          lastLogin: user.lastLogin,
+        },
+      },
+      "User retrieved successfully",
+      {
+        statusCode: httpStatus.OK,
+        startTime,
+        links: {
+          updateProfile: `/api/users/me`,
+          updatePassword: `/api/users/me/password`,
+          updateEmail: `/api/users/me/email`,
+        },
+      },
+    )
+  } catch (error) {
+    console.error("Error getting current user:", error)
+    return internalErrorResponse(res, "Internal server error", {
+      startTime,
+      debug: process.env.NODE_ENV === "development" ? error : undefined,
+    })
+  }
+}

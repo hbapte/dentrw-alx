@@ -23,7 +23,9 @@ export interface User extends Document {
   active: boolean
   totpSecret?: string
   totpEnabled: boolean
+  tokenVersion: number // Added for refresh token security
   comparePassword(candidatePassword: string): Promise<boolean>
+  incrementTokenVersion(): Promise<number> // Added for token invalidation
 }
 
 const userSchema: Schema = new Schema(
@@ -47,6 +49,7 @@ const userSchema: Schema = new Schema(
     active: { type: Boolean, default: true },
     totpSecret: { type: String },
     totpEnabled: { type: Boolean, default: false },
+    tokenVersion: { type: Number, default: 0 }, // Added for refresh token security
   },
   {
     timestamps: true,
@@ -71,7 +74,13 @@ userSchema.methods.comparePassword = async function (candidatePassword: string):
   return bcrypt.compare(candidatePassword, this.password)
 }
 
+// Method to increment token version (invalidates all refresh tokens)
+userSchema.methods.incrementTokenVersion = async function (): Promise<number> {
+  this.tokenVersion = (this.tokenVersion || 0) + 1
+  await this.save()
+  return this.tokenVersion
+}
+
 const User: Model<User> = mongoose.model<User>("User", userSchema)
 
 export default User
-
