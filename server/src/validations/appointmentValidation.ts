@@ -1,3 +1,4 @@
+// server\src\validations\appointmentValidation.ts
 import Joi from "joi"
 
 // Create appointment validation schema
