@@ -1,4 +1,7 @@
+// server\src\modules\medicalRecord\repositories\medicalRecordRepository.ts
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 import MedicalRecord from "../../../database/models/medicalRecord"
 import type { Types } from "mongoose"
 
@@ -17,20 +20,39 @@ interface MedicalRecordQueryOptions {
 
 class MedicalRecordRepository {
   /**
-   * Find a medical record by ID
+   * Find a medical record by ID with enhanced population
    */
   async findById(id: string | Types.ObjectId): Promise<any> {
     return MedicalRecord.findById(id)
-      .populate("patient", "names email phoneNumber picture")
+      .populate({
+        path: "patient",
+        populate: {
+          path: "user",
+          select: "names email phoneNumber picture preferredLanguage",
+        },
+      })
       .populate({
         path: "doctor",
-        select: "user specialization",
+        select: "user specialization qualifications experience languages consultationFee averageRating",
         populate: {
           path: "user",
           select: "names email phoneNumber picture",
         },
       })
-      .populate("appointment")
+      .populate({
+        path: "appointment",
+        select: "date startTime endTime status type notes reason reminders",
+        populate: [
+          {
+            path: "patient",
+            select: "_id",
+          },
+          {
+            path: "doctor",
+            select: "_id",
+          },
+        ],
+      })
   }
 
   /**
@@ -42,6 +64,7 @@ class MedicalRecordRepository {
     page: number
     limit: number
     pages: number
+    totalCount: number
   }> {
     const {
       page = 1,
@@ -74,18 +97,37 @@ class MedicalRecordRepository {
       if (endDate) query.createdAt.$lte = endDate
     }
 
-    // Execute query
+    // Execute query with enhanced population
     const records = await MedicalRecord.find(query)
-      .populate("patient", "names email phoneNumber picture")
+      .populate({
+        path: "patient",
+        populate: {
+          path: "user",
+          select: "names email phoneNumber picture preferredLanguage",
+        },
+      })
       .populate({
         path: "doctor",
-        select: "user specialization",
+        select: "user specialization qualifications experience languages consultationFee averageRating",
         populate: {
           path: "user",
           select: "names email phoneNumber picture",
         },
       })
-      .populate("appointment", "date startTime endTime type")
+      .populate({
+        path: "appointment",
+        select: "date startTime endTime status type notes reason reminders",
+        populate: [
+          {
+            path: "patient",
+            select: "_id",
+          },
+          {
+            path: "doctor",
+            select: "_id",
+          },
+        ],
+      })
       .sort({ [sortBy]: sortDirection })
       .skip(skip)
       .limit(limit)
@@ -98,6 +140,7 @@ class MedicalRecordRepository {
       page,
       limit,
       pages: Math.ceil(total / limit),
+      totalCount: total,
     }
   }
 
@@ -114,16 +157,35 @@ class MedicalRecordRepository {
    */
   async updateMedicalRecord(id: string | Types.ObjectId, updateData: any): Promise<any> {
     return MedicalRecord.findByIdAndUpdate(id, { $set: updateData }, { new: true, runValidators: true })
-      .populate("patient", "names email phoneNumber picture")
+      .populate({
+        path: "patient",
+        populate: {
+          path: "user",
+          select: "names email phoneNumber picture preferredLanguage",
+        },
+      })
       .populate({
         path: "doctor",
-        select: "user specialization",
+        select: "user specialization qualifications experience languages consultationFee averageRating",
         populate: {
           path: "user",
           select: "names email phoneNumber picture",
         },
       })
-      .populate("appointment", "date startTime endTime type")
+      .populate({
+        path: "appointment",
+        select: "date startTime endTime status type notes reason reminders",
+        populate: [
+          {
+            path: "patient",
+            select: "_id",
+          },
+          {
+            path: "doctor",
+            select: "_id",
+          },
+        ],
+      })
   }
 
   /**
@@ -209,24 +271,44 @@ class MedicalRecordRepository {
   }
 
   /**
-   * Get patient medical history
+   * Get patient medical history with enhanced population
    */
   async getPatientMedicalHistory(patientId: string | Types.ObjectId): Promise<any[]> {
     return MedicalRecord.find({ patient: patientId })
       .populate({
-        path: "doctor",
-        select: "user specialization",
+        path: "patient",
         populate: {
           path: "user",
-          select: "names",
+          select: "names email phoneNumber picture preferredLanguage",
         },
       })
-      .populate("appointment", "date type")
+      .populate({
+        path: "doctor",
+        select: "user specialization qualifications experience languages consultationFee",
+        populate: {
+          path: "user",
+          select: "names email phoneNumber picture",
+        },
+      })
+      .populate({
+        path: "appointment",
+        select: "date startTime endTime status type notes reason",
+        populate: [
+          {
+            path: "patient",
+            select: "_id",
+          },
+          {
+            path: "doctor",
+            select: "_id",
+          },
+        ],
+      })
       .sort({ createdAt: -1 })
   }
 
   /**
-   * Get records that need follow-up
+   * Get records that need follow-up with enhanced population
    */
   async getFollowUpRecords(daysAhead = 7): Promise<any[]> {
     const now = new Date()
@@ -237,14 +319,24 @@ class MedicalRecordRepository {
       followUpRequired: true,
       followUpDate: { $gte: now, $lte: futureDate },
     })
-      .populate("patient", "names email phoneNumber")
       .populate({
-        path: "doctor",
-        select: "user",
+        path: "patient",
         populate: {
           path: "user",
-          select: "names",
+          select: "names email phoneNumber picture preferredLanguage",
         },
+      })
+      .populate({
+        path: "doctor",
+        select: "user specialization",
+        populate: {
+          path: "user",
+          select: "names email phoneNumber picture",
+        },
+      })
+      .populate({
+        path: "appointment",
+        select: "date startTime endTime type status",
       })
       .sort({ followUpDate: 1 })
   }
@@ -284,4 +376,3 @@ class MedicalRecordRepository {
 }
 
 export default new MedicalRecordRepository()
-
