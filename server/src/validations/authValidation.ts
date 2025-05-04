@@ -64,3 +64,19 @@ export const resetPasswordSchema = Joi.object({
     }),
   confirmPassword: Joi.string().valid(Joi.ref("password")).messages({ "any.only": "Passwords do not match" }),
 })
+
+
+export const twoFactorSchema = Joi.object({
+  tempToken: Joi.string().required().messages({
+    "string.empty": "Temporary token is required",
+  }),
+  code: Joi.string()
+    .length(6)
+    .pattern(/^\d{6}$/)
+    .required()
+    .messages({
+      "string.empty": "Verification code is required",
+      "string.length": "Verification code must be 6 digits",
+      "string.pattern.base": "Verification code must contain only digits",
+    }),
+})
