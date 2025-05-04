@@ -1,3 +1,4 @@
+
 import express from "express"
 import {
   getUserProfileController,
@@ -7,9 +8,10 @@ import {
   changePasswordController,
   // setPasswordController,
   // uploadProfilePictureController,
-} from "../modules/user/controllers/profileController"
+} from "../modules/profile/profileController"
 import { authenticateToken, authorizeRoles } from "../middlewares/auth.middleware"
-import { validate, updateProfileSchema } from "../middlewares/validation.middleware"
+import { validate} from "../middlewares/validation.middleware"
+import { updateProfileSchema } from "../validations/profileValidation"
 
 const profileRouter = express.Router()
 
