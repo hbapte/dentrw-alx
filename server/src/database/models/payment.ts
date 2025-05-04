@@ -1,4 +1,6 @@
+// server\src\database\models\payment.ts
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 import mongoose, { type Document, type Model, Schema } from "mongoose"
 
 export interface Payment extends Document {
@@ -7,7 +9,7 @@ export interface Payment extends Document {
   amount: number
   currency: string
   status: "pending" | "completed" | "failed" | "refunded"
-  paymentMethod: "stripe" | "paypal" | "cash"
+  paymentMethod: "stripe" | "MoMo" | "cash" 
   transactionId?: string
   invoiceNumber: string
   receiptUrl?: string
