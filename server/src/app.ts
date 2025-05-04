@@ -3,12 +3,12 @@
 import express, { Express } from "express";
 import dotenv from "dotenv";
 import "./config/db";
-import cors from "cors";
 import indexRouter from "./routes/index";
 import cookieParser from 'cookie-parser';
 import swaggerSetup from './config/swagger';
 import morgan from "morgan"
 import httpStatus from "http-status"
+import compression from "compression"
 import {
   securityHeaders,
   contentSecurityPolicy,
@@ -17,11 +17,15 @@ import {
   addSecurityHeaders,
 } from "./middlewares/security.middleware"
 import { apiRateLimiter } from "./middlewares/rateLimiter.middleware";
+import { requestLogger } from "./middlewares/request-logger.middleware"
+import { errorHandler } from "./middlewares/error-handler.middleware"
+import { stream } from "./utils/logger"
+
+
 
 dotenv.config(); 
 const port = process.env.PORT || 3000; 
 const app: Express = express();
-app.use(cors());
 
 
 // Near the top of your app.ts
@@ -33,7 +37,9 @@ console.log(`PORT: ${process.env.PORT}`);
 
 
 // Middleware
-app.use(morgan("dev")) // Logging
+app.use(morgan("combined", { stream }))
+app.use(requestLogger)
+app.use(compression())
 app.use(express.json()) // Parse JSON bodies
 app.use(express.urlencoded({ extended: true })) // Parse URL-encoded bodies
 app.use(cookieParser()) // Parse cookies
@@ -62,9 +68,13 @@ app.get("/health", (req, res) => {
     data: {
       uptime: process.uptime(),
       timestamp: Date.now(),
+      environment: process.env.NODE_ENV || "development",
+      version: process.env.npm_package_version || "unknown",
+      memoryUsage: process.memoryUsage(),
+      cpuUsage: process.cpuUsage(),
     },
-  })
-})
+  });
+});
 
 // 404 handler
 app.use((req, res) => {
@@ -97,6 +107,9 @@ console.log('Database connected successfully');
 
 // Before starting the server
 console.log(`Attempting to start server on port ${port}...`);
+
+// Error handling middleware (must be last)
+app.use(errorHandler)
 
 swaggerSetup(app);
 app.use((req, res) => { res.status(404).json({resStatus: false, resMsg: `[${req.method}] on [${req.path}] Prohibited` });});
