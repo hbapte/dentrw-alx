@@ -38,11 +38,14 @@ export const contentSecurityPolicy = expressCspHeader({
   },
 })
 
+// server\src\middlewares\security.middleware.ts
+
 // Configure CORS
 export const corsOptions = cors({
   origin: (origin, callback) => {
     const allowedOrigins = [
-      process.env.FRONTEND_URL || "http://localhost:3000",
+      process.env.FRONTEND_URL || "http://localhost:3000", 
+      'http://localhost:5173', // Vite dev server
       // Add other allowed origins here
     ]
 
@@ -53,8 +56,9 @@ export const corsOptions = cors({
       callback(new Error("Not allowed by CORS"))
     }
   },
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+  exposedHeaders: ["Content-Length", "X-Requested-With"],
   credentials: true,
   maxAge: 86400, // 24 hours in seconds
 })
@@ -75,4 +79,3 @@ export const addSecurityHeaders = (req: Request, res: Response, next: NextFuncti
 
   next()
 }
-
