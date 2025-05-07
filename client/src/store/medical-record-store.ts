@@ -1,9 +1,27 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand"
 import MedicalRecordService from "../services/medical-record.service"
-import type { MedicalRecordState } from "../types/medical-record.types"
+import type { MedicalRecordState, MedicalRecordFilters } from "../types/medical-record.types"
 
-export const useMedicalRecordStore = create<MedicalRecordState>((set) => ({
+// Default pagination state
+const DEFAULT_PAGINATION = {
+  page: 1,
+  pageSize: 10,
+  totalItems: 0,
+  totalPages: 1,
+  hasNextPage: false,
+  hasPreviousPage: false
+}
+
+// Default filters
+const DEFAULT_FILTERS: MedicalRecordFilters = {
+  page: 1,
+  limit: 10,
+  sortBy: "createdAt",
+  sortOrder: "desc"
+}
+
+export const useMedicalRecordStore = create<MedicalRecordState>((set, get) => ({
   records: [],
   selectedRecord: null,
   patientHistory: [],
@@ -11,12 +29,43 @@ export const useMedicalRecordStore = create<MedicalRecordState>((set) => ({
   statistics: null,
   loading: false,
   error: null,
+  filters: DEFAULT_FILTERS,
+  pagination: DEFAULT_PAGINATION,
 
-  fetchRecords: async () => {
+  // Filter actions
+  setFilters: (newFilters) => {
+    set((state) => ({
+      filters: { ...state.filters, ...newFilters, page: 1 } // Reset to page 1 when filters change
+    }))
+    // Optionally fetch records with new filters
+    if (newFilters.page === undefined) { // Don't auto-fetch if just changing page
+      get().fetchRecords()
+    }
+  },
+
+  resetFilters: () => {
+    set({ filters: DEFAULT_FILTERS })
+    get().fetchRecords()
+  },
+
+  fetchRecords: async (params) => {
     try {
       set({ loading: true, error: null })
-      const records = await MedicalRecordService.getAllRecords()
-      set({ records, loading: false })
+      
+      // Use provided params or current filters
+      const queryParams = params || get().filters
+      
+      const result = await MedicalRecordService.getAllRecords(queryParams)
+
+      console.log("Fetched records:", result.records)
+      console.log("Fetched pagination:", result.pagination)
+      console.log("Fetched links:", result.links)
+      
+      set({ 
+        records: result.records, 
+        pagination: result.pagination || DEFAULT_PAGINATION,
+        loading: false 
+      })
     } catch (err: any) {
       set({
         error: err.response?.data?.message || "Failed to fetch medical records",
@@ -38,11 +87,17 @@ export const useMedicalRecordStore = create<MedicalRecordState>((set) => ({
     }
   },
 
-  fetchPatientHistory: async (patientId) => {
+  fetchPatientHistory: async (patientId, params) => {
     try {
       set({ loading: true, error: null })
-      const records = await MedicalRecordService.getPatientHistory(patientId)
-      set({ patientHistory: records, loading: false })
+      
+      const result = await MedicalRecordService.getPatientHistory(patientId, params)
+      
+      set({ 
+        patientHistory: result.records, 
+        pagination: result.pagination || DEFAULT_PAGINATION,
+        loading: false 
+      })
     } catch (err: any) {
       set({
         error: err.response?.data?.message || "Failed to fetch patient history",
@@ -51,11 +106,17 @@ export const useMedicalRecordStore = create<MedicalRecordState>((set) => ({
     }
   },
 
-  fetchFollowUpRecords: async () => {
+  fetchFollowUpRecords: async (params) => {
     try {
       set({ loading: true, error: null })
-      const records = await MedicalRecordService.getFollowUpRecords()
-      set({ followUpRecords: records, loading: false })
+      
+      const result = await MedicalRecordService.getFollowUpRecords(params)
+      
+      set({ 
+        followUpRecords: result.records, 
+        pagination: result.pagination || DEFAULT_PAGINATION,
+        loading: false 
+      })
     } catch (err: any) {
       set({
         error: err.response?.data?.message || "Failed to fetch follow-up records",
@@ -81,16 +142,19 @@ export const useMedicalRecordStore = create<MedicalRecordState>((set) => ({
     try {
       set({ loading: true, error: null })
       const newRecord = await MedicalRecordService.createRecord(data)
-      set((state) => ({
-        records: [...state.records, newRecord],
-        loading: false,
-      }))
+      
+      // Refresh the records list to include the new record
+      await get().fetchRecords()
+      
+      set({ loading: false })
+      return newRecord
     } catch (err: any) {
+      const errorMessage = err.response?.data?.message || "Failed to create medical record"
       set({
-        error: err.response?.data?.message || "Failed to create medical record",
+        error: errorMessage,
         loading: false,
       })
-      throw err
+      throw new Error(errorMessage)
     }
   },
 
@@ -98,17 +162,24 @@ export const useMedicalRecordStore = create<MedicalRecordState>((set) => ({
     try {
       set({ loading: true, error: null })
       const updatedRecord = await MedicalRecordService.updateRecord(id, data)
+      
+      // Update the record in the records array
       set((state) => ({
-        records: state.records.map((record) => (record.id === id ? updatedRecord : record)),
+        records: state.records.map((record) => 
+          (record.id === id || record._id === id) ? updatedRecord : record
+        ),
         selectedRecord: updatedRecord,
         loading: false,
       }))
+      
+      return updatedRecord
     } catch (err: any) {
+      const errorMessage = err.response?.data?.message || "Failed to update medical record"
       set({
-        error: err.response?.data?.message || "Failed to update medical record",
+        error: errorMessage,
         loading: false,
       })
-      throw err
+      throw new Error(errorMessage)
     }
   },
 
@@ -116,16 +187,21 @@ export const useMedicalRecordStore = create<MedicalRecordState>((set) => ({
     try {
       set({ loading: true, error: null })
       await MedicalRecordService.deleteRecord(id)
+      
+      // Remove the record from the records array
       set((state) => ({
-        records: state.records.filter((record) => record.id !== id),
+        records: state.records.filter((record) => 
+          record.id !== id && record._id !== id
+        ),
         loading: false,
       }))
     } catch (err: any) {
+      const errorMessage = err.response?.data?.message || "Failed to delete medical record"
       set({
-        error: err.response?.data?.message || "Failed to delete medical record",
+        error: errorMessage,
         loading: false,
       })
-      throw err
+      throw new Error(errorMessage)
     }
   },
 
@@ -133,17 +209,24 @@ export const useMedicalRecordStore = create<MedicalRecordState>((set) => ({
     try {
       set({ loading: true, error: null })
       const updatedRecord = await MedicalRecordService.addPrescription(recordId, prescription)
+      
+      // Update the record in the records array and the selected record
       set((state) => ({
-        records: state.records.map((record) => (record.id === recordId ? updatedRecord : record)),
+        records: state.records.map((record) => 
+          (record.id === recordId || record._id === recordId) ? updatedRecord : record
+        ),
         selectedRecord: updatedRecord,
         loading: false,
       }))
+      
+      return updatedRecord
     } catch (err: any) {
+      const errorMessage = err.response?.data?.message || "Failed to add prescription"
       set({
-        error: err.response?.data?.message || "Failed to add prescription",
+        error: errorMessage,
         loading: false,
       })
-      throw err
+      throw new Error(errorMessage)
     }
   },
 
@@ -151,17 +234,24 @@ export const useMedicalRecordStore = create<MedicalRecordState>((set) => ({
     try {
       set({ loading: true, error: null })
       const updatedRecord = await MedicalRecordService.updatePrescription(recordId, prescriptionId, prescription)
+      
+      // Update the record in the records array and the selected record
       set((state) => ({
-        records: state.records.map((record) => (record.id === recordId ? updatedRecord : record)),
+        records: state.records.map((record) => 
+          (record.id === recordId || record._id === recordId) ? updatedRecord : record
+        ),
         selectedRecord: updatedRecord,
         loading: false,
       }))
+      
+      return updatedRecord
     } catch (err: any) {
+      const errorMessage = err.response?.data?.message || "Failed to update prescription"
       set({
-        error: err.response?.data?.message || "Failed to update prescription",
+        error: errorMessage,
         loading: false,
       })
-      throw err
+      throw new Error(errorMessage)
     }
   },
 
@@ -169,17 +259,24 @@ export const useMedicalRecordStore = create<MedicalRecordState>((set) => ({
     try {
       set({ loading: true, error: null })
       const updatedRecord = await MedicalRecordService.removePrescription(recordId, prescriptionId)
+      
+      // Update the record in the records array and the selected record
       set((state) => ({
-        records: state.records.map((record) => (record.id === recordId ? updatedRecord : record)),
+        records: state.records.map((record) => 
+          (record.id === recordId || record._id === recordId) ? updatedRecord : record
+        ),
         selectedRecord: updatedRecord,
         loading: false,
       }))
+      
+      return updatedRecord
     } catch (err: any) {
+      const errorMessage = err.response?.data?.message || "Failed to remove prescription"
       set({
-        error: err.response?.data?.message || "Failed to remove prescription",
+        error: errorMessage,
         loading: false,
       })
-      throw err
+      throw new Error(errorMessage)
     }
   },
 
@@ -187,17 +284,24 @@ export const useMedicalRecordStore = create<MedicalRecordState>((set) => ({
     try {
       set({ loading: true, error: null })
       const updatedRecord = await MedicalRecordService.addAttachment(recordId, formData)
+      
+      // Update the record in the records array and the selected record
       set((state) => ({
-        records: state.records.map((record) => (record.id === recordId ? updatedRecord : record)),
+        records: state.records.map((record) => 
+          (record.id === recordId || record._id === recordId) ? updatedRecord : record
+        ),
         selectedRecord: updatedRecord,
         loading: false,
       }))
+      
+      return updatedRecord
     } catch (err: any) {
+      const errorMessage = err.response?.data?.message || "Failed to add attachment"
       set({
-        error: err.response?.data?.message || "Failed to add attachment",
+        error: errorMessage,
         loading: false,
       })
-      throw err
+      throw new Error(errorMessage)
     }
   },
 
@@ -205,17 +309,24 @@ export const useMedicalRecordStore = create<MedicalRecordState>((set) => ({
     try {
       set({ loading: true, error: null })
       const updatedRecord = await MedicalRecordService.removeAttachment(recordId, attachmentId)
+      
+      // Update the record in the records array and the selected record
       set((state) => ({
-        records: state.records.map((record) => (record.id === recordId ? updatedRecord : record)),
+        records: state.records.map((record) => 
+          (record.id === recordId || record._id === recordId) ? updatedRecord : record
+        ),
         selectedRecord: updatedRecord,
         loading: false,
       }))
+      
+      return updatedRecord
     } catch (err: any) {
+      const errorMessage = err.response?.data?.message || "Failed to remove attachment"
       set({
-        error: err.response?.data?.message || "Failed to remove attachment",
+        error: errorMessage,
         loading: false,
       })
-      throw err
+      throw new Error(errorMessage)
     }
   },
 

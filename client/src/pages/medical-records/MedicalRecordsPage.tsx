@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// client\src\pages\medical-records\MedicalRecordsPage.tsx
 "use client"
 
 import type React from "react"
@@ -75,6 +77,7 @@ const MedicalRecordsPage: React.FC = () => {
         await deleteRecord(recordToDelete)
         showSuccess("Medical record deleted successfully")
       } catch (err) {
+        console.error(err)
         showError("Failed to delete medical record")
       } finally {
         setIsDeleteDialogOpen(false)

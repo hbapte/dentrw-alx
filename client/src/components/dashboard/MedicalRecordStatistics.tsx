@@ -1,3 +1,4 @@
+// client\src\components\dashboard\MedicalRecordStatistics.tsx
 "use client"
 
 import type React from "react"

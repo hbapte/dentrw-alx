@@ -1,3 +1,4 @@
+// client\src\pages\medical-records\MedicalRecordDetailsPage.tsx
 "use client"
 
 import type React from "react"
@@ -52,6 +53,7 @@ const MedicalRecordDetailsPage: React.FC = () => {
         showSuccess("Medical record deleted successfully")
         navigate("/medical-records")
       } catch (err) {
+        console.error(err)
         showError("Failed to delete medical record")
       } finally {
         setIsDeleteDialogOpen(false)
@@ -70,6 +72,7 @@ const MedicalRecordDetailsPage: React.FC = () => {
         await addAttachment(id, formData)
         showSuccess("Attachment uploaded successfully")
       } catch (err) {
+        console.error(err)
         showError("Failed to upload attachment")
       }
     }
@@ -81,6 +84,7 @@ const MedicalRecordDetailsPage: React.FC = () => {
         await removeAttachment(id, attachmentId)
         showSuccess("Attachment removed successfully")
       } catch (err) {
+        console.error(err)
         showError("Failed to remove attachment")
       }
     }
