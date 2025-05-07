@@ -1,3 +1,4 @@
+// client\src\components\dashboard\DoctorDashboardWidget.tsx
 import type React from "react"
 import { Link } from "react-router-dom"
 import { useDoctorStore } from "../../store/doctor-store"

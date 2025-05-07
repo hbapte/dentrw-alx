@@ -1,18 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
-import type React from "react"
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts"
 import { Briefcase, UserPlus, Star } from "lucide-react"
-import api from "../../services/api"
+import DoctorService from "../../services/doctor.service"
 import Loader from "../ui/Loader"
 import type { DoctorStatistics as DoctorStatsType } from "../../types/doctor.types"
 import { getDoctorFullName } from "../../utils/doctor.utils"
 
 const COLORS = ["#4f46e5", "#0ea5e9", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899"]
 
-const DoctorStatistics: React.FC = () => {
+const DoctorStatistics = () => {
   const [stats, setStats] = useState<DoctorStatsType | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -21,11 +21,11 @@ const DoctorStatistics: React.FC = () => {
     const fetchDoctorStats = async () => {
       try {
         setLoading(true)
-        const response = await api.get("/doctors/stats")
-        setStats(response.data.data)
+        const data = await DoctorService.getDoctorStats()
+        setStats(data)
         setError(null)
       } catch (err: any) {
-        setError(err.response?.data?.message || "Failed to fetch doctor statistics")
+        setError(err.message || "Failed to fetch doctor statistics")
       } finally {
         setLoading(false)
       }
@@ -83,7 +83,7 @@ const DoctorStatistics: React.FC = () => {
         <div className="p-5">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <Briefcase className="h-6 w-6 text-indigo-600" />
+              <Briefcase className="h-6 w-6 text-blue-600" />
             </div>
             <div className="ml-5 w-0 flex-1">
               <dl>
@@ -97,7 +97,7 @@ const DoctorStatistics: React.FC = () => {
         </div>
         <div className="bg-gray-50 px-5 py-3">
           <div className="text-sm">
-            <Link to="/doctors" className="font-medium text-indigo-700 hover:text-indigo-900">
+            <Link to="/doctors" className="font-medium text-blue-700 hover:text-blue-900">
               View all doctors
             </Link>
           </div>
@@ -126,33 +126,67 @@ const DoctorStatistics: React.FC = () => {
       </div>
 
       {/* Specialization Distribution Chart */}
-      <div className="overflow-hidden rounded-lg bg-white shadow">
-        <div className="p-5">
-          <h3 className="text-lg font-medium leading-6 text-gray-900">Specialization Distribution</h3>
-          <div className="mt-2 h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={specializationData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                >
-                  {specializationData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
+      {specializationData.length > 0 && (
+        <div className="overflow-hidden rounded-lg bg-white shadow">
+          <div className="p-5">
+            <h3 className="text-lg font-medium leading-6 text-gray-900">Specialization Distribution</h3>
+            <div className="mt-2 h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={specializationData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
+                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  >
+                    {specializationData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         </div>
-      </div>
+      )}
+
+      {/* Top Rated Doctors */}
+      {stats.topRatedDoctors && stats.topRatedDoctors.length > 0 && (
+        <div className="overflow-hidden rounded-lg bg-white shadow">
+          <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
+            <h2 className="text-lg font-medium text-gray-900">Top Rated Doctors</h2>
+          </div>
+          <div className="divide-y divide-gray-200">
+            {stats.topRatedDoctors.map((doctor) => (
+              <Link key={doctor._id} to={`/doctors/${doctor._id}`} className="block hover:bg-gray-50">
+                <div className="flex items-center px-6 py-4">
+                  <div className="flex-shrink-0">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100">
+                      <Briefcase className="h-5 w-5 text-blue-600" />
+                    </div>
+                  </div>
+                  <div className="ml-4 min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium text-gray-900">{getDoctorFullName(doctor)}</p>
+                    <p className="truncate text-sm text-gray-500">{doctor.specialization}</p>
+                  </div>
+                  <div className="flex items-center">
+                    <Star className="h-4 w-4 text-yellow-400" />
+                    <span className="ml-1 text-sm font-medium text-gray-900">
+                      {doctor.averageRating ? doctor.averageRating.toFixed(1) : "N/A"}
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Recent Doctors */}
       <div className="overflow-hidden rounded-lg bg-white shadow">
@@ -160,7 +194,7 @@ const DoctorStatistics: React.FC = () => {
           <h2 className="text-lg font-medium text-gray-900">Recent Doctors</h2>
           <Link
             to="/doctors/add"
-            className="inline-flex items-center rounded-md bg-indigo-100 px-3 py-1 text-sm font-medium text-indigo-700 hover:bg-indigo-200"
+            className="inline-flex items-center rounded-md bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700 hover:bg-blue-200"
           >
             <UserPlus className="mr-1 h-4 w-4" />
             New
@@ -172,8 +206,8 @@ const DoctorStatistics: React.FC = () => {
               <Link key={doctor._id} to={`/doctors/${doctor._id}`} className="block hover:bg-gray-50">
                 <div className="flex items-center px-6 py-4">
                   <div className="flex-shrink-0">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100">
-                      <Briefcase className="h-5 w-5 text-indigo-600" />
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100">
+                      <Briefcase className="h-5 w-5 text-blue-600" />
                     </div>
                   </div>
                   <div className="ml-4 min-w-0 flex-1">

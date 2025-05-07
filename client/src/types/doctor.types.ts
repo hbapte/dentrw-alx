@@ -3,7 +3,7 @@ import type { UserInfo } from "./patient.types"
 // Basic doctor information
 export interface Doctor {
   id: string
-  _id?: string 
+  _id?: string
   user?: UserInfo
   specialization: string
   qualifications: string[]
@@ -52,7 +52,8 @@ export type DayOfWeek = "monday" | "tuesday" | "wednesday" | "thursday" | "frida
 export interface Rating {
   rating: number
   review: string
-  patient: string 
+  patient: string
+  patientId?: string
   date: string
 }
 
@@ -62,6 +63,31 @@ export interface DoctorStatistics {
   specializationDistribution: Record<string, number>
   averageRating: number
   recentDoctors: Doctor[]
+  topRatedDoctors?: Doctor[]
+  specializations?: string[]
+  languages?: string[]
+}
+
+// Pagination
+export interface Pagination {
+  page: number
+  pageSize: number
+  totalItems: number
+  totalPages: number
+  hasNextPage: boolean
+  hasPreviousPage: boolean
+}
+
+// Filter options
+export interface DoctorFilters {
+  search: string
+  specialization: string
+  minExperience?: number
+  maxExperience?: number
+  language: string
+  minRating?: number
+  sortBy: string
+  sortOrder: "asc" | "desc"
 }
 
 // Doctor state for the store
@@ -70,10 +96,13 @@ export interface DoctorState {
   selectedDoctor: Doctor | null
   loading: boolean
   error: string | null
-  fetchDoctors: () => Promise<void>
+  pagination: Pagination
+  filters: DoctorFilters
+  setFilters: (filters: Partial<DoctorFilters>) => void
+  fetchDoctors: (page?: number, limit?: number) => Promise<void>
   fetchDoctorById: (id: string) => Promise<void>
-  createDoctor: (data: DoctorFormData) => Promise<void>
-  updateDoctor: (id: string, data: Partial<DoctorFormData>) => Promise<void>
+  createDoctor: (data: DoctorFormData) => Promise<Doctor>
+  updateDoctor: (id: string, data: Partial<DoctorFormData>) => Promise<Doctor>
   deleteDoctor: (id: string) => Promise<void>
   addRating: (doctorId: string, rating: number, review: string) => Promise<void>
   clearSelectedDoctor: () => void

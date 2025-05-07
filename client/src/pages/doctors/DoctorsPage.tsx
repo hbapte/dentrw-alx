@@ -1,3 +1,4 @@
+// client\src\pages\doctors\DoctorsPage.tsx
 "use client"
 
 import type React from "react"

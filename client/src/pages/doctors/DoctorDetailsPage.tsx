@@ -1,85 +1,116 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
-import type React from "react"
 import { useEffect, useState } from "react"
-import { useParams, Link, useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { useDoctorStore } from "../../store/doctor-store"
 import { useNotificationStore } from "../../store/notification-store"
 import { useAuthStore } from "../../store/auth-store"
-import { getDoctorFullName, formatDayOfWeek, formatRatingAsStars } from "../../utils/doctor.utils"
-import { formatDate } from "../../utils/date-utils"
-import {
-  ArrowLeft,
-  Edit,
-  Trash2,
-  Briefcase,
-  Award,
-  Globe,
-  DollarSign,
-  Clock,
-  Star,
-  Calendar,
-  MessageSquare,
-} from "lucide-react"
+import { getDoctorFullName } from "../../utils/doctor.utils"
+import { Edit, Plus, Trash2, UserPlus, Star, Briefcase, SlidersHorizontal } from "lucide-react"
 import Loader from "../../components/ui/Loader"
 import ErrorAlert from "../../components/ui/ErrorAlert"
+import SearchInput from "../../components/ui/SearchInput"
+import Pagination from "../../components/ui/Pagination"
 import ConfirmDialog from "../../components/ui/ConfirmDialog"
-import type { Rating } from "../../types/doctor.types"
 
-const DoctorDetailsPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>()
-  const navigate = useNavigate()
-  const { selectedDoctor, loading, error, fetchDoctorById, deleteDoctor, addRating, clearSelectedDoctor, clearError } =
+const DoctorsPage = () => {
+  const { doctors, loading, error, pagination, filters, setFilters, fetchDoctors, deleteDoctor, clearError } =
     useDoctorStore()
+
   const { showSuccess, showError } = useNotificationStore()
   const { user } = useAuthStore()
+  const navigate = useNavigate()
+
+  // Local state
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
-  const [isRatingDialogOpen, setIsRatingDialogOpen] = useState(false)
-  const [ratingValue, setRatingValue] = useState(5)
-  const [reviewText, setReviewText] = useState("")
+  const [doctorToDelete, setDoctorToDelete] = useState<string | null>(null)
+  const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false)
+  const [specializations, setSpecializations] = useState<string[]>([])
+  const [languages, setLanguages] = useState<string[]>([])
 
+  // Load doctors on mount and when filters change
   useEffect(() => {
-    if (id) {
-      fetchDoctorById(id)
-    }
+    fetchDoctors(pagination.page, pagination.pageSize)
+  }, [
+    fetchDoctors,
+    pagination.page,
+    pagination.pageSize,
+    filters.search,
+    filters.specialization,
+    filters.minExperience,
+    filters.maxExperience,
+    filters.language,
+    filters.minRating,
+    filters.sortBy,
+    filters.sortOrder,
+  ])
 
-    return () => {
-      clearSelectedDoctor()
-    }
-  }, [id, fetchDoctorById, clearSelectedDoctor])
-
-  const handleDelete = async () => {
-    if (id) {
+  // Fetch specializations and languages for filters
+  useEffect(() => {
+    const fetchFilterOptions = async () => {
       try {
-        await deleteDoctor(id)
+        const response = await fetch("/api/doctors/stats")
+        const data = await response.json()
+
+        if (data.success && data.data) {
+          setSpecializations(data.data.specializations || [])
+          setLanguages(data.data.languages || [])
+        }
+      } catch (error) {
+        console.error("Failed to fetch filter options:", error)
+      }
+    }
+
+    fetchFilterOptions()
+  }, [])
+
+  const handleSearchChange = (value: string) => {
+    setFilters({ search: value })
+    // Reset to first page when search changes
+    if (pagination.page !== 1) {
+      fetchDoctors(1, pagination.pageSize)
+    }
+  }
+
+  const handlePageChange = (page: number) => {
+    fetchDoctors(page, pagination.pageSize)
+  }
+
+  const handleDeleteClick = (id: string) => {
+    setDoctorToDelete(id)
+    setIsDeleteDialogOpen(true)
+  }
+
+  const handleConfirmDelete = async () => {
+    if (doctorToDelete) {
+      try {
+        await deleteDoctor(doctorToDelete)
         showSuccess("Doctor deleted successfully")
-        navigate("/doctors")
-      } catch (err) {
+      } catch {
         showError("Failed to delete doctor")
       } finally {
         setIsDeleteDialogOpen(false)
+        setDoctorToDelete(null)
       }
     }
   }
 
-  const handleSubmitRating = async () => {
-    if (id) {
-      try {
-        await addRating(id, ratingValue, reviewText)
-        showSuccess("Rating submitted successfully")
-        setIsRatingDialogOpen(false)
-        setRatingValue(5)
-        setReviewText("")
-      } catch (err) {
-        showError("Failed to submit rating")
-      }
-    }
+  const handleCancelDelete = () => {
+    setIsDeleteDialogOpen(false)
+    setDoctorToDelete(null)
   }
 
+  const handleApplyFilters = (newFilters: any) => {
+    setFilters(newFilters)
+    setIsFilterDialogOpen(false)
+    fetchDoctors(1, pagination.pageSize) // Reset to first page with new filters
+  }
+
+  // Check if user has admin role
   const isAdmin = user?.role === "admin"
-  const isPatient = user?.role === "patient"
 
-  if (loading && !selectedDoctor) {
+  if (loading && doctors.length === 0) {
     return (
       <div className="flex h-64 items-center justify-center">
         <Loader size="large" />
@@ -87,210 +118,191 @@ const DoctorDetailsPage: React.FC = () => {
     )
   }
 
-  if (error) {
-    return <ErrorAlert message={error} onClose={clearError} />
-  }
-
-  if (!selectedDoctor) {
-    return (
-      <div className="rounded-md bg-yellow-50 p-4">
-        <div className="flex">
-          <div className="flex-shrink-0">
-            <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
-              <path
-                fillRule="evenodd"
-                d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </div>
-          <div className="ml-3">
-            <h3 className="text-sm font-medium text-yellow-800">Doctor not found</h3>
-            <div className="mt-2 text-sm text-yellow-700">
-              <p>The doctor you are looking for does not exist or has been removed.</p>
-            </div>
-            <div className="mt-4">
-              <Link
-                to="/doctors"
-                className="rounded-md bg-yellow-50 px-2 py-1.5 text-sm font-medium text-yellow-800 hover:bg-yellow-100 focus:outline-none focus:ring-2 focus:ring-yellow-600 focus:ring-offset-2"
-              >
-                Go back to doctors
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  const doctorName = getDoctorFullName(selectedDoctor)
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <Link to="/doctors" className="text-gray-500 hover:text-gray-700">
-            <ArrowLeft className="h-5 w-5" />
-          </Link>
-          <h1 className="text-2xl font-bold text-gray-900">Doctor Details</h1>
-        </div>
+        <h1 className="text-2xl font-bold text-gray-900">Doctors</h1>
         {isAdmin && (
-          <div className="flex space-x-2">
-            <Link
-              to={`/doctors/edit/${id}`}
-              className="inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            >
-              <Edit className="mr-2 h-4 w-4" />
-              Edit
-            </Link>
-            <button
-              onClick={() => setIsDeleteDialogOpen(true)}
-              className="inline-flex items-center rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-            >
-              <Trash2 className="mr-2 h-4 w-4" />
-              Delete
-            </button>
-          </div>
+          <Link
+            to="/doctors/add"
+            className="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            <UserPlus className="mr-2 h-5 w-5" />
+            Add Doctor
+          </Link>
         )}
       </div>
 
-      <div className="overflow-hidden rounded-lg bg-white shadow">
-        <div className="px-4 py-5 sm:px-6">
-          <div className="flex items-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-indigo-100">
-              <Briefcase className="h-6 w-6 text-indigo-600" />
-            </div>
-            <div className="ml-4">
-              <h2 className="text-xl font-bold text-gray-900">{doctorName}</h2>
-              <p className="text-sm text-gray-500">{selectedDoctor.specialization}</p>
-            </div>
-            <div className="ml-auto flex items-center">
-              <div className="flex items-center">
-                <Star className="h-5 w-5 text-yellow-400" />
-                <span className="ml-1 text-lg font-medium">
-                  {selectedDoctor.averageRating ? selectedDoctor.averageRating.toFixed(1) : "N/A"}
-                </span>
-              </div>
-              {isPatient && (
-                <button
-                  onClick={() => setIsRatingDialogOpen(true)}
-                  className="ml-4 inline-flex items-center rounded-md bg-indigo-50 px-3 py-1 text-sm font-medium text-indigo-700 hover:bg-indigo-100"
+      {error && <ErrorAlert message={error} onClose={clearError} />}
+
+      <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+        <div className="flex items-center space-x-2 w-full sm:max-w-md">
+          <SearchInput
+            placeholder="Search doctors..."
+            value={filters.search}
+            onChange={handleSearchChange}
+            className="w-full"
+          />
+          <button
+            onClick={() => setIsFilterDialogOpen(true)}
+            className="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm border border-gray-300 hover:bg-gray-50"
+          >
+            <SlidersHorizontal className="h-4 w-4 mr-1" />
+            Filters
+          </button>
+        </div>
+        <div className="text-sm text-gray-500">
+          Showing {pagination.totalItems > 0 ? (pagination.page - 1) * pagination.pageSize + 1 : 0} to{" "}
+          {Math.min(pagination.page * pagination.pageSize, pagination.totalItems)} of {pagination.totalItems} doctors
+        </div>
+      </div>
+
+      {doctors.length > 0 ? (
+        <>
+          <div className="overflow-hidden rounded-lg border border-gray-200 shadow">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                  >
+                    Doctor
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                  >
+                    Specialization
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                  >
+                    Experience
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                  >
+                    Rating
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                  >
+                    Fee
+                  </th>
+                  <th scope="col" className="relative px-6 py-3">
+                    <span className="sr-only">Actions</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200 bg-white">
+                {doctors.map((doctor) => (
+                  <tr
+                    key={doctor.id || doctor._id}
+                    className="cursor-pointer hover:bg-gray-50"
+                    onClick={() => navigate(`/doctors/${doctor.id || doctor._id}`)}
+                  >
+                    <td className="whitespace-nowrap px-6 py-4">
+                      <div className="flex items-center">
+                        <div className="h-10 w-10 flex-shrink-0">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 text-indigo-600">
+                            <Briefcase className="h-5 w-5" />
+                          </div>
+                        </div>
+                        <div className="ml-4">
+                          <div className="text-sm font-medium text-gray-900">{getDoctorFullName(doctor)}</div>
+                          <div className="text-sm text-gray-500">
+                            {doctor.qualifications?.slice(0, 2).join(", ")}
+                            {doctor.qualifications?.length > 2 ? "..." : ""}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">{doctor.specialization}</td>
+                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                      {doctor.experience} {doctor.experience === 1 ? "year" : "years"}
+                    </td>
+                    <td className="whitespace-nowrap px-6 py-4">
+                      <div className="flex items-center">
+                        <Star className="h-4 w-4 text-yellow-400" />
+                        <span className="ml-1 text-sm text-gray-900">
+                          {doctor.averageRating ? doctor.averageRating.toFixed(1) : "N/A"}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
+                      ${doctor.consultationFee.toFixed(2)}
+                    </td>
+                    <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
+                      {isAdmin && (
+                        <div className="flex items-center justify-end space-x-2">
+                          <Link
+                            to={`/doctors/edit/${doctor.id || doctor._id}`}
+                            className="text-indigo-600 hover:text-indigo-900"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <Edit className="h-5 w-5" />
+                            <span className="sr-only">Edit</span>
+                          </Link>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleDeleteClick(doctor.id || doctor._id || "")
+                            }}
+                            className="text-red-600 hover:text-red-900"
+                          >
+                            <Trash2 className="h-5 w-5" />
+                            <span className="sr-only">Delete</span>
+                          </button>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <Pagination
+            currentPage={pagination.page}
+            totalPages={pagination.totalPages}
+            onPageChange={handlePageChange}
+            hasNextPage={pagination.hasNextPage}
+            hasPreviousPage={pagination.hasPreviousPage}
+          />
+        </>
+      ) : (
+        <div className="flex h-64 flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-12 text-center">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-indigo-100">
+            <Briefcase className="h-6 w-6 text-indigo-600" />
+          </div>
+          <h3 className="mt-2 text-sm font-medium text-gray-900">No doctors found</h3>
+          <p className="mt-1 text-sm text-gray-500">
+            {filters.search || filters.specialization || filters.language || filters.minExperience || filters.minRating
+              ? "Try adjusting your search or filter terms"
+              : "Get started by adding a new doctor"}
+          </p>
+          {!filters.search &&
+            !filters.specialization &&
+            !filters.language &&
+            !filters.minExperience &&
+            !filters.minRating &&
+            isAdmin && (
+              <div className="mt-6">
+                <Link
+                  to="/doctors/add"
+                  className="inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
-                  <Star className="mr-1 h-4 w-4" />
-                  Rate
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-        <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
-          <dl className="sm:divide-y sm:divide-gray-200">
-            <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 sm:py-5">
-              <dt className="flex items-center text-sm font-medium text-gray-500">
-                <Award className="mr-2 h-5 w-5 text-gray-400" />
-                Qualifications
-              </dt>
-              <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                {selectedDoctor.qualifications?.join(", ") || "Not specified"}
-              </dd>
-            </div>
-            <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 sm:py-5">
-              <dt className="flex items-center text-sm font-medium text-gray-500">
-                <Calendar className="mr-2 h-5 w-5 text-gray-400" />
-                Experience
-              </dt>
-              <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                {selectedDoctor.experience} {selectedDoctor.experience === 1 ? "year" : "years"}
-              </dd>
-            </div>
-            <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 sm:py-5">
-              <dt className="flex items-center text-sm font-medium text-gray-500">
-                <Globe className="mr-2 h-5 w-5 text-gray-400" />
-                Languages
-              </dt>
-              <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                {selectedDoctor.languages?.join(", ") || "Not specified"}
-              </dd>
-            </div>
-            <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 sm:py-5">
-              <dt className="flex items-center text-sm font-medium text-gray-500">
-                <DollarSign className="mr-2 h-5 w-5 text-gray-400" />
-                Consultation Fee
-              </dt>
-              <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                ${selectedDoctor.consultationFee.toFixed(2)}
-              </dd>
-            </div>
-            <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 sm:py-5">
-              <dt className="flex items-center text-sm font-medium text-gray-500">
-                <MessageSquare className="mr-2 h-5 w-5 text-gray-400" />
-                Bio
-              </dt>
-              <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                {selectedDoctor.bio || "No bio provided"}
-              </dd>
-            </div>
-          </dl>
-        </div>
-      </div>
-
-      {/* Availability Schedule */}
-      <div className="overflow-hidden rounded-lg bg-white shadow">
-        <div className="px-4 py-5 sm:px-6">
-          <h3 className="text-lg font-medium leading-6 text-gray-900">Availability Schedule</h3>
-        </div>
-        <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-6">
-            {selectedDoctor.availability?.map((daySchedule) => (
-              <div key={daySchedule.day} className="border rounded-md p-4">
-                <h4 className="font-medium text-gray-700 mb-2 flex items-center">
-                  <Clock className="h-4 w-4 mr-2 text-indigo-500" />
-                  {formatDayOfWeek(daySchedule.day)}
-                </h4>
-                {daySchedule.slots.length > 0 ? (
-                  <ul className="space-y-1">
-                    {daySchedule.slots.map((slot, index) => (
-                      <li key={index} className="text-sm text-gray-600">
-                        {slot.startTime} - {slot.endTime}
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="text-sm text-gray-500">Not available</p>
-                )}
+                  <Plus className="mr-2 h-5 w-5" />
+                  Add Doctor
+                </Link>
               </div>
-            ))}
-          </div>
+            )}
         </div>
-      </div>
-
-      {/* Ratings and Reviews */}
-      <div className="overflow-hidden rounded-lg bg-white shadow">
-        <div className="px-4 py-5 sm:px-6">
-          <h3 className="text-lg font-medium leading-6 text-gray-900">Ratings & Reviews</h3>
-        </div>
-        <div className="border-t border-gray-200">
-          {selectedDoctor.ratings && selectedDoctor.ratings.length > 0 ? (
-            <ul className="divide-y divide-gray-200">
-              {selectedDoctor.ratings.map((rating: Rating, index: number) => (
-                <li key={index} className="px-4 py-4 sm:px-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <Star className="h-5 w-5 text-yellow-400" />
-                      <span className="ml-1 text-sm font-medium text-gray-900">{rating.rating.toFixed(1)}</span>
-                      <span className="ml-2 text-sm text-yellow-500">{formatRatingAsStars(rating.rating)}</span>
-                    </div>
-                    <span className="text-sm text-gray-500">{formatDate(rating.date)}</span>
-                  </div>
-                  <p className="mt-2 text-sm text-gray-600">{rating.review}</p>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <div className="px-4 py-5 text-center text-sm text-gray-500 sm:px-6">No ratings yet</div>
-          )}
-        </div>
-      </div>
+      )}
 
       {/* Delete Confirmation Dialog */}
       <ConfirmDialog
@@ -299,61 +311,216 @@ const DoctorDetailsPage: React.FC = () => {
         message="Are you sure you want to delete this doctor? This action cannot be undone and will remove all associated data including appointments and ratings."
         confirmText="Delete"
         cancelText="Cancel"
-        onConfirm={handleDelete}
-        onCancel={() => setIsDeleteDialogOpen(false)}
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
         type="danger"
       />
 
-      {/* Rating Dialog */}
-      <ConfirmDialog
-        isOpen={isRatingDialogOpen}
-        title="Rate Doctor"
-        confirmText="Submit"
-        cancelText="Cancel"
-        onConfirm={handleSubmitRating}
-        onCancel={() => setIsRatingDialogOpen(false)}
-        type="primary"
-        customContent={
-          <div className="mt-4 space-y-4">
-            <div>
-              <label htmlFor="rating" className="block text-sm font-medium text-gray-700">
-                Rating
-              </label>
-              <div className="mt-1 flex items-center space-x-1">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <button
-                    key={star}
-                    type="button"
-                    onClick={() => setRatingValue(star)}
-                    className={`rounded-full p-1 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${
-                      ratingValue >= star ? "text-yellow-400" : "text-gray-300"
-                    }`}
-                  >
-                    <Star className="h-6 w-6" />
-                  </button>
-                ))}
-              </div>
+      {/* Filter Dialog */}
+      {isFilterDialogOpen && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex min-h-screen items-end justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <div className="fixed inset-0 transition-opacity" aria-hidden="true">
+              <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
             </div>
-            <div>
-              <label htmlFor="review" className="block text-sm font-medium text-gray-700">
-                Review
-              </label>
-              <div className="mt-1">
-                <textarea
-                  id="review"
-                  rows={4}
-                  value={reviewText}
-                  onChange={(e) => setReviewText(e.target.value)}
-                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  placeholder="Share your experience with this doctor"
-                />
+            <span className="hidden sm:inline-block sm:h-screen sm:align-middle" aria-hidden="true">
+              &#8203;
+            </span>
+            <div className="inline-block transform overflow-hidden rounded-lg bg-white text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle">
+              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div className="sm:flex sm:items-start">
+                  <div className="mt-3 w-full text-center sm:mt-0 sm:ml-4 sm:text-left">
+                    <h3 className="text-lg font-medium leading-6 text-gray-900">Filter Doctors</h3>
+                    <div className="mt-4 space-y-4">
+                      {/* Specialization Filter */}
+                      <div>
+                        <label htmlFor="specialization" className="block text-sm font-medium text-gray-700">
+                          Specialization
+                        </label>
+                        <select
+                          id="specialization"
+                          value={filters.specialization}
+                          onChange={(e) => setFilters({ ...filters, specialization: e.target.value })}
+                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        >
+                          <option value="">All Specializations</option>
+                          {specializations.map((spec) => (
+                            <option key={spec} value={spec}>
+                              {spec}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Language Filter */}
+                      <div>
+                        <label htmlFor="language" className="block text-sm font-medium text-gray-700">
+                          Language
+                        </label>
+                        <select
+                          id="language"
+                          value={filters.language}
+                          onChange={(e) => setFilters({ ...filters, language: e.target.value })}
+                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        >
+                          <option value="">All Languages</option>
+                          {languages.map((lang) => (
+                            <option key={lang} value={lang}>
+                              {lang}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Experience Range */}
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label htmlFor="minExperience" className="block text-sm font-medium text-gray-700">
+                            Min Experience
+                          </label>
+                          <input
+                            type="number"
+                            id="minExperience"
+                            min="0"
+                            value={filters.minExperience || ""}
+                            onChange={(e) =>
+                              setFilters({
+                                ...filters,
+                                minExperience: e.target.value ? Number.parseInt(e.target.value) : undefined,
+                              })
+                            }
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                          />
+                        </div>
+                        <div>
+                          <label htmlFor="maxExperience" className="block text-sm font-medium text-gray-700">
+                            Max Experience
+                          </label>
+                          <input
+                            type="number"
+                            id="maxExperience"
+                            min="0"
+                            value={filters.maxExperience || ""}
+                            onChange={(e) =>
+                              setFilters({
+                                ...filters,
+                                maxExperience: e.target.value ? Number.parseInt(e.target.value) : undefined,
+                              })
+                            }
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Minimum Rating */}
+                      <div>
+                        <label htmlFor="minRating" className="block text-sm font-medium text-gray-700">
+                          Minimum Rating
+                        </label>
+                        <select
+                          id="minRating"
+                          value={filters.minRating || ""}
+                          onChange={(e) =>
+                            setFilters({
+                              ...filters,
+                              minRating: e.target.value ? Number.parseFloat(e.target.value) : undefined,
+                            })
+                          }
+                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        >
+                          <option value="">Any Rating</option>
+                          <option value="1">1+ Stars</option>
+                          <option value="2">2+ Stars</option>
+                          <option value="3">3+ Stars</option>
+                          <option value="4">4+ Stars</option>
+                          <option value="4.5">4.5+ Stars</option>
+                        </select>
+                      </div>
+
+                      {/* Sort Options */}
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label htmlFor="sortBy" className="block text-sm font-medium text-gray-700">
+                            Sort By
+                          </label>
+                          <select
+                            id="sortBy"
+                            value={filters.sortBy}
+                            onChange={(e) => setFilters({ ...filters, sortBy: e.target.value })}
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                          >
+                            <option value="createdAt">Date Added</option>
+                            <option value="experience">Experience</option>
+                            <option value="averageRating">Rating</option>
+                            <option value="consultationFee">Fee</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label htmlFor="sortOrder" className="block text-sm font-medium text-gray-700">
+                            Order
+                          </label>
+                          <select
+                            id="sortOrder"
+                            value={filters.sortOrder}
+                            onChange={(e) =>
+                              setFilters({
+                                ...filters,
+                                sortOrder: e.target.value as "asc" | "desc",
+                              })
+                            }
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                          >
+                            <option value="desc">Descending</option>
+                            <option value="asc">Ascending</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                <button
+                  type="button"
+                  className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
+                  onClick={() => handleApplyFilters(filters)}
+                >
+                  Apply Filters
+                </button>
+                <button
+                  type="button"
+                  className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:w-auto sm:text-sm"
+                  onClick={() => {
+                    setFilters({
+                      search: "",
+                      specialization: "",
+                      minExperience: undefined,
+                      maxExperience: undefined,
+                      language: "",
+                      minRating: undefined,
+                      sortBy: "createdAt",
+                      sortOrder: "desc",
+                    })
+                    setIsFilterDialogOpen(false)
+                    fetchDoctors(1, pagination.pageSize)
+                  }}
+                >
+                  Reset Filters
+                </button>
+                <button
+                  type="button"
+                  className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                  onClick={() => setIsFilterDialogOpen(false)}
+                >
+                  Cancel
+                </button>
               </div>
             </div>
           </div>
-        }
-      />
+        </div>
+      )}
     </div>
   )
 }
 
-export default DoctorDetailsPage
+export default DoctorsPage
