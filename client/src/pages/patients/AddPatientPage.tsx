@@ -1,3 +1,4 @@
+// client\src\pages\patients\AddPatientPage.tsx
 "use client"
 
 import type React from "react"

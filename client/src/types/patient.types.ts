@@ -1,4 +1,3 @@
-// Basic patient information
 export interface Patient {
   id: string
   _id?: string
@@ -78,6 +77,24 @@ export interface UserInfo {
   lastLogin?: string
 }
 
+// Pagination
+export interface Pagination {
+  page: number
+  pageSize: number
+  totalItems: number
+  totalPages: number
+  hasNextPage: boolean
+  hasPreviousPage: boolean
+}
+
+// Filter options
+export interface PatientFilters {
+  search: string
+  gender?: "male" | "female" | "other"
+  sortBy: string
+  sortOrder: "asc" | "desc"
+}
+
 // Patient statistics
 export interface PatientStatistics {
   totalPatients: number
@@ -96,10 +113,13 @@ export interface PatientState {
   selectedPatient: Patient | null
   loading: boolean
   error: string | null
-  fetchPatients: () => Promise<void>
+  pagination: Pagination
+  filters: PatientFilters
+  setFilters: (filters: Partial<PatientFilters>) => void
+  fetchPatients: (page?: number, limit?: number) => Promise<void>
   fetchPatientById: (id: string) => Promise<void>
-  createPatient: (data: PatientFormData) => Promise<void>
-  updatePatient: (id: string, data: Partial<PatientFormData>) => Promise<void>
+  createPatient: (data: PatientFormData) => Promise<Patient>
+  updatePatient: (id: string, data: Partial<PatientFormData>) => Promise<Patient>
   deletePatient: (id: string) => Promise<void>
   clearSelectedPatient: () => void
   clearError: () => void

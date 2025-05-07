@@ -1,63 +1,58 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
-import type React from "react"
 import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { usePatientStore } from "../../store/patient-store"
 import { useNotificationStore } from "../../store/notification-store"
+import { useAuthStore } from "../../store/auth-store"
 import { formatDate } from "../../utils/date-utils"
 import { formatPhoneNumber } from "../../utils/format-utils"
 import { getPatientFullName } from "../../utils/patient.utils"
-import { Edit, Plus, Trash2, User, UserPlus } from "lucide-react"
+import { Edit, Plus, Trash2, User, UserPlus, SlidersHorizontal } from "lucide-react"
 import Loader from "../../components/ui/Loader"
 import ErrorAlert from "../../components/ui/ErrorAlert"
 import SearchInput from "../../components/ui/SearchInput"
 import Pagination from "../../components/ui/Pagination"
 import ConfirmDialog from "../../components/ui/ConfirmDialog"
-import type { Patient } from "../../types/patient.types"
 
-const PatientsPage: React.FC = () => {
-  const { patients, loading, error, fetchPatients, deletePatient, clearError } = usePatientStore()
+const PatientsPage = () => {
+  const { patients, loading, error, pagination, filters, setFilters, fetchPatients, deletePatient, clearError } =
+    usePatientStore()
+
   const { showSuccess, showError } = useNotificationStore()
+  const { user } = useAuthStore()
   const navigate = useNavigate()
 
   // Local state
-  const [searchTerm, setSearchTerm] = useState("")
-  const [currentPage, setCurrentPage] = useState(1)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const [patientToDelete, setPatientToDelete] = useState<string | null>(null)
-  const itemsPerPage = 10
+  const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false)
 
+  // Load patients on mount and when filters change
   useEffect(() => {
-    fetchPatients()
-  }, [fetchPatients])
+    fetchPatients(pagination.page, pagination.pageSize)
+  }, [
+    fetchPatients,
+    pagination.page,
+    pagination.pageSize,
+    filters.search,
+    filters.gender,
+    filters.sortBy,
+    filters.sortOrder,
+  ])
 
-  // Filter patients based on search term
-  const filteredPatients = patients.filter((patient: Patient) => {
-    const searchLower = searchTerm.toLowerCase()
-    const firstName = patient.firstName?.toLowerCase() || ""
-    const lastName = patient.lastName?.toLowerCase() || ""
-    const email = patient.email?.toLowerCase() || patient.user?.email?.toLowerCase() || ""
-    const phone = patient.phone || patient.user?.phoneNumber || ""
-    const fullName = getPatientFullName(patient).toLowerCase()
+  const handleSearchChange = (value: string) => {
+    setFilters({ search: value })
+    // Reset to first page when search changes
+    if (pagination.page !== 1) {
+      fetchPatients(1, pagination.pageSize)
+    }
+  }
 
-    return (
-      firstName.includes(searchLower) ||
-      lastName.includes(searchLower) ||
-      fullName.includes(searchLower) ||
-      email.includes(searchLower) ||
-      phone.includes(searchTerm)
-    )
-  })
-
-  // Pagination
-  const totalPages = Math.ceil(filteredPatients.length / itemsPerPage)
-  const paginatedPatients = filteredPatients.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-
-  // Reset to first page when search changes
-  useEffect(() => {
-    setCurrentPage(1)
-  }, [searchTerm])
+  const handlePageChange = (page: number) => {
+    fetchPatients(page, pagination.pageSize)
+  }
 
   const handleDeleteClick = (id: string) => {
     setPatientToDelete(id)
@@ -83,6 +78,15 @@ const PatientsPage: React.FC = () => {
     setPatientToDelete(null)
   }
 
+  const handleApplyFilters = (newFilters: any) => {
+    setFilters(newFilters)
+    setIsFilterDialogOpen(false)
+    fetchPatients(1, pagination.pageSize) // Reset to first page with new filters
+  }
+
+  // Check if user has admin or doctor role
+  const canManagePatients = user?.role === "admin" || user?.role === "doctor"
+
   if (loading && patients.length === 0) {
     return (
       <div className="flex h-64 items-center justify-center">
@@ -95,31 +99,42 @@ const PatientsPage: React.FC = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Patients</h1>
-        <Link
-          to="/patients/add"
-          className="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-        >
-          <UserPlus className="mr-2 h-5 w-5" />
-          Add Patient
-        </Link>
+        {canManagePatients && (
+          <Link
+            to="/patients/add"
+            className="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            <UserPlus className="mr-2 h-5 w-5" />
+            Add Patient
+          </Link>
+        )}
       </div>
 
       {error && <ErrorAlert message={error} onClose={clearError} />}
 
       <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
-        <SearchInput
-          placeholder="Search patients..."
-          value={searchTerm}
-          onChange={setSearchTerm}
-          className="w-full sm:max-w-xs"
-        />
+        <div className="flex items-center space-x-2 w-full sm:max-w-md">
+          <SearchInput
+            placeholder="Search patients..."
+            value={filters.search}
+            onChange={handleSearchChange}
+            className="w-full"
+          />
+          <button
+            onClick={() => setIsFilterDialogOpen(true)}
+            className="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm border border-gray-300 hover:bg-gray-50"
+          >
+            <SlidersHorizontal className="h-4 w-4 mr-1" />
+            Filters
+          </button>
+        </div>
         <div className="text-sm text-gray-500">
-          Showing {filteredPatients.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0} to{" "}
-          {Math.min(currentPage * itemsPerPage, filteredPatients.length)} of {filteredPatients.length} patients
+          Showing {pagination.totalItems > 0 ? (pagination.page - 1) * pagination.pageSize + 1 : 0} to{" "}
+          {Math.min(pagination.page * pagination.pageSize, pagination.totalItems)} of {pagination.totalItems} patients
         </div>
       </div>
 
-      {filteredPatients.length > 0 ? (
+      {patients.length > 0 ? (
         <>
           <div className="overflow-hidden rounded-lg border border-gray-200 shadow">
             <table className="min-w-full divide-y divide-gray-200">
@@ -155,7 +170,7 @@ const PatientsPage: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 bg-white">
-                {paginatedPatients.map((patient) => (
+                {patients.map((patient) => (
                   <tr
                     key={patient.id || patient._id}
                     className="cursor-pointer hover:bg-gray-50"
@@ -170,6 +185,9 @@ const PatientsPage: React.FC = () => {
                         </div>
                         <div className="ml-4">
                           <div className="text-sm font-medium text-gray-900">{getPatientFullName(patient)}</div>
+                          <div className="text-sm text-gray-500">
+                            {patient.gender ? patient.gender.charAt(0).toUpperCase() + patient.gender.slice(1) : ""}
+                          </div>
                         </div>
                       </div>
                     </td>
@@ -186,26 +204,28 @@ const PatientsPage: React.FC = () => {
                       {formatDate(patient.createdAt)}
                     </td>
                     <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
-                      <div className="flex items-center justify-end space-x-2">
-                        <Link
-                          to={`/patients/edit/${patient.id || patient._id}`}
-                          className="text-indigo-600 hover:text-indigo-900"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <Edit className="h-5 w-5" />
-                          <span className="sr-only">Edit</span>
-                        </Link>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            handleDeleteClick(patient.id || patient._id || "")
-                          }}
-                          className="text-red-600 hover:text-red-900"
-                        >
-                          <Trash2 className="h-5 w-5" />
-                          <span className="sr-only">Delete</span>
-                        </button>
-                      </div>
+                      {canManagePatients && (
+                        <div className="flex items-center justify-end space-x-2">
+                          <Link
+                            to={`/patients/edit/${patient.id || patient._id}`}
+                            className="text-indigo-600 hover:text-indigo-900"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <Edit className="h-5 w-5" />
+                            <span className="sr-only">Edit</span>
+                          </Link>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleDeleteClick(patient.id || patient._id || "")
+                            }}
+                            className="text-red-600 hover:text-red-900"
+                          >
+                            <Trash2 className="h-5 w-5" />
+                            <span className="sr-only">Delete</span>
+                          </button>
+                        </div>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -213,7 +233,13 @@ const PatientsPage: React.FC = () => {
             </table>
           </div>
 
-          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+          <Pagination
+            currentPage={pagination.page}
+            totalPages={pagination.totalPages}
+            onPageChange={handlePageChange}
+            hasNextPage={pagination.hasNextPage}
+            hasPreviousPage={pagination.hasPreviousPage}
+          />
         </>
       ) : (
         <div className="flex h-64 flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-12 text-center">
@@ -222,9 +248,11 @@ const PatientsPage: React.FC = () => {
           </div>
           <h3 className="mt-2 text-sm font-medium text-gray-900">No patients found</h3>
           <p className="mt-1 text-sm text-gray-500">
-            {searchTerm ? "Try adjusting your search terms" : "Get started by adding a new patient"}
+            {filters.search || filters.gender
+              ? "Try adjusting your search or filter terms"
+              : "Get started by adding a new patient"}
           </p>
-          {!searchTerm && (
+          {!filters.search && !filters.gender && canManagePatients && (
             <div className="mt-6">
               <Link
                 to="/patients/add"
@@ -238,6 +266,7 @@ const PatientsPage: React.FC = () => {
         </div>
       )}
 
+      {/* Delete Confirmation Dialog */}
       <ConfirmDialog
         isOpen={isDeleteDialogOpen}
         title="Delete Patient"
@@ -248,6 +277,124 @@ const PatientsPage: React.FC = () => {
         onCancel={handleCancelDelete}
         type="danger"
       />
+
+      {/* Filter Dialog */}
+      {isFilterDialogOpen && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex min-h-screen items-end justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <div className="fixed inset-0 transition-opacity" aria-hidden="true">
+              <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+            <span className="hidden sm:inline-block sm:h-screen sm:align-middle" aria-hidden="true">
+              &#8203;
+            </span>
+            <div className="inline-block transform overflow-hidden rounded-lg bg-white text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle">
+              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div className="sm:flex sm:items-start">
+                  <div className="mt-3 w-full text-center sm:mt-0 sm:ml-4 sm:text-left">
+                    <h3 className="text-lg font-medium leading-6 text-gray-900">Filter Patients</h3>
+                    <div className="mt-4 space-y-4">
+                      {/* Gender Filter */}
+                      <div>
+                        <label htmlFor="gender" className="block text-sm font-medium text-gray-700">
+                          Gender
+                        </label>
+                        <select
+                          id="gender"
+                          value={filters.gender || ""}
+                          onChange={(e) =>
+                            setFilters({
+                              ...filters,
+                              gender: e.target.value ? (e.target.value as "male" | "female" | "other") : undefined,
+                            })
+                          }
+                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        >
+                          <option value="">All Genders</option>
+                          <option value="male">Male</option>
+                          <option value="female">Female</option>
+                          <option value="other">Other</option>
+                        </select>
+                      </div>
+
+                      {/* Sort Options */}
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label htmlFor="sortBy" className="block text-sm font-medium text-gray-700">
+                            Sort By
+                          </label>
+                          <select
+                            id="sortBy"
+                            value={filters.sortBy}
+                            onChange={(e) => setFilters({ ...filters, sortBy: e.target.value })}
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                          >
+                            <option value="createdAt">Date Added</option>
+                            <option value="firstName">First Name</option>
+                            <option value="lastName">Last Name</option>
+                            <option value="dateOfBirth">Date of Birth</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label htmlFor="sortOrder" className="block text-sm font-medium text-gray-700">
+                            Order
+                          </label>
+                          <select
+                            id="sortOrder"
+                            value={filters.sortOrder}
+                            onChange={(e) =>
+                              setFilters({
+                                ...filters,
+                                sortOrder: e.target.value as "asc" | "desc",
+                              })
+                            }
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                          >
+                            <option value="desc">Descending</option>
+                            <option value="asc">Ascending</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                <button
+                  type="button"
+                  className="inline-flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
+                  onClick={() => handleApplyFilters(filters)}
+                >
+                  Apply Filters
+                </button>
+                <button
+                  type="button"
+                  className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:w-auto sm:text-sm"
+                  onClick={() => {
+                    setFilters({
+                      search: "",
+                      gender: undefined,
+                      sortBy: "createdAt",
+                      sortOrder: "desc",
+                    })
+                    setIsFilterDialogOpen(false)
+                    fetchPatients(1, pagination.pageSize)
+                  }}
+                >
+                  Reset Filters
+                </button>
+                <button
+                  type="button"
+                  className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                  onClick={() => setIsFilterDialogOpen(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

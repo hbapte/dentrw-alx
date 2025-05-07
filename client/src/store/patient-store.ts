@@ -3,20 +3,51 @@ import { create } from "zustand"
 import PatientService from "../services/patient.service"
 import type { PatientState } from "../types/patient.types"
 
-export const usePatientStore = create<PatientState>((set) => ({
+export const usePatientStore = create<PatientState>((set, get) => ({
   patients: [],
   selectedPatient: null,
   loading: false,
   error: null,
+  pagination: {
+    page: 1,
+    pageSize: 10,
+    totalItems: 0,
+    totalPages: 1,
+    hasNextPage: false,
+    hasPreviousPage: false,
+  },
+  filters: {
+    search: "",
+    gender: undefined,
+    sortBy: "createdAt",
+    sortOrder: "desc",
+  },
 
-  fetchPatients: async () => {
+  setFilters: (filters) => {
+    set((state) => ({
+      filters: { ...state.filters, ...filters },
+    }))
+  },
+
+  fetchPatients: async (page = 1, limit = 10) => {
     try {
       set({ loading: true, error: null })
-      const patients = await PatientService.getAllPatients()
-      set({ patients, loading: false })
-    } catch (err: unknown) {
+
+      const { filters } = get()
+      const result = await PatientService.getAllPatients({
+        page,
+        limit,
+        ...filters,
+      })
+
       set({
-        error: err instanceof Error && (err as any).response?.data?.message || "Failed to fetch patients",
+        patients: result.patients,
+        pagination: result.pagination,
+        loading: false,
+      })
+    } catch (err: any) {
+      set({
+        error: err.message || "Failed to fetch patients",
         loading: false,
       })
     }
@@ -29,7 +60,7 @@ export const usePatientStore = create<PatientState>((set) => ({
       set({ selectedPatient: patient, loading: false })
     } catch (err: any) {
       set({
-        error: err.response?.data?.message || "Failed to fetch patient",
+        error: err.message || "Failed to fetch patient",
         loading: false,
       })
     }
@@ -43,9 +74,10 @@ export const usePatientStore = create<PatientState>((set) => ({
         patients: [...state.patients, newPatient],
         loading: false,
       }))
+      return newPatient
     } catch (err: any) {
       set({
-        error: err.response?.data?.message || "Failed to create patient",
+        error: err.message || "Failed to create patient",
         loading: false,
       })
       throw err
@@ -57,13 +89,16 @@ export const usePatientStore = create<PatientState>((set) => ({
       set({ loading: true, error: null })
       const updatedPatient = await PatientService.updatePatient(id, data)
       set((state) => ({
-        patients: state.patients.map((patient) => (patient.id === id ? updatedPatient : patient)),
+        patients: state.patients.map((patient) => 
+          (patient.id === id || patient._id === id) ? updatedPatient : patient
+        ),
         selectedPatient: updatedPatient,
         loading: false,
       }))
+      return updatedPatient
     } catch (err: any) {
       set({
-        error: err.response?.data?.message || "Failed to update patient",
+        error: err.message || "Failed to update patient",
         loading: false,
       })
       throw err
@@ -75,12 +110,14 @@ export const usePatientStore = create<PatientState>((set) => ({
       set({ loading: true, error: null })
       await PatientService.deletePatient(id)
       set((state) => ({
-        patients: state.patients.filter((patient) => patient.id !== id),
+        patients: state.patients.filter((patient) => 
+          patient.id !== id && patient._id !== id
+        ),
         loading: false,
       }))
     } catch (err: any) {
       set({
-        error: err.response?.data?.message || "Failed to delete patient",
+        error: err.message || "Failed to delete patient",
         loading: false,
       })
       throw err

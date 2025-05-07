@@ -1,11 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
-import type React from "react"
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts"
 import { Users, UserPlus } from "lucide-react"
-import api from "../../services/api"
+import PatientService from "../../services/patient.service"
 import Loader from "../ui/Loader"
 import type { PatientStatistics as PatientStatsType } from "../../types/patient.types"
 import { formatDate } from "../../utils/date-utils"
@@ -13,7 +13,7 @@ import { getPatientFullName } from "../../utils/patient.utils"
 
 const COLORS = ["#3b82f6", "#ec4899", "#10b981", "#6b7280"]
 
-const PatientStatistics: React.FC = () => {
+const PatientStatistics = () => {
   const [stats, setStats] = useState<PatientStatsType | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -22,11 +22,11 @@ const PatientStatistics: React.FC = () => {
     const fetchPatientStats = async () => {
       try {
         setLoading(true)
-        const response = await api.get("/patients/stats")
-        setStats(response.data.data)
+        const data = await PatientService.getPatientStats()
+        setStats(data)
         setError(null)
       } catch (err: any) {
-        setError(err.response?.data?.message || "Failed to fetch patient statistics")
+        setError(err.message || "Failed to fetch patient statistics")
       } finally {
         setLoading(false)
       }
@@ -108,33 +108,35 @@ const PatientStatistics: React.FC = () => {
       </div>
 
       {/* Gender Distribution Chart */}
-      <div className="overflow-hidden rounded-lg bg-white shadow">
-        <div className="p-5">
-          <h3 className="text-lg font-medium leading-6 text-gray-900">Patient Gender Distribution</h3>
-          <div className="mt-2 h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={genderData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                >
-                  {genderData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
+      {genderData.length > 0 && (
+        <div className="overflow-hidden rounded-lg bg-white shadow">
+          <div className="p-5">
+            <h3 className="text-lg font-medium leading-6 text-gray-900">Patient Gender Distribution</h3>
+            <div className="mt-2 h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={genderData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
+                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  >
+                    {genderData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Recent Patients */}
       <div className="overflow-hidden rounded-lg bg-white shadow">
