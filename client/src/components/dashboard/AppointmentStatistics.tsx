@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// client\src\components\dashboard\AppointmentStatistics.tsx
 "use client"
 
 import type React from "react"
@@ -11,7 +13,7 @@ import {
   formatAppointment,
   getStatusColor,
   getStatusLabel,
-  getTypeColor,
+  // getTypeColor,
   getTypeLabel,
 } from "../../utils/appointment.utils"
 import type { AppointmentStatistics as AppointmentStatsType } from "../../types/appointment.types"
@@ -168,7 +170,7 @@ const AppointmentStatistics: React.FC = () => {
                     dataKey="value"
                     label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                   >
-                    {statusData.map((entry, index) => (
+                    {statusData.map((_entry, index) => (
                       <Cell key={`cell-${index}`} fill={STATUS_COLORS[index % STATUS_COLORS.length]} />
                     ))}
                   </Pie>
@@ -197,7 +199,7 @@ const AppointmentStatistics: React.FC = () => {
                     dataKey="value"
                     label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                   >
-                    {typeData.map((entry, index) => (
+                    {typeData.map((_entry, index) => (
                       <Cell key={`cell-${index}`} fill={TYPE_COLORS[index % TYPE_COLORS.length]} />
                     ))}
                   </Pie>
@@ -228,7 +230,7 @@ const AppointmentStatistics: React.FC = () => {
               const formattedAppointment = formatAppointment(appointment)
               const statusColorClass = getStatusColor(appointment.status)
               const statusText = getStatusLabel(appointment.status)
-              const typeColorClass = getTypeColor(appointment.type)
+              // const typeColorClass = getTypeColor(appointment.type)
               const typeText = getTypeLabel(appointment.type)
 
               return (

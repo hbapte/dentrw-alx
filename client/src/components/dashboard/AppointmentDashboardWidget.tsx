@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// client\src\components\dashboard\AppointmentDashboardWidget.tsx
 import type React from "react"
 import { Link } from "react-router-dom"
 import { useAppointmentStore } from "../../store/appointment-store"

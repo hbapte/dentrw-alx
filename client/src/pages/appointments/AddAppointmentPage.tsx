@@ -25,6 +25,7 @@ const AddAppointmentPage: React.FC = () => {
       showSuccess("Appointment scheduled successfully")
       navigate("/appointments")
     } catch (error) {
+      console.error("Error scheduling appointment:", error)
       showError("Failed to schedule appointment")
     }
   }

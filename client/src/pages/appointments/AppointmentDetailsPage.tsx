@@ -1,15 +1,20 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+// client\src\pages\appointments\AppointmentDetailsPage.tsx
 "use client"
 
 import type React from "react"
 import { useEffect, useState } from "react"
-import { useParams, Link, useNavigate } from "react-router-dom"
+import { useParams, Link, 
+  // useNavigate
+ } from "react-router-dom"
 import { useAppointmentStore } from "../../store/appointment-store"
 import { useNotificationStore } from "../../store/notification-store"
 import {
   formatAppointment,
   getStatusColor,
   getStatusLabel,
-  getTypeColor,
+  // getTypeColor,
   getTypeLabel,
 } from "../../utils/appointment.utils"
 import {
@@ -31,7 +36,7 @@ import ConfirmDialog from "../../components/ui/ConfirmDialog"
 
 const AppointmentDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
   const {
     selectedAppointment,
     loading,
@@ -80,6 +85,7 @@ const AppointmentDetailsPage: React.FC = () => {
         setIsStatusDialogOpen(false)
         setNewStatus("")
       } catch (err) {
+        
         showError("Failed to update appointment status")
       }
     }
@@ -143,7 +149,7 @@ const AppointmentDetailsPage: React.FC = () => {
   const formattedAppointment = formatAppointment(selectedAppointment)
   const statusColorClass = getStatusColor(selectedAppointment.status)
   const statusText = getStatusLabel(selectedAppointment.status)
-  const typeColorClass = getTypeColor(selectedAppointment.type)
+  // const typeColorClass = getTypeColor(selectedAppointment.type)
   const typeText = getTypeLabel(selectedAppointment.type)
 
   const canEdit = selectedAppointment.status !== "cancelled" && selectedAppointment.status !== "completed"

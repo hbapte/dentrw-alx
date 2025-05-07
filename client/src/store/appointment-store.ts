@@ -1,9 +1,33 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand"
 import AppointmentService from "../services/appointment.service"
-import type { AppointmentState } from "../types/appointment.types"
+import type { 
+  AppointmentState, 
+  // AppointmentPaginationParams, 
+  AppointmentFilterParams,
+  PaginationMeta
+} from "../types/appointment.types"
 
-export const useAppointmentStore = create<AppointmentState>((set) => ({
+const DEFAULT_PAGINATION: PaginationMeta = {
+  page: 1,
+  pageSize: 10,
+  totalItems: 0,
+  totalPages: 0,
+  hasNextPage: false,
+  hasPreviousPage: false
+}
+
+const DEFAULT_FILTERS: AppointmentFilterParams = {
+  doctorId: undefined,
+  patientId: undefined,
+  status: undefined,
+  type: undefined,
+  startDate: undefined,
+  endDate: undefined,
+  search: undefined
+}
+
+export const useAppointmentStore = create<AppointmentState>((set, get) => ({
   appointments: [],
   selectedAppointment: null,
   upcomingAppointments: [],
@@ -11,15 +35,38 @@ export const useAppointmentStore = create<AppointmentState>((set) => ({
   statistics: null,
   loading: false,
   error: null,
+  pagination: DEFAULT_PAGINATION,
+  filters: DEFAULT_FILTERS,
 
-  fetchAppointments: async () => {
+  fetchAppointments: async (params) => {
     try {
       set({ loading: true, error: null })
-      const appointments = await AppointmentService.getAllAppointments()
-      set({ appointments, loading: false })
+      
+      // Combine current filters with any new params
+      const currentFilters = get().filters
+      const currentPage = get().pagination.page
+      
+      const queryParams = {
+        page: params?.page || currentPage,
+        limit: params?.limit || 10,
+        ...currentFilters,
+        ...params
+      }
+      
+      const result = await AppointmentService.getAllAppointments(queryParams)
+      
+      set({ 
+        appointments: result.appointments, 
+        pagination: result.pagination,
+        loading: false 
+      })
     } catch (err: any) {
+      const errorMessage = err.response?.data?.message || 
+                          err.response?.data?.error || 
+                          "Failed to fetch appointments"
+      
       set({
-        error: err.response?.data?.message || "Failed to fetch appointments",
+        error: errorMessage,
         loading: false,
       })
     }
@@ -31,34 +78,46 @@ export const useAppointmentStore = create<AppointmentState>((set) => ({
       const appointment = await AppointmentService.getAppointmentById(id)
       set({ selectedAppointment: appointment, loading: false })
     } catch (err: any) {
+      const errorMessage = err.response?.data?.message || 
+                          err.response?.data?.error || 
+                          "Failed to fetch appointment"
+      
       set({
-        error: err.response?.data?.message || "Failed to fetch appointment",
+        error: errorMessage,
         loading: false,
       })
     }
   },
 
-  fetchUpcomingAppointments: async () => {
+  fetchUpcomingAppointments: async (limit) => {
     try {
       set({ loading: true, error: null })
-      const appointments = await AppointmentService.getUpcomingAppointments()
+      const appointments = await AppointmentService.getUpcomingAppointments(limit)
       set({ upcomingAppointments: appointments, loading: false })
     } catch (err: any) {
+      const errorMessage = err.response?.data?.message || 
+                          err.response?.data?.error || 
+                          "Failed to fetch upcoming appointments"
+      
       set({
-        error: err.response?.data?.message || "Failed to fetch upcoming appointments",
+        error: errorMessage,
         loading: false,
       })
     }
   },
 
-  fetchAppointmentsByDate: async (date) => {
+  fetchAppointmentsByDate: async (date, doctorId) => {
     try {
       set({ loading: true, error: null })
-      const appointments = await AppointmentService.getAppointmentsByDate(date)
+      const appointments = await AppointmentService.getAppointmentsByDate(date, doctorId)
       set({ appointmentsByDate: appointments, loading: false })
     } catch (err: any) {
+      const errorMessage = err.response?.data?.message || 
+                          err.response?.data?.error || 
+                          "Failed to fetch appointments by date"
+      
       set({
-        error: err.response?.data?.message || "Failed to fetch appointments by date",
+        error: errorMessage,
         loading: false,
       })
     }
@@ -70,8 +129,12 @@ export const useAppointmentStore = create<AppointmentState>((set) => ({
       const statistics = await AppointmentService.getAppointmentStats()
       set({ statistics, loading: false })
     } catch (err: any) {
+      const errorMessage = err.response?.data?.message || 
+                          err.response?.data?.error || 
+                          "Failed to fetch statistics"
+      
       set({
-        error: err.response?.data?.message || "Failed to fetch statistics",
+        error: errorMessage,
         loading: false,
       })
     }
@@ -81,13 +144,26 @@ export const useAppointmentStore = create<AppointmentState>((set) => ({
     try {
       set({ loading: true, error: null })
       const newAppointment = await AppointmentService.createAppointment(data)
-      set((state) => ({
-        appointments: [...state.appointments, newAppointment],
-        loading: false,
-      }))
+      
+      // Update appointments list if we have appointments loaded
+      set((state) => {
+        if (state.appointments.length > 0) {
+          return {
+            appointments: [...state.appointments, newAppointment],
+            loading: false,
+          }
+        }
+        return { loading: false }
+      })
+      
+      return Promise.resolve()
     } catch (err: any) {
+      const errorMessage = err.response?.data?.message || 
+                          err.response?.data?.error || 
+                          "Failed to create appointment"
+      
       set({
-        error: err.response?.data?.message || "Failed to create appointment",
+        error: errorMessage,
         loading: false,
       })
       throw err
@@ -98,16 +174,26 @@ export const useAppointmentStore = create<AppointmentState>((set) => ({
     try {
       set({ loading: true, error: null })
       const updatedAppointment = await AppointmentService.updateAppointment(id, data)
+      
       set((state) => ({
         appointments: state.appointments.map((appointment) =>
-          appointment.id === id ? updatedAppointment : appointment,
+          appointment.id === id || appointment._id === id ? updatedAppointment : appointment,
         ),
-        selectedAppointment: updatedAppointment,
+        selectedAppointment: state.selectedAppointment && 
+          (state.selectedAppointment.id === id || state.selectedAppointment._id === id) 
+            ? updatedAppointment 
+            : state.selectedAppointment,
         loading: false,
       }))
+      
+      return Promise.resolve()
     } catch (err: any) {
+      const errorMessage = err.response?.data?.message || 
+                          err.response?.data?.error || 
+                          "Failed to update appointment"
+      
       set({
-        error: err.response?.data?.message || "Failed to update appointment",
+        error: errorMessage,
         loading: false,
       })
       throw err
@@ -118,16 +204,26 @@ export const useAppointmentStore = create<AppointmentState>((set) => ({
     try {
       set({ loading: true, error: null })
       const updatedAppointment = await AppointmentService.cancelAppointment(id, reason)
+      
       set((state) => ({
         appointments: state.appointments.map((appointment) =>
-          appointment.id === id ? updatedAppointment : appointment,
+          appointment.id === id || appointment._id === id ? updatedAppointment : appointment,
         ),
-        selectedAppointment: updatedAppointment,
+        selectedAppointment: state.selectedAppointment && 
+          (state.selectedAppointment.id === id || state.selectedAppointment._id === id) 
+            ? updatedAppointment 
+            : state.selectedAppointment,
         loading: false,
       }))
+      
+      return Promise.resolve()
     } catch (err: any) {
+      const errorMessage = err.response?.data?.message || 
+                          err.response?.data?.error || 
+                          "Failed to cancel appointment"
+      
       set({
-        error: err.response?.data?.message || "Failed to cancel appointment",
+        error: errorMessage,
         loading: false,
       })
       throw err
@@ -138,16 +234,26 @@ export const useAppointmentStore = create<AppointmentState>((set) => ({
     try {
       set({ loading: true, error: null })
       const updatedAppointment = await AppointmentService.changeAppointmentStatus(id, status)
+      
       set((state) => ({
         appointments: state.appointments.map((appointment) =>
-          appointment.id === id ? updatedAppointment : appointment,
+          appointment.id === id || appointment._id === id ? updatedAppointment : appointment,
         ),
-        selectedAppointment: updatedAppointment,
+        selectedAppointment: state.selectedAppointment && 
+          (state.selectedAppointment.id === id || state.selectedAppointment._id === id) 
+            ? updatedAppointment 
+            : state.selectedAppointment,
         loading: false,
       }))
+      
+      return Promise.resolve()
     } catch (err: any) {
+      const errorMessage = err.response?.data?.message || 
+                          err.response?.data?.error || 
+                          "Failed to change appointment status"
+      
       set({
-        error: err.response?.data?.message || "Failed to change appointment status",
+        error: errorMessage,
         loading: false,
       })
       throw err
@@ -158,16 +264,26 @@ export const useAppointmentStore = create<AppointmentState>((set) => ({
     try {
       set({ loading: true, error: null })
       const updatedAppointment = await AppointmentService.addAppointmentReminder(id, type)
+      
       set((state) => ({
         appointments: state.appointments.map((appointment) =>
-          appointment.id === id ? updatedAppointment : appointment,
+          appointment.id === id || appointment._id === id ? updatedAppointment : appointment,
         ),
-        selectedAppointment: updatedAppointment,
+        selectedAppointment: state.selectedAppointment && 
+          (state.selectedAppointment.id === id || state.selectedAppointment._id === id) 
+            ? updatedAppointment 
+            : state.selectedAppointment,
         loading: false,
       }))
+      
+      return Promise.resolve()
     } catch (err: any) {
+      const errorMessage = err.response?.data?.message || 
+                          err.response?.data?.error || 
+                          "Failed to add appointment reminder"
+      
       set({
-        error: err.response?.data?.message || "Failed to add appointment reminder",
+        error: errorMessage,
         loading: false,
       })
       throw err
@@ -181,12 +297,47 @@ export const useAppointmentStore = create<AppointmentState>((set) => ({
       set({ loading: false })
       return isAvailable
     } catch (err: any) {
+      const errorMessage = err.response?.data?.message || 
+                          err.response?.data?.error || 
+                          "Failed to check doctor availability"
+      
       set({
-        error: err.response?.data?.message || "Failed to check doctor availability",
+        error: errorMessage,
         loading: false,
       })
       return false
     }
+  },
+  
+  // Filter and pagination actions
+  setFilters: (filters) => {
+    set((state) => ({
+      filters: { ...state.filters, ...filters },
+      // Reset to page 1 when filters change
+      pagination: { ...state.pagination, page: 1 }
+    }))
+    
+    // Fetch appointments with new filters
+    get().fetchAppointments({ page: 1, ...filters })
+  },
+  
+  resetFilters: () => {
+    set({ 
+      filters: DEFAULT_FILTERS,
+      pagination: { ...get().pagination, page: 1 }
+    })
+    
+    // Fetch appointments with reset filters
+    get().fetchAppointments({ page: 1 })
+  },
+  
+  setPage: (page) => {
+    set((state) => ({
+      pagination: { ...state.pagination, page }
+    }))
+    
+    // Fetch appointments for the new page
+    get().fetchAppointments({ page })
   },
 
   clearSelectedAppointment: () => set({ selectedAppointment: null }),

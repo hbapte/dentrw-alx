@@ -1,4 +1,3 @@
-
 import type { Patient } from "./patient.types"
 import type { Doctor } from "./doctor.types"
 
@@ -6,7 +5,7 @@ import type { Doctor } from "./doctor.types"
 export interface Appointment {
   id: string
   _id?: string 
-  patient: string  | Patient | null
+  patient: string | Patient | null
   doctor: string | Doctor
   date: string
   startTime: string
@@ -44,6 +43,9 @@ export interface AppointmentFormData {
 export interface AvailabilityCheckData {
   doctorId: string
   date: string
+  startTime?: string
+  endTime?: string
+  appointmentId?: string
 }
 
 // Appointment statistics
@@ -56,6 +58,53 @@ export interface AppointmentStatistics {
   upcomingAppointments: Appointment[]
 }
 
+// Pagination parameters
+export interface AppointmentPaginationParams {
+  page?: number
+  limit?: number
+  sortBy?: string
+  sortOrder?: "asc" | "desc"
+}
+
+// Filter parameters
+export interface AppointmentFilterParams {
+  doctorId?: string
+  patientId?: string
+  status?: string
+  type?: string
+  startDate?: string
+  endDate?: string
+  search?: string
+}
+
+// Pagination metadata
+export interface PaginationMeta {
+  page: number
+  pageSize: number
+  totalItems: number
+  totalPages: number
+  hasNextPage: boolean
+  hasPreviousPage: boolean
+}
+
+// HATEOAS links
+export interface AppointmentLinks {
+  self?: string
+  doctors?: string
+  patients?: string
+  doctor?: string
+  patient?: string
+  cancel?: string
+  updateStatus?: string
+}
+
+// Paginated response
+export interface PaginatedAppointmentsResponse {
+  appointments: Appointment[]
+  pagination: PaginationMeta
+  links?: AppointmentLinks
+}
+
 // Appointment state for the store
 export interface AppointmentState {
   appointments: Appointment[]
@@ -65,10 +114,14 @@ export interface AppointmentState {
   statistics: AppointmentStatistics | null
   loading: boolean
   error: string | null
-  fetchAppointments: () => Promise<void>
+  pagination: PaginationMeta
+  filters: AppointmentFilterParams
+  
+  // Actions
+  fetchAppointments: (params?: AppointmentPaginationParams & AppointmentFilterParams) => Promise<void>
   fetchAppointmentById: (id: string) => Promise<void>
-  fetchUpcomingAppointments: () => Promise<void>
-  fetchAppointmentsByDate: (date: string) => Promise<void>
+  fetchUpcomingAppointments: (limit?: number) => Promise<void>
+  fetchAppointmentsByDate: (date: string, doctorId?: string) => Promise<void>
   fetchStatistics: () => Promise<void>
   createAppointment: (data: AppointmentFormData) => Promise<void>
   updateAppointment: (id: string, data: Partial<AppointmentFormData>) => Promise<void>
@@ -76,6 +129,13 @@ export interface AppointmentState {
   changeAppointmentStatus: (id: string, status: Appointment["status"]) => Promise<void>
   addAppointmentReminder: (id: string, type: "email" | "sms") => Promise<void>
   checkDoctorAvailability: (data: AvailabilityCheckData) => Promise<boolean>
+  
+  // Filter and pagination actions
+  setFilters: (filters: Partial<AppointmentFilterParams>) => void
+  resetFilters: () => void
+  setPage: (page: number) => void
+  
+  // Utility actions
   clearSelectedAppointment: () => void
   clearError: () => void
 }

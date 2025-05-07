@@ -43,6 +43,7 @@ const EditAppointmentPage: React.FC = () => {
         showSuccess("Appointment updated successfully")
         navigate(`/appointments/${id}`)
       } catch (error) {
+        console.error("Error updating appointment:", error)
         showError("Failed to update appointment")
       }
     }

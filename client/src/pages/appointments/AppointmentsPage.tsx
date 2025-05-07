@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client"
 
 import type React from "react"
@@ -5,6 +7,7 @@ import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { useAppointmentStore } from "../../store/appointment-store"
 import { useNotificationStore } from "../../store/notification-store"
+import { useAuthStore } from "../../store/auth-store"
 import {
   formatAppointment,
   getStatusColor,
@@ -12,66 +15,64 @@ import {
   getTypeColor,
   getTypeLabel,
 } from "../../utils/appointment.utils"
-import { Edit, Plus, Trash2, Calendar, Filter, Clock } from "lucide-react"
+import { Edit, Plus, Trash2, Calendar, Filter, Clock, Search, X, ChevronLeft, ChevronRight } from "lucide-react"
 import Loader from "../../components/ui/Loader"
 import ErrorAlert from "../../components/ui/ErrorAlert"
-import SearchInput from "../../components/ui/SearchInput"
-import Pagination from "../../components/ui/Pagination"
 import ConfirmDialog from "../../components/ui/ConfirmDialog"
+import EmptyState from "../../components/ui/EmptyState"
 
 const AppointmentsPage: React.FC = () => {
-  const { appointments, loading, error, fetchAppointments, cancelAppointment, clearError } = useAppointmentStore()
+  const {
+    appointments,
+    loading,
+    error,
+    pagination,
+    filters,
+    fetchAppointments,
+    cancelAppointment,
+    clearError,
+    setFilters,
+    resetFilters,
+    setPage,
+  } = useAppointmentStore()
+
   const { showSuccess, showError } = useNotificationStore()
+  const { user } = useAuthStore()
   const navigate = useNavigate()
 
   // Local state
-  const [searchTerm, setSearchTerm] = useState("")
-  const [currentPage, setCurrentPage] = useState(1)
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false)
   const [appointmentToCancel, setAppointmentToCancel] = useState<string | null>(null)
   const [cancelReason, setCancelReason] = useState("")
-  const [statusFilter, setStatusFilter] = useState<string>("all")
-  const [typeFilter, setTypeFilter] = useState<string>("all")
-  const [dateFilter, setDateFilter] = useState<string>("")
-  const itemsPerPage = 10
+  const [searchTerm, setSearchTerm] = useState(filters.search || "")
+  const [searchDebounceTimeout, setSearchDebounceTimeout] = useState<NodeJS.Timeout | null>(null)
+
+  // Check if user has permission to manage appointments
+  const canManageAppointments = user && ["admin", "doctor", "receptionist"].includes(user.role)
 
   useEffect(() => {
+    // Initial fetch of appointments
     fetchAppointments()
   }, [fetchAppointments])
 
-  // Filter appointments based on search term, status, type, and date
-  const filteredAppointments = appointments
-    .map((appointment) => formatAppointment(appointment))
-    .filter((appointment: any) => {
-      const searchLower = searchTerm.toLowerCase()
-      const patientName = appointment.patientName.toLowerCase()
-      const doctorName = appointment.doctorName.toLowerCase()
-      const reason = appointment.reason.toLowerCase()
-
-      const matchesSearch =
-        patientName.includes(searchLower) || doctorName.includes(searchLower) || reason.includes(searchLower)
-
-      const matchesStatus = statusFilter === "all" || appointment.status === statusFilter
-      const matchesType = typeFilter === "all" || appointment.type === typeFilter
-
-      // Date filtering
-      let matchesDate = true
-      if (dateFilter) {
-        const appointmentDate = new Date(appointment.date).toISOString().split("T")[0]
-        matchesDate = appointmentDate === dateFilter
-      }
-
-      return matchesSearch && matchesStatus && matchesType && matchesDate
-    })
-
-  // Pagination
-  const totalPages = Math.ceil(filteredAppointments.length / itemsPerPage)
-  const paginatedAppointments = filteredAppointments.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-
-  // Reset to first page when search or filters change
+  // Handle search input with debounce
   useEffect(() => {
-    setCurrentPage(1)
-  }, [searchTerm, statusFilter, typeFilter, dateFilter])
+    if (searchDebounceTimeout) {
+      clearTimeout(searchDebounceTimeout)
+    }
+
+    const timeout = setTimeout(() => {
+      setFilters({ search: searchTerm })
+    }, 500) // 500ms debounce
+
+    setSearchDebounceTimeout(timeout)
+
+    return () => {
+      if (searchDebounceTimeout) {
+        clearTimeout(searchDebounceTimeout)
+      }
+    }
+  }, [searchTerm, setFilters])
 
   const handleCancelClick = (id: string) => {
     setAppointmentToCancel(id)
@@ -84,6 +85,7 @@ const AppointmentsPage: React.FC = () => {
         await cancelAppointment(appointmentToCancel, cancelReason)
         showSuccess("Appointment cancelled successfully")
       } catch (err) {
+        console.error("Error cancelling appointment:", err)
         showError("Failed to cancel appointment")
       } finally {
         setIsCancelDialogOpen(false)
@@ -99,6 +101,37 @@ const AppointmentsPage: React.FC = () => {
     setCancelReason("")
   }
 
+  const handleFilterChange = (filterName: string, value: string) => {
+    if (value === "all") {
+      // Remove this filter
+      const newFilters = { ...filters }
+      delete newFilters[filterName as keyof typeof newFilters]
+      setFilters(newFilters)
+    } else {
+      setFilters({ [filterName]: value })
+    }
+  }
+
+  const handleDateFilterChange = (value: string) => {
+    if (value) {
+      setFilters({ startDate: value })
+    } else {
+      const newFilters = { ...filters }
+      delete newFilters.startDate
+      setFilters(newFilters)
+    }
+  }
+
+  const handleClearFilters = () => {
+    setSearchTerm("")
+    resetFilters()
+  }
+
+  const handlePageChange = (page: number) => {
+    setPage(page)
+  }
+
+  // Show loading state for initial load
   if (loading && appointments.length === 0) {
     return (
       <div className="flex h-64 items-center justify-center">
@@ -107,84 +140,118 @@ const AppointmentsPage: React.FC = () => {
     )
   }
 
+  // Format appointments for display
+  const formattedAppointments = appointments.map((appointment) => formatAppointment(appointment))
+
+  // Check if any filters are active
+  const hasActiveFilters = Object.values(filters).some((value) => value !== undefined && value !== "")
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Appointments</h1>
-        <Link
-          to="/appointments/add"
-          className="inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-        >
-          <Plus className="mr-2 h-5 w-5" />
-          New Appointment
-        </Link>
+        {canManageAppointments && (
+          <Link
+            to="/appointments/add"
+            className="inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          >
+            <Plus className="mr-2 h-5 w-5" />
+            New Appointment
+          </Link>
+        )}
       </div>
 
       {error && <ErrorAlert message={error} onClose={clearError} />}
 
-      <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
-        <div className="flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
-          <SearchInput
-            placeholder="Search appointments..."
-            value={searchTerm}
-            onChange={setSearchTerm}
-            className="w-full sm:max-w-xs"
-          />
-          <div className="flex flex-wrap gap-2">
-            <div className="flex items-center space-x-2">
-              <Filter className="h-5 w-5 text-gray-400" />
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-              >
-                <option value="all">All Statuses</option>
-                <option value="scheduled">Scheduled</option>
-                <option value="confirmed">Confirmed</option>
-                <option value="completed">Completed</option>
-                <option value="cancelled">Cancelled</option>
-                <option value="no-show">No Show</option>
-              </select>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Clock className="h-5 w-5 text-gray-400" />
-              <select
-                value={typeFilter}
-                onChange={(e) => setTypeFilter(e.target.value)}
-                className="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-              >
-                <option value="all">All Types</option>
-                <option value="consultation">Consultation</option>
-                <option value="checkup">Check-up</option>
-                <option value="treatment">Treatment</option>
-                <option value="follow-up">Follow-up</option>
-              </select>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Calendar className="h-5 w-5 text-gray-400" />
+      {/* Search and Filters */}
+      <div className="space-y-4">
+        <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+          <div className="flex flex-1 items-center">
+            <div className="relative w-full max-w-xs">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                <Search className="h-5 w-5 text-gray-400" />
+              </div>
               <input
-                type="date"
-                value={dateFilter}
-                onChange={(e) => setDateFilter(e.target.value)}
-                className="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search appointments..."
+                className="block w-full rounded-md border-gray-300 pl-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               />
-              {dateFilter && (
-                <button onClick={() => setDateFilter("")} className="text-xs text-gray-500 hover:text-gray-700">
-                  Clear
+              {searchTerm && (
+                <button onClick={() => setSearchTerm("")} className="absolute inset-y-0 right-0 flex items-center pr-3">
+                  <X className="h-4 w-4 text-gray-400 hover:text-gray-500" />
                 </button>
               )}
             </div>
+
+            {hasActiveFilters && (
+              <button
+                onClick={handleClearFilters}
+                className="ml-2 inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
+              >
+                Clear Filters
+                <X className="ml-1 h-4 w-4" />
+              </button>
+            )}
+          </div>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          <div className="flex items-center space-x-2">
+            <Filter className="h-5 w-5 text-gray-400" />
+            <select
+              value={filters.status || "all"}
+              onChange={(e) => handleFilterChange("status", e.target.value)}
+              className="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            >
+              <option value="all">All Statuses</option>
+              <option value="scheduled">Scheduled</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+              <option value="no-show">No Show</option>
+            </select>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Clock className="h-5 w-5 text-gray-400" />
+            <select
+              value={filters.type || "all"}
+              onChange={(e) => handleFilterChange("type", e.target.value)}
+              className="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            >
+              <option value="all">All Types</option>
+              <option value="consultation">Consultation</option>
+              <option value="checkup">Check-up</option>
+              <option value="treatment">Treatment</option>
+              <option value="follow-up">Follow-up</option>
+            </select>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Calendar className="h-5 w-5 text-gray-400" />
+            <input
+              type="date"
+              value={filters.startDate || ""}
+              onChange={(e) => handleDateFilterChange(e.target.value)}
+              className="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            />
+            {filters.startDate && (
+              <button onClick={() => handleDateFilterChange("")} className="text-xs text-gray-500 hover:text-gray-700">
+                Clear
+              </button>
+            )}
           </div>
         </div>
       </div>
 
+      {/* Pagination Info */}
       <div className="text-sm text-gray-500">
-        Showing {filteredAppointments.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0} to{" "}
-        {Math.min(currentPage * itemsPerPage, filteredAppointments.length)} of {filteredAppointments.length}{" "}
-        appointments
+        Showing {pagination.totalItems > 0 ? (pagination.page - 1) * pagination.pageSize + 1 : 0} to{" "}
+        {Math.min(pagination.page * pagination.pageSize, pagination.totalItems)} of {pagination.totalItems} appointments
       </div>
 
-      {filteredAppointments.length > 0 ? (
+      {/* Appointments Table */}
+      {formattedAppointments.length > 0 ? (
         <>
           <div className="overflow-hidden rounded-lg border border-gray-200 shadow">
             <table className="min-w-full divide-y divide-gray-200">
@@ -226,7 +293,7 @@ const AppointmentsPage: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 bg-white">
-                {paginatedAppointments.map((appointment: any) => {
+                {formattedAppointments.map((appointment: any) => {
                   const statusColorClass = getStatusColor(appointment.status)
                   const statusText = getStatusLabel(appointment.status)
                   const typeColorClass = getTypeColor(appointment.type)
@@ -263,9 +330,10 @@ const AppointmentsPage: React.FC = () => {
                         </span>
                       </td>
                       <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
-                        <div className="flex items-center justify-end space-x-2">
-                          {appointment.status !== "cancelled" && appointment.status !== "completed" && (
-                            <>
+                        {canManageAppointments &&
+                          appointment.status !== "cancelled" &&
+                          appointment.status !== "completed" && (
+                            <div className="flex items-center justify-end space-x-2">
                               <Link
                                 to={`/appointments/edit/${appointment.id || appointment._id}`}
                                 className="text-indigo-600 hover:text-indigo-900"
@@ -284,9 +352,8 @@ const AppointmentsPage: React.FC = () => {
                                 <Trash2 className="h-5 w-5" />
                                 <span className="sr-only">Cancel</span>
                               </button>
-                            </>
+                            </div>
                           )}
-                        </div>
                       </td>
                     </tr>
                   )
@@ -295,21 +362,115 @@ const AppointmentsPage: React.FC = () => {
             </table>
           </div>
 
-          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+          {/* Server-side Pagination */}
+          <div className="flex items-center justify-between">
+            <div className="flex flex-1 justify-between sm:hidden">
+              <button
+                onClick={() => handlePageChange(pagination.page - 1)}
+                disabled={!pagination.hasPreviousPage}
+                className={`relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium ${
+                  pagination.hasPreviousPage ? "text-gray-700 hover:bg-gray-50" : "text-gray-300"
+                }`}
+              >
+                Previous
+              </button>
+              <button
+                onClick={() => handlePageChange(pagination.page + 1)}
+                disabled={!pagination.hasNextPage}
+                className={`relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium ${
+                  pagination.hasNextPage ? "text-gray-700 hover:bg-gray-50" : "text-gray-300"
+                }`}
+              >
+                Next
+              </button>
+            </div>
+            <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+              <div>
+                <p className="text-sm text-gray-700">
+                  Showing{" "}
+                  <span className="font-medium">
+                    {pagination.totalItems > 0 ? (pagination.page - 1) * pagination.pageSize + 1 : 0}
+                  </span>{" "}
+                  to{" "}
+                  <span className="font-medium">
+                    {Math.min(pagination.page * pagination.pageSize, pagination.totalItems)}
+                  </span>{" "}
+                  of <span className="font-medium">{pagination.totalItems}</span> results
+                </p>
+              </div>
+              <div>
+                <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+                  <button
+                    onClick={() => handlePageChange(pagination.page - 1)}
+                    disabled={!pagination.hasPreviousPage}
+                    className={`relative inline-flex items-center rounded-l-md px-2 py-2 ${
+                      pagination.hasPreviousPage ? "text-gray-400 hover:bg-gray-50" : "text-gray-300"
+                    }`}
+                  >
+                    <span className="sr-only">Previous</span>
+                    <ChevronLeft className="h-5 w-5" aria-hidden="true" />
+                  </button>
+
+                  {/* Page numbers */}
+                  {Array.from({ length: pagination.totalPages }, (_, i) => i + 1)
+                    .filter(
+                      (page) =>
+                        page === 1 ||
+                        page === pagination.totalPages ||
+                        (page >= pagination.page - 1 && page <= pagination.page + 1),
+                    )
+                    .map((page, index, array) => {
+                      // Add ellipsis
+                      if (index > 0 && page > array[index - 1] + 1) {
+                        return (
+                          <span
+                            key={`ellipsis-${page}`}
+                            className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700"
+                          >
+                            ...
+                          </span>
+                        )
+                      }
+
+                      return (
+                        <button
+                          key={page}
+                          onClick={() => handlePageChange(page)}
+                          className={`relative inline-flex items-center px-4 py-2 text-sm font-semibold ${
+                            page === pagination.page
+                              ? "z-10 bg-indigo-600 text-white focus:z-20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                              : "text-gray-900 hover:bg-gray-50 focus:z-20"
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      )
+                    })}
+
+                  <button
+                    onClick={() => handlePageChange(pagination.page + 1)}
+                    disabled={!pagination.hasNextPage}
+                    className={`relative inline-flex items-center rounded-r-md px-2 py-2 ${
+                      pagination.hasNextPage ? "text-gray-400 hover:bg-gray-50" : "text-gray-300"
+                    }`}
+                  >
+                    <span className="sr-only">Next</span>
+                    <ChevronRight className="h-5 w-5" aria-hidden="true" />
+                  </button>
+                </nav>
+              </div>
+            </div>
+          </div>
         </>
       ) : (
-        <div className="flex h-64 flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-12 text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-indigo-100">
-            <Calendar className="h-6 w-6 text-indigo-600" />
-          </div>
-          <h3 className="mt-2 text-sm font-medium text-gray-900">No appointments found</h3>
-          <p className="mt-1 text-sm text-gray-500">
-            {searchTerm || statusFilter !== "all" || typeFilter !== "all" || dateFilter
-              ? "Try adjusting your search or filters"
-              : "Get started by scheduling a new appointment"}
-          </p>
-          {!searchTerm && statusFilter === "all" && typeFilter === "all" && !dateFilter && (
-            <div className="mt-6">
+        <EmptyState
+          icon={<Calendar className="h-12 w-12 text-gray-400" />}
+          title="No appointments found"
+          description={
+            hasActiveFilters ? "Try adjusting your search or filters" : "Get started by scheduling a new appointment"
+          }
+          action={
+            !hasActiveFilters && canManageAppointments ? (
               <Link
                 to="/appointments/add"
                 className="inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -317,11 +478,19 @@ const AppointmentsPage: React.FC = () => {
                 <Plus className="mr-2 h-5 w-5" />
                 New Appointment
               </Link>
-            </div>
-          )}
-        </div>
+            ) : hasActiveFilters ? (
+              <button
+                onClick={handleClearFilters}
+                className="inline-flex items-center rounded-md bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm border border-gray-300 hover:bg-gray-50"
+              >
+                Clear Filters
+              </button>
+            ) : null
+          }
+        />
       )}
 
+      {/* Cancel Appointment Dialog */}
       <ConfirmDialog
         isOpen={isCancelDialogOpen}
         title="Cancel Appointment"
