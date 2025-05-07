@@ -1,3 +1,4 @@
+// server\src\modules\payment\controllers\paymentController.ts
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Request, Response } from "express"
 import httpStatus from "http-status"
