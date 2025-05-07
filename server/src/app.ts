@@ -6,7 +6,7 @@ import "./config/db";
 import indexRouter from "./routes/index";
 import cookieParser from 'cookie-parser';
 import swaggerSetup from './config/swagger';
-import morgan from "morgan"
+// import morgan from "morgan"
 import httpStatus from "http-status"
 import compression from "compression"
 import {
@@ -19,7 +19,7 @@ import {
 import { apiRateLimiter } from "./middlewares/rateLimiter.middleware";
 import { requestLogger } from "./middlewares/request-logger.middleware"
 import { errorHandler } from "./middlewares/error-handler.middleware"
-import { stream } from "./utils/logger"
+// import { stream } from "./utils/logger"
 
 
 
@@ -37,7 +37,7 @@ console.log(`PORT: ${process.env.PORT}`);
 
 
 // Middleware
-app.use(morgan("combined", { stream }))
+// app.use(morgan("combined", { stream }))
 app.use(requestLogger)
 app.use(compression())
 app.use(express.json()) // Parse JSON bodies
@@ -100,10 +100,6 @@ app.use((err: any, req: express.Request, res: express.Response) => {
     stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
   })
 })
-
-
-// After database connection
-console.log('Database connected successfully');
 
 // Before starting the server
 console.log(`Attempting to start server on port ${port}...`);
