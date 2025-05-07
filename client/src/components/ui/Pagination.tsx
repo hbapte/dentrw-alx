@@ -7,6 +7,8 @@ interface PaginationProps {
   currentPage: number
   totalPages: number
   onPageChange: (page: number) => void
+  hasNextPage?: boolean
+  hasPreviousPage?: boolean
   className?: string
 }
 

@@ -5,12 +5,13 @@ import type React from "react"
 interface ConfirmDialogProps {
   isOpen: boolean
   title: string
-  message: string
+  message?: string
   confirmText?: string
   cancelText?: string
   onConfirm: () => void
   onCancel: () => void
   type?: "danger" | "warning" | "info" | "primary"
+  customContent?: React.ReactNode
 }
 
 const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
@@ -22,6 +23,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   onConfirm,
   onCancel,
   type = "danger",
+  customContent,
 }) => {
   if (!isOpen) return null
 
@@ -42,7 +44,6 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
       button: "bg-blue-600 hover:bg-blue-700 focus:ring-blue-500",
       icon: "text-blue-600",
     },
-
   }
 
   const styles = typeStyles[type]
@@ -83,7 +84,11 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
               <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                 <h3 className="text-lg font-medium leading-6 text-gray-900">{title}</h3>
                 <div className="mt-2">
-                  <p className="text-sm text-gray-500">{message}</p>
+                  {customContent ? (
+                    customContent
+                  ) : (
+                    <p className="text-sm text-gray-500">{message}</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -107,6 +112,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         </div>
       </div>
     </div>
+    
   )
 }
 
