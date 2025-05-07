@@ -38,7 +38,7 @@ export const isResourceOwner = (getResourceOwnerId: (req: Request) => string | P
     try {
       const ownerId = await getResourceOwnerId(req)
 
-      if (req.user._id.toString() !== ownerId) {
+      if (req.user.userId !== ownerId) {
         return forbiddenResponse(res, "You do not have permission to access this resource")
       }
 
@@ -67,7 +67,7 @@ export const isAdminOrResourceOwner = (getResourceOwnerId: (req: Request) => str
     try {
       const ownerId = await getResourceOwnerId(req)
 
-      if (req.user._id.toString() !== ownerId) {
+      if (req.user.userId.toString() !== ownerId) {
         return forbiddenResponse(res, "You do not have permission to access this resource")
       }
 
