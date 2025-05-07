@@ -11,40 +11,36 @@ const api = axios.create({
   withCredentials: true, // Important for cookies/sessions
 })
 
-// Request interceptor for adding auth token
-api.interceptors.request.use(
-  (config) => {
-    const token = useAuthStore.getState().token
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
-    }
-    return config
-  },
-  (error) => Promise.reject(error),
-)
 
-
-// Response interceptor for handling errors
+// Add response interceptor for handling token refresh
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    return response
+  },
   async (error) => {
     const originalRequest = error.config
-
-    // Handle 401 Unauthorized errors (token expired)
+    
+    // If the error is 401 and we haven't already tried to refresh
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true
-
-      // Logout user on auth error
-      const { logout } = useAuthStore.getState()
-      logout()
-
-      // Redirect to login
-      window.location.href = "/login"
-      return Promise.reject(error)
+      
+      try {
+        // Try to refresh the token
+        const refreshed = await useAuthStore.getState().refreshToken()
+        
+        if (refreshed) {
+          // If refresh was successful, retry the original request
+          return api(originalRequest)
+        }
+      } catch (refreshError) {
+        console.error("Token refresh failed:", refreshError)
+        // If refresh fails, logout the user
+        await useAuthStore.getState().logout()
+      }
     }
-
+    
     return Promise.reject(error)
-  },
+  }
 )
 
 export default api

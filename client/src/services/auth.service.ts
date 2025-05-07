@@ -1,34 +1,63 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import api from "./api"
 
+export interface LoginData {
+  email?: string
+  password?: string
+  userId?: string
+  token?: string
+  twoFactorCode?: string
+  tempToken?: string
+  rememberMe?: boolean
+}
+
 export interface RegisterData {
   names: string
   email: string
-  username?: string
   password: string
-  confirmPassword: string
+  confirmPassword?: string
+  username?: string
   phoneNumber?: string
   preferredLanguage?: string
 }
 
-export interface LoginData {
-  email: string
-  password: string
-}
-
-
 export interface AuthError {
   status?: number
   message: string
-  details?: string
-  data?: {
-    retryAfter?: number
-    requiresTwoFactor?: boolean
-    tempToken?: string
-  }
+  details?: any
+  data?: any
 }
 
-const AuthService = {
+const authService = {
+  login: async (data: LoginData) => {
+    try {
+      const response = await api.post("/auth/login", data)
+      return response.data
+    } catch (error: any) {
+      const errorData: AuthError = {
+        status: error.response?.status,
+        message: error.response?.data?.error?.message || "Login failed",
+        details: error.response?.data?.error?.details,
+        data: error.response?.data?.error?.data,
+      }
+      throw errorData
+    }
+  },
+
+  verifyTwoFactor: async (data: { tempToken: string; code: string }) => {
+    try {
+      const response = await api.post("/auth/verify-2fa", data)
+      return response.data
+    } catch (error: any) {
+      const errorData: AuthError = {
+        status: error.response?.status,
+        message: error.response?.data?.error?.message || "Two-factor verification failed",
+        details: error.response?.data?.error?.details,
+      }
+      throw errorData
+    }
+  },
+
   register: async (data: RegisterData) => {
     try {
       const response = await api.post("/auth/register", data)
@@ -36,94 +65,8 @@ const AuthService = {
     } catch (error: any) {
       const errorData: AuthError = {
         status: error.response?.status,
-        message: error.response?.data?.message || "Registration failed",
-        details: error.response?.data?.details,
-      }
-      throw errorData
-    }
-  },
-
-  login: async (data: LoginData) => {
-    try {
-      const response = await api.post("/auth/login", data)
-
-      // Check if 2FA is required
-      if (response.data.data?.requiresTwoFactor) {
-        return {
-          data: {
-            requiresTwoFactor: true,
-            tempToken: response.data.data.tempToken,
-            userId: response.data.data.userId,
-          },
-        }
-      }
-
-      // Return the response - no need to manually store token in localStorage
-      // as the backend will set HTTP-only cookies
-      return response.data
-    } catch (error: any) {
-      const errorData: AuthError = {
-        status: error.response?.status,
-        message: error.response?.data?.message || "Login failed",
-        details: error.response?.data?.details,
-        data: error.response?.data?.data,
-      }
-      throw errorData
-    }
-  },
-
-  verifyTwoFactor: async (tempToken: string, code: string) => {
-    try {
-      const response = await api.post("/auth/verify-2fa", { tempToken, code })
-      // No need to manually store token in localStorage
-      return response.data
-    } catch (error: any) {
-      const errorData: AuthError = {
-        status: error.response?.status,
-        message: error.response?.data?.message || "2FA verification failed",
-        details: error.response?.data?.details,
-      }
-      throw errorData
-    }
-  },
-
-  googleLogin: async (token: string) => {
-    try {
-      const response = await api.post("/auth/google-login", { token })
-      // No need to manually store token in localStorage
-      return response.data
-    } catch (error: any) {
-      const errorData: AuthError = {
-        status: error.response?.status,
-        message: error.response?.data?.message || "Google login failed",
-        details: error.response?.data?.details,
-      }
-      throw errorData
-    }
-  },
-
-  refreshToken: async () => {
-    try {
-      const response = await api.post("/auth/refresh")
-      return response.data
-    } catch (error: any) {
-      const errorData: AuthError = {
-        status: error.response?.status,
-        message: error.response?.data?.message || "Token refresh failed",
-        details: error.response?.data?.details,
-      }
-      throw errorData
-    }
-  },
-
-  logout: async () => {
-    try {
-      await api.post("/auth/logout")
-      // No need to remove from localStorage
-    } catch (error: any) {
-      const errorData: AuthError = {
-        status: error.response?.status,
-        message: error.response?.data?.message || "Logout failed",
+        message: error.response?.data?.error?.message || "Registration failed",
+        details: error.response?.data?.error?.details,
       }
       throw errorData
     }
@@ -136,7 +79,36 @@ const AuthService = {
     } catch (error: any) {
       const errorData: AuthError = {
         status: error.response?.status,
-        message: error.response?.data?.message || "Failed to get user data",
+        message: error.response?.data?.error?.message || "Failed to fetch current user",
+        details: error.response?.data?.error?.details,
+      }
+      throw errorData
+    }
+  },
+
+  logout: async () => {
+    try {
+      const response = await api.post("/auth/logout")
+      return response.data
+    } catch (error: any) {
+      const errorData: AuthError = {
+        status: error.response?.status,
+        message: error.response?.data?.error?.message || "Logout failed",
+        details: error.response?.data?.error?.details,
+      }
+      throw errorData
+    }
+  },
+
+  refreshToken: async () => {
+    try {
+      const response = await api.post("/auth/refresh")
+      return response.data
+    } catch (error: any) {
+      const errorData: AuthError = {
+        status: error.response?.status,
+        message: error.response?.data?.error?.message || "Token refresh failed",
+        details: error.response?.data?.error?.details,
       }
       throw errorData
     }
@@ -149,7 +121,8 @@ const AuthService = {
     } catch (error: any) {
       const errorData: AuthError = {
         status: error.response?.status,
-        message: error.response?.data?.message || "Email verification failed",
+        message: error.response?.data?.error?.message || "Email verification failed",
+        details: error.response?.data?.error?.details,
       }
       throw errorData
     }
@@ -162,7 +135,8 @@ const AuthService = {
     } catch (error: any) {
       const errorData: AuthError = {
         status: error.response?.status,
-        message: error.response?.data?.message || "Failed to resend verification",
+        message: error.response?.data?.error?.message || "Failed to resend verification",
+        details: error.response?.data?.error?.details,
       }
       throw errorData
     }
@@ -175,7 +149,8 @@ const AuthService = {
     } catch (error: any) {
       const errorData: AuthError = {
         status: error.response?.status,
-        message: error.response?.data?.message || "Failed to send password reset email",
+        message: error.response?.data?.error?.message || "Forgot password request failed",
+        details: error.response?.data?.error?.details,
       }
       throw errorData
     }
@@ -188,98 +163,12 @@ const AuthService = {
     } catch (error: any) {
       const errorData: AuthError = {
         status: error.response?.status,
-        message: error.response?.data?.message || "Password reset failed",
-        details: error.response?.data?.details,
-      }
-      throw errorData
-    }
-  },
-
-  // 2FA Management
-  setupTwoFactor: async () => {
-    try {
-      const response = await api.post("/auth/2fa/setup")
-      return response.data
-    } catch (error: any) {
-      const errorData: AuthError = {
-        status: error.response?.status,
-        message: error.response?.data?.message || "Failed to setup 2FA",
-        details: error.response?.data?.details,
-      }
-      throw errorData
-    }
-  },
-
-  verifyAndEnableTwoFactor: async (code: string) => {
-    try {
-      const response = await api.post("/auth/2fa/verify", { token: code })
-      return response.data
-    } catch (error: any) {
-      const errorData: AuthError = {
-        status: error.response?.status,
-        message: error.response?.data?.message || "Failed to verify 2FA code",
-        details: error.response?.data?.details,
-      }
-      throw errorData
-    }
-  },
-
-  disableTwoFactor: async (password: string, code: string) => {
-    try {
-      const response = await api.post("/auth/2fa/disable", { password, token: code })
-      return response.data
-    } catch (error: any) {
-      const errorData: AuthError = {
-        status: error.response?.status,
-        message: error.response?.data?.message || "Failed to disable 2FA",
-        details: error.response?.data?.details,
-      }
-      throw errorData
-    }
-  },
-
-  // Session Management
-  getSessions: async () => {
-    try {
-      const response = await api.get("/auth/sessions")
-      return response.data
-    } catch (error: any) {
-      const errorData: AuthError = {
-        status: error.response?.status,
-        message: error.response?.data?.message || "Failed to get sessions",
-        details: error.response?.data?.details,
-      }
-      throw errorData
-    }
-  },
-
-  revokeSession: async (sessionId: string) => {
-    try {
-      const response = await api.delete(`/auth/sessions/${sessionId}`)
-      return response.data
-    } catch (error: any) {
-      const errorData: AuthError = {
-        status: error.response?.status,
-        message: error.response?.data?.message || "Failed to revoke session",
-        details: error.response?.data?.details,
-      }
-      throw errorData
-    }
-  },
-
-  revokeAllSessions: async () => {
-    try {
-      const response = await api.delete("/auth/sessions")
-      return response.data
-    } catch (error: any) {
-      const errorData: AuthError = {
-        status: error.response?.status,
-        message: error.response?.data?.message || "Failed to revoke all sessions",
-        details: error.response?.data?.details,
+        message: error.response?.data?.error?.message || "Password reset failed",
+        details: error.response?.data?.error?.details,
       }
       throw errorData
     }
   },
 }
 
-export default AuthService
+export default authService

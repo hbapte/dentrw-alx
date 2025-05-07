@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand"
-import { persist } from "zustand/middleware"
 import AuthService from "../services/auth.service"
+import { persist } from "zustand/middleware"
 
 interface User {
   id: string
@@ -10,134 +10,51 @@ interface User {
   username?: string
   role: string
   picture?: string
-  preferredLanguage: string
+  preferredLanguage?: string
   phoneNumber?: string
+  emailVerified?: boolean
   phoneVerified?: boolean
-  emailVerified: boolean
   totpEnabled?: boolean
-  lastLogin?: Date
-}
-
-interface AuthError {
-  status?: number
-  message: string
-  details?: string
-  data?: {
-    retryAfter?: number
-    requiresTwoFactor?: boolean
-    tempToken?: string
-  }
+  lastLogin?: string
 }
 
 interface AuthState {
   user: User | null
+  isAuthenticated: boolean
   loading: boolean
   error: AuthError | null
-  isAuthenticated: boolean
   twoFactorRequired: boolean
   tempToken: string | null
 
-  // Auth actions
+  // Actions
   login: (email: string, password: string) => Promise<void>
-  verifyTwoFactor: (tempToken: string, code: string) => Promise<void>
-  googleLogin: (token: string) => Promise<void>
-  register: (data: any) => Promise<void>
+  verifyTwoFactor: (tempToken: string, code: string) => Promise<any>
+  register: (data: any) => Promise<any>
   logout: () => Promise<void>
-  refreshToken: () => Promise<boolean>
-
-  // Email verification
-  verifyEmail: (token: string) => Promise<void>
-  resendVerification: (email: string) => Promise<void>
-
-  // Password reset
-  forgotPassword: (email: string) => Promise<void>
-  resetPassword: (token: string, password: string,) => Promise<void>
-
-  // 2FA management
-  setupTwoFactor: () => Promise<{ secret: string; qrCodeUrl: string }>
-  verifyAndEnableTwoFactor: (code: string) => Promise<void>
-  disableTwoFactor: (password: string, code: string) => Promise<void>
-
-  // Session management
-  fetchSessions: () => Promise<any[]>
-  revokeSession: (sessionId: string) => Promise<void>
-  revokeAllSessions: () => Promise<void>
-
-  // Utility functions
-  clearError: () => void
-  setUser: (user: User) => void
   checkAuth: () => Promise<boolean>
+  refreshToken: () => Promise<boolean>
+  setUser: (user: User) => void
+  clearError: () => void
+  clearAuth: () => void
 }
 
+interface AuthError {
+  status: number | undefined
+  message: string
+  details?: any
+  data?: any
+}
+
+// Create auth store with persistence
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
       user: null,
+      isAuthenticated: false,
       loading: false,
       error: null,
-      isAuthenticated: false,
       twoFactorRequired: false,
       tempToken: null,
-
-      setUser: (user) => set({ user, isAuthenticated: !!user }),
-
-      checkAuth: async () => {
-        try {
-          // If we already have a user, we're authenticated
-          if (get().user) {
-            return true
-          }
-
-          // Try to get the current user from the server
-          const response = await AuthService.getCurrentUser()
-          if (response.data?.user) {
-            set({
-              user: response.data.user,
-              isAuthenticated: true,
-            })
-            return true
-          }
-          return false
-        } catch (error) {
-          console.error("Authentication check failed:", error)
-          // If we get an error, we're not authenticated
-          set({
-            user: null,
-            isAuthenticated: false,
-          })
-          return false
-        }
-      },
-
-      refreshToken: async () => {
-        try {
-          set({ loading: true })
-          const response = await AuthService.refreshToken()
-
-          if (response.data?.user) {
-            set({
-              user: response.data.user,
-              loading: false,
-              isAuthenticated: true,
-            })
-          } else {
-            set({ loading: false })
-          }
-
-          return true
-        } catch (error) {
-          console.error("Token refresh failed:", error)
-
-          // Clear auth state on refresh failure
-          set({
-            user: null,
-            isAuthenticated: false,
-            loading: false,
-          })
-
-          return false
-        }
-      },
 
       login: async (email, password) => {
         try {
@@ -185,47 +102,27 @@ export const useAuthStore = create<AuthState>()(
       verifyTwoFactor: async (tempToken, code) => {
         try {
           set({ loading: true, error: null })
-          const response = await AuthService.verifyTwoFactor(tempToken, code)
+          const response = await AuthService.verifyTwoFactor({ tempToken, code })
 
-          set({
-            user: response.data.user,
-            isAuthenticated: true,
-            loading: false,
-            twoFactorRequired: false,
-            tempToken: null,
-            error: null,
-          })
-        } catch (err: any) {
-          const errorData: AuthError = {
-            status: err.status,
-            message: err.message || "2FA verification failed",
-            details: err.details,
+          if (response.success && response.data?.user) {
+            set({
+              user: response.data.user,
+              isAuthenticated: true,
+              loading: false,
+              twoFactorRequired: false,
+              tempToken: null,
+              error: null,
+            })
+            return response
+          } else {
+            throw new Error("Verification failed")
           }
-
-          set({
-            error: errorData,
-            loading: false,
-          })
-          throw errorData
-        }
-      },
-
-      googleLogin: async (token) => {
-        try {
-          set({ loading: true, error: null })
-          const response = await AuthService.googleLogin(token)
-
-          set({
-            user: response.data.user,
-            isAuthenticated: true,
-            loading: false,
-            error: null,
-          })
         } catch (err: any) {
           const errorData: AuthError = {
             status: err.status,
-            message: err.message || "Google login failed",
+            message: err.message || "Two-factor verification failed",
             details: err.details,
+            data: err.data,
           }
 
           set({
@@ -239,13 +136,15 @@ export const useAuthStore = create<AuthState>()(
       register: async (data) => {
         try {
           set({ loading: true, error: null })
-          await AuthService.register(data)
-          set({ loading: false, error: null })
+          const response = await AuthService.register(data)
+          set({ loading: false })
+          return response
         } catch (err: any) {
           const errorData: AuthError = {
             status: err.status,
             message: err.message || "Registration failed",
             details: err.details,
+            data: err.data,
           }
 
           set({
@@ -260,7 +159,6 @@ export const useAuthStore = create<AuthState>()(
         try {
           set({ loading: true })
           await AuthService.logout()
-
           set({
             user: null,
             isAuthenticated: false,
@@ -269,10 +167,9 @@ export const useAuthStore = create<AuthState>()(
             tempToken: null,
             error: null,
           })
-        } catch (err: any) {
-          console.error("Logout error:", err)
-
-          // Still clear auth state even if logout API fails
+        } catch (error) {
+          console.error("Logout error:", error)
+          // Still clear auth state even if the API call fails
           set({
             user: null,
             isAuthenticated: false,
@@ -283,233 +180,85 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      forgotPassword: async (email) => {
+      checkAuth: async () => {
         try {
-          set({ loading: true, error: null })
-          await AuthService.forgotPassword(email)
-          set({ loading: false, error: null })
-        } catch (err: any) {
-          const errorData: AuthError = {
-            status: err.status,
-            message: err.message || "Failed to send password reset email",
-            details: err.details,
+          // If we already have a user, we're authenticated
+          if (get().user && get().isAuthenticated) {
+            return true
           }
 
-          set({
-            error: errorData,
-            loading: false,
-          })
-          throw errorData
-        }
-      },
+          set({ loading: true })
+          // Try to get the current user from the server
+          const response = await AuthService.getCurrentUser()
 
-      resetPassword: async (token, password: string) => {
-        try {
-          set({ loading: true, error: null })
-          await AuthService.resetPassword(token, password )
-          set({ loading: false, error: null })
-        } catch (err: any) {
-          const errorData: AuthError = {
-            status: err.status,
-            message: err.message || "Password reset failed",
-            details: err.details,
-          }
-
-          set({
-            error: errorData,
-            loading: false,
-          })
-          throw errorData
-        }
-      },
-
-      setupTwoFactor: async () => {
-        try {
-          set({ loading: true, error: null })
-          const response = await AuthService.setupTwoFactor()
-          set({ loading: false, error: null })
-          return response.data
-        } catch (err: any) {
-          const errorData: AuthError = {
-            status: err.status,
-            message: err.message || "Failed to setup 2FA",
-            details: err.details,
-          }
-
-          set({
-            error: errorData,
-            loading: false,
-          })
-          throw errorData
-        }
-      },
-
-      verifyAndEnableTwoFactor: async (code) => {
-        try {
-          set({ loading: true, error: null })
-          const response = await AuthService.verifyAndEnableTwoFactor(code)
-
-          // Update user with 2FA enabled
-          const user = get().user
-          if (user) {
+          if (response.success && response.data?.user) {
             set({
-              user: { ...user, totpEnabled: true },
+              user: response.data.user,
+              isAuthenticated: true,
               loading: false,
-              error: null,
             })
-          } else {
-            set({ loading: false, error: null })
+            return true
           }
 
-          return response.data
-        } catch (err: any) {
-          const errorData: AuthError = {
-            status: err.status,
-            message: err.message || "Failed to verify 2FA code",
-            details: err.details,
-          }
-
+          set({ loading: false })
+          return false
+        } catch (error) {
+          console.error("Authentication check failed:", error)
+          // If we get an error, we're not authenticated
           set({
-            error: errorData,
+            user: null,
+            isAuthenticated: false,
             loading: false,
           })
-          throw errorData
+          return false
         }
       },
 
-      disableTwoFactor: async (password, code) => {
+      refreshToken: async () => {
         try {
-          set({ loading: true, error: null })
-          await AuthService.disableTwoFactor(password, code)
+          set({ loading: true })
+          const response = await AuthService.refreshToken()
 
-          // Update user with 2FA disabled
-          const user = get().user
-          if (user) {
+          if (response.success && response.data?.user) {
             set({
-              user: { ...user, totpEnabled: false },
+              user: response.data.user,
+              isAuthenticated: true,
               loading: false,
-              error: null,
             })
-          } else {
-            set({ loading: false, error: null })
-          }
-        } catch (err: any) {
-          const errorData: AuthError = {
-            status: err.status,
-            message: err.message || "Failed to disable 2FA",
-            details: err.details,
+            return true
           }
 
-          set({
-            error: errorData,
-            loading: false,
-          })
-          throw errorData
-        }
-      },
-
-      fetchSessions: async () => {
-        try {
-          set({ loading: true, error: null })
-          const response = await AuthService.getSessions()
-          set({ loading: false, error: null })
-          return response.data.sessions
-        } catch (err: any) {
-          const errorData: AuthError = {
-            status: err.status,
-            message: err.message || "Failed to fetch sessions",
-            details: err.details,
-          }
-
-          set({
-            error: errorData,
-            loading: false,
-          })
-          throw errorData
-        }
-      },
-
-      revokeSession: async (sessionId) => {
-        try {
-          set({ loading: true, error: null })
-          await AuthService.revokeSession(sessionId)
-          set({ loading: false, error: null })
-        } catch (err: any) {
-          const errorData: AuthError = {
-            status: err.status,
-            message: err.message || "Failed to revoke session",
-            details: err.details,
-          }
-
-          set({
-            error: errorData,
-            loading: false,
-          })
-          throw errorData
-        }
-      },
-
-      revokeAllSessions: async () => {
-        try {
-          set({ loading: true, error: null })
-          await AuthService.revokeAllSessions()
-          set({ loading: false, error: null })
-        } catch (err: any) {
-          const errorData: AuthError = {
-            status: err.status,
-            message: err.message || "Failed to revoke all sessions",
-            details: err.details,
-          }
-
-          set({
-            error: errorData,
-            loading: false,
-          })
-          throw errorData
-        }
-      },
-
-      verifyEmail: async (token: string) => {
-        try {
-          set({ loading: true, error: null })
-          await AuthService.verifyEmail(token)
           set({ loading: false })
-        } catch (err: any) {
-          const errorData: AuthError = {
-            status: err.status,
-            message: err.message || "Email verification failed",
-            details: err.details
-          }
-
+          return false
+        } catch (error) {
+          console.error("Token refresh failed:", error)
+          // Clear auth state on refresh failure
           set({
-            error: errorData,
-            loading: false
+            user: null,
+            isAuthenticated: false,
+            loading: false,
           })
-          throw errorData
+          return false
         }
       },
 
-      resendVerification: async (email: string) => {
-        try {
-          set({ loading: true, error: null })
-          await AuthService.resendVerification(email)
-          set({ loading: false })
-        } catch (err: any) {
-          const errorData: AuthError = {
-            status: err.status,
-            message: err.message || "Resending verification email failed",
-            details: err.details
-          }
-
-          set({
-            error: errorData,
-            loading: false
-          })
-          throw errorData
-        }
+      setUser: (user) => {
+        set({ user, isAuthenticated: true })
       },
 
-      clearError: () => set({ error: null }),
+      clearError: () => {
+        set({ error: null })
+      },
+
+      clearAuth: () => {
+        set({
+          user: null,
+          isAuthenticated: false,
+          twoFactorRequired: false,
+          tempToken: null,
+          error: null,
+        })
+      },
     }),
     {
       name: "auth-storage",
