@@ -1,3 +1,4 @@
+// server\src\modules\profile\profileController.ts
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Request, Response } from "express"
 import User from "../../database/models/user"
@@ -619,3 +620,90 @@ export const changePasswordController = asyncHandler(async (req: Request, res: R
     })
   }
 })
+
+
+/**
+ * Set password for users who signed up with social providers
+ */
+
+export const setPasswordController = asyncHandler(async (req: Request, res: Response) => {
+  try {
+    if (!req.user || !req.user.userId) {
+      return unauthorizedResponse(res, "Authentication required", {
+        help: "Please log in to set your password.",
+        startTime: req.startTime,
+      })
+    }
+
+    const userId = req.user.userId
+    const { newPassword } = req.body
+
+    // Validate input
+    if (!newPassword) {
+      return validationErrorResponse(
+        res,
+        "Missing required fields",
+        {
+          required: ["newPassword"],
+          provided: Object.keys(req.body),
+        },
+        {
+          help: "Please provide a new password.",
+          startTime: req.startTime,
+        },
+      )
+    }
+
+    if (typeof newPassword !== "string" || newPassword.length < 8) {
+      return validationErrorResponse(
+        res,
+        "Invalid password",
+        { newPassword: "Password must be at least 8 characters long" },
+        {
+          help: "Please provide a stronger password with at least 8 characters.",
+          startTime: req.startTime,
+        },
+      )
+    }
+
+    // Get user
+    const user = await User.findById(userId)
+
+    if (!user) {
+      return notFoundResponse(res, "User not found", {
+        help: "The user account may have been deleted.",
+        startTime: req.startTime,
+      })
+    }
+
+    // Check if user already has a password
+    if (user.password) {
+      return badRequestResponse(res, "You already have a password set", null, {
+        help: "You cannot set a password again. Please use the 'Change Password' feature instead.",
+        startTime: req.startTime,
+      })
+    }
+
+    // Set new password
+    user.password = newPassword
+    await user.save()
+
+    // Log the action
+    await logAction(req, "set_password", "user", userId.toString())
+
+    return successResponse(res, null, "Password set successfully", {
+      startTime: req.startTime,
+    })
+  } catch (error: any) {
+    return databaseErrorResponse(res, "Failed to set password", error, {
+      startTime: req.startTime,
+      debug: error,
+    })
+  }
+})  
+
+
+/**
+ * Upload user profile picture
+ */
+
