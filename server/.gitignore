@@ -7,3 +7,5 @@ package-lock.json
 bun.lock
 dist
 logs
+
+temp
