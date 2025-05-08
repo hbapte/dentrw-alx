@@ -23,12 +23,12 @@ const AddDoctorPage: React.FC = () => {
   const { createDoctor } = useDoctorStore()
   const { showSuccess, showError } = useNotificationStore()
   const [users, setUsers] = useState<User[]>([])
-  const [loading, setLoading] = useState(false)
+  // const [loading,setLoading] = useState(false)
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        setLoading(true)
+        // setLoading(true)
         const response = await api.get("/users?role=doctor")
         const userData = response.data.data.users || []
         setUsers(
@@ -40,7 +40,7 @@ const AddDoctorPage: React.FC = () => {
       } catch (error) {
         console.error("Failed to fetch users:", error)
       } finally {
-        setLoading(false)
+        // setLoading(false)
       }
     }
 

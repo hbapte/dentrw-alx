@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-import { useNavigate } from "react-router-dom"
 import { format } from "date-fns"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
 import { Button } from "../ui/button"
@@ -18,8 +17,7 @@ interface PaymentListProps {
 }
 
 const PaymentList: React.FC<PaymentListProps> = ({ payments, onViewPayment, onGenerateInvoice, onGenerateReceipt }) => {
-  const navigate = useNavigate()
-
+  
   const formatDate = (dateString: string) => {
     return format(new Date(dateString), "PPP")
   }

@@ -36,6 +36,7 @@ const EditMedicalRecordPage: React.FC = () => {
         showSuccess("Medical record updated successfully")
         navigate(`/medical-records/${id}`)
       } catch (error) {
+        console.error(error)
         showError("Failed to update medical record")
       }
     }

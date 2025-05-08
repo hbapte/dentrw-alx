@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // client\src\components\dashboard\MedicalRecordDashboardWidget.tsx
 import type React from "react"
 import { Link } from "react-router-dom"

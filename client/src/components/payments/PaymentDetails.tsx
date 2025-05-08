@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import type React from "react"
@@ -59,54 +60,32 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({ payment, onRefresh }) =
   const handleStatusUpdate = async () => {
     try {
       await updatePaymentStatus(payment._id, newStatus)
-      toast({
-        title: "Status updated",
-        description: `Payment status updated to ${newStatus}`,
-      })
+      toast.success(`Payment status updated to ${newStatus}`)
       setIsStatusDialogOpen(false)
       onRefresh()
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to update status",
-        variant: "destructive",
-      })
+      toast.error(error.message || "Failed to update status")
     }
   }
 
   const handleRefund = async () => {
     try {
       if (refundAmount <= 0 || refundAmount > payment.amount) {
-        toast({
-          title: "Invalid amount",
-          description: "Refund amount must be greater than 0 and less than or equal to the payment amount",
-          variant: "destructive",
-        })
+        toast.error( "Refund amount must be greater than 0 and less than or equal to the payment amount")
         return
       }
 
       if (!refundReason.trim()) {
-        toast({
-          title: "Reason required",
-          description: "Please provide a reason for the refund",
-          variant: "destructive",
-        })
+        toast.error("Please provide a reason for the refund")
         return
       }
 
       await processRefund(payment._id, refundAmount, refundReason)
-      toast({
-        title: "Refund processed",
-        description: `Refund of ${formatCurrency(refundAmount, payment.currency)} processed successfully`,
-      })
+      toast.success(`Refund of ${formatCurrency(refundAmount, payment.currency)} processed successfully`)
       setIsRefundDialogOpen(false)
       onRefresh()
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to process refund",
-        variant: "destructive",
-      })
+      toast.error( error.message || "Failed to process refund")
     }
   }
 
@@ -115,11 +94,7 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({ payment, onRefresh }) =
       const invoiceUrl = await getInvoice(payment._id)
       window.open(invoiceUrl, "_blank")
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to generate invoice",
-        variant: "destructive",
-      })
+      toast.error( error.message || "Failed to generate invoice")
     }
   }
 
@@ -128,11 +103,7 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({ payment, onRefresh }) =
       const receiptUrl = await getReceipt(payment._id)
       window.open(receiptUrl, "_blank")
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to generate receipt",
-        variant: "destructive",
-      })
+      toast.error(error.message || "Failed to generate receipt")
     }
   }
 

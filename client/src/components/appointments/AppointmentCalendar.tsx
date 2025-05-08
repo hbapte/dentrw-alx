@@ -28,7 +28,7 @@ const AppointmentCalendar: React.FC = () => {
     const firstDay = new Date(year, month, 1)
 
     // Get the last day of the month
-    const lastDay = new Date(year, month + 1, 0)
+    // const lastDay = new Date(year, month + 1, 0)
 
     // Get the day of the week for the first day (0 = Sunday, 1 = Monday, etc.)
     const firstDayOfWeek = firstDay.getDay()

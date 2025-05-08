@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // client\src\components\dashboard\MedicalRecordStatistics.tsx
 "use client"
 

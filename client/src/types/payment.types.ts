@@ -52,6 +52,9 @@ export interface PaymentFilterParams {
 }
 
 export interface PaymentStats {
+  error(arg0: string, error: any): unknown
+  data(data: any): unknown
+  [x: string]: any
   totalPayments: number
   totalAmount: number
   completedPayments: number

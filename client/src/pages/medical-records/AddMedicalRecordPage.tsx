@@ -26,6 +26,7 @@ const AddMedicalRecordPage: React.FC = () => {
       showSuccess("Medical record created successfully")
       navigate("/medical-records")
     } catch (error) {
+      console.error(error)
       showError("Failed to create medical record")
     }
   }

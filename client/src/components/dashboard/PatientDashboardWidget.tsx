@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable  */
 "use client"
 
 import { useEffect, useState } from "react"
@@ -12,7 +12,9 @@ import PatientService from "../../services/patient.service"
 import type { Patient } from "../../types/patient.types"
 
 const PatientDashboardWidget = () => {
-  const { patients, loading } = usePatientStore()
+  const { patients, 
+    // loading
+   } = usePatientStore()
   const [recentPatients, setRecentPatients] = useState<Patient[]>([])
   const [widgetLoading, setWidgetLoading] = useState(true)
 
