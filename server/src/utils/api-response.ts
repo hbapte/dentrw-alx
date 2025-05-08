@@ -239,7 +239,7 @@ export function successResponse<T>(
 
   // Set response headers
   res.set("X-Request-ID", metadata.requestId)
-  res.set("X-Response-Time", metadata.responseTime)
+  // res.set("X-Response-Time", metadata.responseTime)
 
   // Set cache control if provided
   if (options?.cacheControl) {
@@ -266,6 +266,9 @@ export function successResponse<T>(
 /**
  * Creates a standardized error API response
  */
+
+
+// Modify the errorResponse function to safely set headers
 export function errorResponse(
   res: Response,
   error: {
@@ -296,9 +299,23 @@ export function errorResponse(
     responseObject.debug = options.debug
   }
 
-  // Set response headers
-  res.set("X-Request-ID", metadata.requestId)
-  res.set("X-Response-Time", metadata.responseTime)
+  try {
+    // Set response headers - safely
+    res.set("X-Request-ID", metadata.requestId)
+    // Use a safe numeric value for response time instead of formatted string
+    // res.set("X-Response-Time", `${metadata.processingTime}`)
+  } catch (err) {
+    // If setting headers fails, log it but continue
+    console.warn("Failed to set response headers:", err)
+    
+    // Add to debug info in development
+    if (process.env.NODE_ENV === "development") {
+      responseObject.debug = {
+        ...responseObject.debug,
+        headerError: err
+      }
+    }
+  }
 
   // Log the error response
   logger.error({
@@ -519,6 +536,9 @@ export function rateLimitedResponse(
     {
       code: ErrorCodes.TOO_MANY_REQUESTS,
       message,
+      details: {
+        retryAfter: options?.retryAfter,
+      },
       help:
         options?.help ||
         `Please try again later. ${options?.retryAfter ? `You can retry after ${options.retryAfter} seconds.` : ""}`,
