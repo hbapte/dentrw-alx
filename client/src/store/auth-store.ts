@@ -1,22 +1,10 @@
+// client\src\store\auth-store.ts
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand"
-import AuthService from "../services/auth.service"
 import { persist } from "zustand/middleware"
+import AuthService from "../services/auth.service"
+import { AuthError, User } from "../types/auth"
 
-interface User {
-  id: string
-  names: string
-  email: string
-  username?: string
-  role: string
-  picture?: string
-  preferredLanguage?: string
-  phoneNumber?: string
-  emailVerified?: boolean
-  phoneVerified?: boolean
-  totpEnabled?: boolean
-  lastLogin?: string
-}
 
 interface AuthState {
   user: User | null
@@ -33,19 +21,15 @@ interface AuthState {
   logout: () => Promise<void>
   checkAuth: () => Promise<boolean>
   refreshToken: () => Promise<boolean>
+  verifyEmail: (token: string) => Promise<any>
+  resendVerification: (email: string) => Promise<any>
+  forgotPassword: (email: string) => Promise<any>
+  resetPassword: (token: string, newPassword: string) => Promise<any>
   setUser: (user: User) => void
   clearError: () => void
   clearAuth: () => void
 }
 
-interface AuthError {
-  status: number | undefined
-  message: string
-  details?: any
-  data?: any
-}
-
-// Create auth store with persistence
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
@@ -82,20 +66,14 @@ export const useAuthStore = create<AuthState>()(
             error: null,
           })
         } catch (err: any) {
-          const errorData: AuthError = {
-            status: err.status,
-            message: err.message || "Login failed",
-            details: err.details,
-            data: err.data,
-          }
-
+          // Store the complete error object for better handling in UI
           set({
-            error: errorData,
+            error: err,
             loading: false,
             twoFactorRequired: false,
             tempToken: null,
           })
-          throw errorData
+          throw err
         }
       },
 
@@ -118,20 +96,77 @@ export const useAuthStore = create<AuthState>()(
             throw new Error("Verification failed")
           }
         } catch (err: any) {
-          const errorData: AuthError = {
-            status: err.status,
-            message: err.message || "Two-factor verification failed",
-            details: err.details,
-            data: err.data,
-          }
-
           set({
-            error: errorData,
+            error: err,
             loading: false,
           })
-          throw errorData
+          throw err
         }
       },
+
+      
+      verifyEmail: async (token: string) => {
+        try {
+          set({ loading: true, error: null })
+          const response = await AuthService.verifyEmail(token)
+          set({ loading: false })
+          return response
+        } catch (err: any) {
+          set({
+            error: err,
+            loading: false,
+          })
+          throw err
+        }
+      },
+
+      forgotPassword: async (email: string) => {
+        try {
+          set({ loading: true, error: null })
+          const response = await AuthService.forgotPassword(email)
+          set({ loading: false })
+          return response
+        } catch (err: any) {
+          set({
+            error: err,
+            loading: false,
+          })
+          throw err
+        }
+      },  
+
+      resetPassword: async (token: string, newPassword: string) => {
+        try {
+          set({ loading: true, error: null })
+          const response = await AuthService.resetPassword(token, newPassword)
+          set({ loading: false })
+          return response
+        }
+        catch (err: any) {
+          set({
+            error: err,
+            loading: false,
+          })
+          throw err
+        }
+      },
+
+
+       resendVerification: async (email: string) => {
+        try {
+          set({ loading: true, error: null })
+          const response = await AuthService.resendVerification(email)
+          set({ loading: false })
+          return response
+        } catch (err: any) {
+          set({
+            error: err,
+            loading: false,
+          })
+          throw err
+        }
+      },
+
 
       register: async (data) => {
         try {
@@ -140,25 +175,27 @@ export const useAuthStore = create<AuthState>()(
           set({ loading: false })
           return response
         } catch (err: any) {
-          const errorData: AuthError = {
-            status: err.status,
-            message: err.message || "Registration failed",
-            details: err.details,
-            data: err.data,
-          }
-
           set({
-            error: errorData,
+            error: err,
             loading: false,
           })
-          throw errorData
+          throw err
         }
       },
 
       logout: async () => {
         try {
           set({ loading: true })
-          await AuthService.logout()
+
+          // Try to call the logout API, but don't worry if it fails
+          try {
+            await AuthService.logout()
+          } catch (error) {
+            console.warn("Logout API error:", error)
+            // Continue with local logout even if API call fails
+          }
+
+          // Always clear local state
           set({
             user: null,
             isAuthenticated: false,
@@ -169,7 +206,7 @@ export const useAuthStore = create<AuthState>()(
           })
         } catch (error) {
           console.error("Logout error:", error)
-          // Still clear auth state even if the API call fails
+          // Still clear auth state even if there's an error
           set({
             user: null,
             isAuthenticated: false,
@@ -216,6 +253,12 @@ export const useAuthStore = create<AuthState>()(
 
       refreshToken: async () => {
         try {
+          // Don't attempt to refresh if we're not authenticated
+          if (!get().isAuthenticated && !get().user) {
+            console.log("Not attempting token refresh - no active session")
+            return false
+          }
+
           set({ loading: true })
           const response = await AuthService.refreshToken()
 

@@ -1,32 +1,7 @@
+// client\src\services\auth.service.ts
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { AuthError, LoginData, RegisterData } from "../types/auth"
 import api from "./api"
-
-export interface LoginData {
-  email?: string
-  password?: string
-  userId?: string
-  token?: string
-  twoFactorCode?: string
-  tempToken?: string
-  rememberMe?: boolean
-}
-
-export interface RegisterData {
-  names: string
-  email: string
-  password: string
-  confirmPassword?: string
-  username?: string
-  phoneNumber?: string
-  preferredLanguage?: string
-}
-
-export interface AuthError {
-  status?: number
-  message: string
-  details?: any
-  data?: any
-}
 
 const authService = {
   login: async (data: LoginData) => {
@@ -34,13 +9,18 @@ const authService = {
       const response = await api.post("/auth/login", data)
       return response.data
     } catch (error: any) {
-      const errorData: AuthError = {
-        status: error.response?.status,
-        message: error.response?.data?.error?.message || "Login failed",
-        details: error.response?.data?.error?.details,
-        data: error.response?.data?.error?.data,
+      // Handle standardized API error response format
+      if (error.response?.data) {
+        // Return the entire response data for more flexible error handling
+        throw error.response.data
+      } else {
+        // Fallback for non-standard errors
+        const errorData: AuthError = {
+          status: error.response?.status,
+          message: error.message || "Login failed",
+        }
+        throw errorData
       }
-      throw errorData
     }
   },
 
@@ -49,12 +29,18 @@ const authService = {
       const response = await api.post("/auth/verify-2fa", data)
       return response.data
     } catch (error: any) {
-      const errorData: AuthError = {
-        status: error.response?.status,
-        message: error.response?.data?.error?.message || "Two-factor verification failed",
-        details: error.response?.data?.error?.details,
+      // Handle standardized API error response format
+      if (error.response?.data) {
+        // Return the entire response data for more flexible error handling
+        throw error.response.data
+      } else {
+        // Fallback for non-standard errors
+        const errorData: AuthError = {
+          status: error.response?.status,
+          message: error.message || "Two-factor verification failed",
+        }
+        throw errorData
       }
-      throw errorData
     }
   },
 
@@ -63,12 +49,18 @@ const authService = {
       const response = await api.post("/auth/register", data)
       return response.data
     } catch (error: any) {
-      const errorData: AuthError = {
-        status: error.response?.status,
-        message: error.response?.data?.error?.message || "Registration failed",
-        details: error.response?.data?.error?.details,
+      // Handle standardized API error response format
+      if (error.response?.data) {
+        // Return the entire response data for more flexible error handling
+        throw error.response.data
+      } else {
+        // Fallback for non-standard errors
+        const errorData: AuthError = {
+          status: error.response?.status,
+          message: error.message || "Registration failed",
+        }
+        throw errorData
       }
-      throw errorData
     }
   },
 
@@ -77,26 +69,34 @@ const authService = {
       const response = await api.get("/auth/me")
       return response.data
     } catch (error: any) {
-      const errorData: AuthError = {
-        status: error.response?.status,
-        message: error.response?.data?.error?.message || "Failed to fetch current user",
-        details: error.response?.data?.error?.details,
+      // Handle standardized API error response format
+      if (error.response?.data) {
+        // Return the entire response data for more flexible error handling
+        throw error.response.data
+      } else {
+        // Fallback for non-standard errors
+        const errorData: AuthError = {
+          status: error.response?.status,
+          message: error.message || "Failed to fetch current user",
+        }
+        throw errorData
       }
-      throw errorData
     }
   },
 
   logout: async () => {
     try {
+      // Don't catch errors here, just let the request go through
       const response = await api.post("/auth/logout")
       return response.data
     } catch (error: any) {
-      const errorData: AuthError = {
-        status: error.response?.status,
-        message: error.response?.data?.error?.message || "Logout failed",
-        details: error.response?.data?.error?.details,
+      // Even if the server returns an error, we want to clear local auth state
+      console.warn("Logout API error:", error)
+      // Return a success response anyway since we're clearing local state
+      return {
+        success: true,
+        message: "Logged out locally",
       }
-      throw errorData
     }
   },
 
@@ -105,12 +105,18 @@ const authService = {
       const response = await api.post("/auth/refresh")
       return response.data
     } catch (error: any) {
-      const errorData: AuthError = {
-        status: error.response?.status,
-        message: error.response?.data?.error?.message || "Token refresh failed",
-        details: error.response?.data?.error?.details,
+      // Handle standardized API error response format
+      if (error.response?.data) {
+        // Return the entire response data for more flexible error handling
+        throw error.response.data
+      } else {
+        // Fallback for non-standard errors
+        const errorData: AuthError = {
+          status: error.response?.status,
+          message: error.message || "Token refresh failed",
+        }
+        throw errorData
       }
-      throw errorData
     }
   },
 
@@ -119,12 +125,18 @@ const authService = {
       const response = await api.get(`/auth/verify-email/${token}`)
       return response.data
     } catch (error: any) {
-      const errorData: AuthError = {
-        status: error.response?.status,
-        message: error.response?.data?.error?.message || "Email verification failed",
-        details: error.response?.data?.error?.details,
+      // Handle standardized API error response format
+      if (error.response?.data) {
+        // Return the entire response data for more flexible error handling
+        throw error.response.data
+      } else {
+        // Fallback for non-standard errors
+        const errorData: AuthError = {
+          status: error.response?.status,
+          message: error.message || "Email verification failed",
+        }
+        throw errorData
       }
-      throw errorData
     }
   },
 
@@ -133,12 +145,18 @@ const authService = {
       const response = await api.post("/auth/resend-verification", { email })
       return response.data
     } catch (error: any) {
-      const errorData: AuthError = {
-        status: error.response?.status,
-        message: error.response?.data?.error?.message || "Failed to resend verification",
-        details: error.response?.data?.error?.details,
+      // Handle standardized API error response format
+      if (error.response?.data) {
+        // Return the entire response data for more flexible error handling
+        throw error.response.data
+      } else {
+        // Fallback for non-standard errors
+        const errorData: AuthError = {
+          status: error.response?.status,
+          message: error.message || "Failed to resend verification",
+        }
+        throw errorData
       }
-      throw errorData
     }
   },
 
@@ -147,12 +165,18 @@ const authService = {
       const response = await api.post("/auth/forgot-password", { email })
       return response.data
     } catch (error: any) {
-      const errorData: AuthError = {
-        status: error.response?.status,
-        message: error.response?.data?.error?.message || "Forgot password request failed",
-        details: error.response?.data?.error?.details,
+      // Handle standardized API error response format
+      if (error.response?.data) {
+        // Return the entire response data for more flexible error handling
+        throw error.response.data
+      } else {
+        // Fallback for non-standard errors
+        const errorData: AuthError = {
+          status: error.response?.status,
+          message: error.message || "Forgot password request failed",
+        }
+        throw errorData
       }
-      throw errorData
     }
   },
 
@@ -161,12 +185,18 @@ const authService = {
       const response = await api.post(`/auth/reset-password/${token}`, { password })
       return response.data
     } catch (error: any) {
-      const errorData: AuthError = {
-        status: error.response?.status,
-        message: error.response?.data?.error?.message || "Password reset failed",
-        details: error.response?.data?.error?.details,
+      // Handle standardized API error response format
+      if (error.response?.data) {
+        // Return the entire response data for more flexible error handling
+        throw error.response.data
+      } else {
+        // Fallback for non-standard errors
+        const errorData: AuthError = {
+          status: error.response?.status,
+          message: error.message || "Password reset failed",
+        }
+        throw errorData
       }
-      throw errorData
     }
   },
 }
