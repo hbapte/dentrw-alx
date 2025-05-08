@@ -1,3 +1,4 @@
+// client\src\routes.tsx
 "use client"
 
 import { Route, Routes } from "react-router-dom"
@@ -38,6 +39,7 @@ import PaymentsPage from "./pages/payments/PaymentsPage"
 import PaymentDetailsPage from "./pages/payments/PaymentDetailsPage"
 import CreatePaymentPage from "./pages/payments/CreatePaymentPage"
 import PaymentStatsPage from "./pages/payments/PaymentStatsPage"
+import ResendVerificationPage from "./pages/auth/ResendVerificationPage"
 
 const AppRouter = () => {
   const { checkAuth } = useAuthStore()
@@ -61,6 +63,7 @@ const AppRouter = () => {
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
       <Route path="/verify-email/:token" element={<VerifyEmailPage />} />
+      <Route path="/resend-verification" element={<ResendVerificationPage />} />
       <Route path="/unauthorized" element={<UnauthorizedPage />} />
 
       {/* Protected routes with dashboard layout */}
