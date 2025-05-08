@@ -129,6 +129,9 @@ export const loginController = async (req: Request, res: Response) => {
   const startTime = performance.now()
   const { email, password } = req.body
 
+  // Adjust token expiration based on "rememberMe"
+
+
   try {
     // Find user by email
     const user = await User.findOne({ email })
@@ -336,6 +339,7 @@ export const verifyTwoFactorController = async (req: Request, res: Response) => 
 }
 
 // Refresh token
+
 export const refreshTokenController = async (req: Request, res: Response) => {
   const startTime = performance.now()
 
@@ -344,27 +348,43 @@ export const refreshTokenController = async (req: Request, res: Response) => {
     const refreshTokenFromCookie = req.cookies.refreshToken
 
     if (!refreshTokenFromCookie) {
-      return unauthorizedResponse(res, "Refresh token not found", { startTime })
+      return res.status(httpStatus.UNAUTHORIZED).json({
+        status: httpStatus.UNAUTHORIZED,
+        message: "Refresh token not found",
+        data: null,
+      })
     }
 
     // Verify refresh token
     const decoded = verifyRefreshToken(refreshTokenFromCookie)
     if (!decoded) {
       clearTokenCookies(res)
-      return unauthorizedResponse(res, "Invalid refresh token", { startTime })
+      return res.status(httpStatus.UNAUTHORIZED).json({
+        status: httpStatus.UNAUTHORIZED,
+        message: "Invalid refresh token",
+        data: null,
+      })
     }
 
     // Find user
     const user = await User.findById(decoded.userId)
     if (!user || !user.active) {
       clearTokenCookies(res)
-      return unauthorizedResponse(res, "User not found or inactive", { startTime })
+      return res.status(httpStatus.UNAUTHORIZED).json({
+        status: httpStatus.UNAUTHORIZED,
+        message: "User not found or inactive",
+        data: null,
+      })
     }
 
     // Check token version
     if (user.tokenVersion !== decoded.tokenVersion) {
       clearTokenCookies(res)
-      return unauthorizedResponse(res, "Token has been revoked", { startTime })
+      return res.status(httpStatus.UNAUTHORIZED).json({
+        status: httpStatus.UNAUTHORIZED,
+        message: "Token has been revoked",
+        data: null,
+      })
     }
 
     // Find token in database
@@ -376,7 +396,11 @@ export const refreshTokenController = async (req: Request, res: Response) => {
 
     if (!tokenDoc) {
       clearTokenCookies(res)
-      return unauthorizedResponse(res, "Token not found or revoked", { startTime })
+      return res.status(httpStatus.UNAUTHORIZED).json({
+        status: httpStatus.UNAUTHORIZED,
+        message: "Token not found or revoked",
+        data: null,
+      })
     }
 
     // Generate new tokens
@@ -403,35 +427,38 @@ export const refreshTokenController = async (req: Request, res: Response) => {
     // Log the action
     await logAction(req, "token-refresh", "user", user._id.toString())
 
-    return successResponse(res, { token: accessToken }, "Token refreshed successfully", {
-      statusCode: httpStatus.OK,
+    return res.status(httpStatus.OK).json({
+      status: httpStatus.OK,
+      message: "Token refreshed successfully",
+      data: { token: accessToken },
+      links: {
+        profile: `/api/auth/me`,
+        logout: `/api/auth/logout`,
+      },
       startTime,
+      success: true,
     })
   } catch (error) {
     console.error("Error refreshing token:", error)
     clearTokenCookies(res)
-    return unauthorizedResponse(res, "Error refreshing token", {
-      startTime,
-      debug: process.env.NODE_ENV === "development" ? error : undefined,
+    return res.status(httpStatus.UNAUTHORIZED).json({
+      status: httpStatus.UNAUTHORIZED,
+      message: "Error refreshing token",
+      data: null,
+      success: false,
     })
   }
 }
 
+
 // Logout user
 export const logoutController = async (req: Request, res: Response) => {
-  const startTime = performance.now()
-
   try {
     // Get tokens
     const accessToken = req.cookies.jwt
     const refreshToken = req.cookies.refreshToken
 
-    // Validate tokens
-    if (!accessToken && !refreshToken) {
-      return badRequestResponse(res, "Access token or refresh token is required", null, { startTime })
-    }
-
-    // Clear cookies
+    // Clear cookies regardless of whether tokens exist
     clearTokenCookies(res)
 
     // If we have a refresh token, revoke it
@@ -455,17 +482,23 @@ export const logoutController = async (req: Request, res: Response) => {
       }
     }
 
-    return successResponse(res, null, "Logged out successfully", {
-      statusCode: httpStatus.OK,
-      startTime,
+    // Return success even if no tokens were present
+    return res.status(httpStatus.OK).json({
+      status: httpStatus.OK,
+      message: "Logged out successfully",
+      data: null,
+      success: true,
       links: {
         login: `/api/auth/login`,
       },
     })
   } catch (error) {
     console.error("Error logging out:", error)
-    return internalErrorResponse(res, "Error logging out", {
-      startTime,
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+      status: httpStatus.INTERNAL_SERVER_ERROR,
+      message: "Error logging out",
+      data: null,
+      success: false,
       debug: process.env.NODE_ENV === "development" ? error : undefined,
     })
   }
@@ -488,13 +521,13 @@ export const verifyEmailController = async (req: Request, res: Response) => {
     const tokenCreated = new Date(user.emailVerificationTokenCreated)
     const now = new Date()
     const tokenAge = now.getTime() - tokenCreated.getTime()
-    const tokenMaxAge = 24 * 60 * 60 * 1000 // 24 hours in milliseconds
+    const tokenMaxAge = 1 * 60 * 60 * 1000 // 24 hours in milliseconds
 
     if (tokenAge > tokenMaxAge) {
       return badRequestResponse(
         res,
         "Verification token has expired",
-        { expired: true, userId: user._id },
+        { expired: true, userId: user._id , email: user.email },
         { startTime },
       )
     }
