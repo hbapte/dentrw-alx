@@ -99,6 +99,8 @@ export type ApiResponseMetadata = {
     updateService?: string
     categories?: string
     allServices?: string
+
+    checkUsername?: string
   }
 }
 
