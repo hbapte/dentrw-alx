@@ -60,15 +60,30 @@ export const registerController = async (req: Request, res: Response) => {
   const { names, email, username, password, phoneNumber, preferredLanguage } = req.body
 
   try {
-    // Check if user already exists
-    const existingUser = await User.findOne({
-      $or: [{ email }, ...(username ? [{ username }] : [])],
-    })
-
+    // Check if user email exists
+    const existingUser = await User.findOne({ email, emailVerified: false })
     if (existingUser) {
-      const message = username ? "Username or email already exists" : "Email already exists"
-      return conflictResponse(res, message, null, { startTime })
+      return conflictResponse(res, "Email already exists but not verified", null, { startTime })
     }
+
+
+    // check if existing user has verified email
+    const existingVerifiedUser = await User.findOne({
+      email,
+      emailVerified: true,
+    })
+    if (existingVerifiedUser) {
+      return conflictResponse(res, "Email already exists and verified ", null, { startTime })
+    }
+
+    // check if username is already taken
+    const existingUsername = await User.findOne({
+      username,
+    })
+    if (existingUsername) {
+      return conflictResponse(res, "Username already exists", null, { startTime })
+    }
+
 
     // Create verification token
     const emailVerificationToken = generateVerificationToken()
@@ -104,7 +119,11 @@ export const registerController = async (req: Request, res: Response) => {
 
     return successResponse(
       res,
-      { userId: newUser._id },
+      { userId: newUser._id,
+        email: newUser.email,
+        username: newUser.username,
+        names: newUser.names,
+      },
       "User registered successfully. Please check your email for verification.",
       {
         statusCode: httpStatus.CREATED,
@@ -123,6 +142,46 @@ export const registerController = async (req: Request, res: Response) => {
     })
   }
 }
+
+// Username availability check
+export const checkUsernameController = async (req: Request, res: Response) => {
+  const startTime = performance.now()
+  const { username } = req.params
+
+  try {
+    // Check if username exists
+    const existingUser = await User.findOne({ username })
+
+    if (existingUser) {
+      return conflictResponse(res, "Username already exists", null, { startTime })
+    }
+
+    return successResponse(
+      res,
+      {
+      username,
+      message: "Username is available",
+      },
+      "Username is available for registration.",
+      {
+      statusCode: httpStatus.OK,
+      startTime,
+      links: {
+        register: `/api/auth/register`,
+        checkUsername: `/api/auth/check-username/${username}`,
+      },
+      },
+    )
+  } catch (error) {
+    console.error("Error checking username:", error)
+    return internalErrorResponse(res, "Internal server error", {
+      startTime,
+      debug: process.env.NODE_ENV === "development" ? error : undefined,
+    })
+  }
+}
+
+
 
 // Login user
 export const loginController = async (req: Request, res: Response) => {
