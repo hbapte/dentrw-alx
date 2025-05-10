@@ -95,7 +95,7 @@ export const createRateLimiter = (options: {
 export const loginRateLimiter = createRateLimiter({
   keyPrefix: "rl:login",
   points: 10, // 10 login attempts
-  duration: 15 * 60, // per 15 minutes
+  duration: 5 * 60, // per 5 minutes
   message: "Too many login attempts, please try again later.",
   helpText:
     "For security reasons, you have exceeded the maximum number of login attempts. Please wait before trying again.",
@@ -104,8 +104,8 @@ export const loginRateLimiter = createRateLimiter({
 // Rate limiter for registration
 export const registrationRateLimiter = createRateLimiter({
   keyPrefix: "rl:register",
-  points: 60, // 20 registration attempts
-  duration: 60 * 60, // per hour
+  points: 10, // 15 registration attempts
+  duration: 30 * 60, // per hour
   message: "Too many registration attempts, please try again later.",
   helpText: "You have exceeded the maximum number of registration attempts. Please wait before trying again.",
 })
@@ -114,7 +114,7 @@ export const registrationRateLimiter = createRateLimiter({
 export const passwordChangeRateLimiter = createRateLimiter({
   keyPrefix: "rl:pwchange",
   points: 5, // 5 password change attempts
-  duration: 60 * 60, // per hour
+  duration: 30 * 60, // per hour
   message: "Too many password change attempts, please try again later.",
   helpText: "You have exceeded the maximum number of password change attempts. Please wait before trying again.",
 })
