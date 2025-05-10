@@ -11,6 +11,7 @@ import {
   getCurrentUserController,
   refreshTokenController,
   verifyTwoFactorController,
+  checkUsernameController,
 } from "../modules/auth/controllers/authControllers"
 import { googleLoginController } from "../modules/auth/controllers/googleAuthController"
 import { authenticateToken } from "../middlewares/auth.middleware"
@@ -27,12 +28,16 @@ import {
   forgotPasswordSchema,
   resetPasswordSchema,
   twoFactorSchema,
+  // checkUsernameSchema,
 } from "../validations/authValidation"
 
 const authRouter = express.Router()
 
 // Public routes with rate limiting and validation
 authRouter.post("/register", registrationRateLimiter, validate(registerSchema), registerController)
+authRouter.get('/checkUsername/:username',checkUsernameController)
+// authRouter.post("/checkUsername", validate(checkUsernameSchema), checkUsernameController)  
+
 authRouter.post("/login", loginRateLimiter, validate(loginSchema), loginController)
 authRouter.post("/google-login", loginRateLimiter, googleLoginController)
 authRouter.post("/verify-2fa", loginRateLimiter, validate(twoFactorSchema), verifyTwoFactorController)
@@ -52,5 +57,6 @@ authRouter.post("/refresh", refreshTokenController)
 
 // Protected routes
 authRouter.get("/me", authenticateToken, getCurrentUserController)
+
 
 export default authRouter
