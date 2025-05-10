@@ -80,3 +80,11 @@ export const twoFactorSchema = Joi.object({
       "string.pattern.base": "Verification code must contain only digits",
     }),
 })
+
+export const checkUsernameSchema = Joi.object({
+  username: Joi.string().min(3).max(30).alphanum().messages({
+    "string.min": "Username must be at least 3 characters long",
+    "string.max": "Username cannot exceed 30 characters",
+    "string.alphanum": "Username must only contain alphanumeric characters",
+  }),
+})
