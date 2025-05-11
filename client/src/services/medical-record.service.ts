@@ -1,3 +1,4 @@
+// client\src\services\medical-record.service.ts
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import api from "./api"
 import type { 

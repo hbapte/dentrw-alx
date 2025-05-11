@@ -1,3 +1,4 @@
+// client\src\types\medical-record.types.ts
 import type { Patient } from "./patient.types"
 import type { Doctor } from "./doctor.types"
 import type { Pagination } from "./common.types"

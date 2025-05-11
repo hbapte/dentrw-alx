@@ -1,3 +1,4 @@
+// client\src\utils\medical-record.utils.ts
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { MedicalRecord, MedicalRecordFormData, Prescription } from "../types/medical-record.types"
 import { formatDate } from "./date-utils"
@@ -49,7 +50,7 @@ export const recordToFormData = (record: MedicalRecord): MedicalRecordFormData =
 /**
  * Formats form data for API submission
  */
-export const formatMedicalRecordFormData = (formData: MedicalRecordFormData): any => {
+export const formatMedicalRecordFormData = (formData: Partial<MedicalRecordFormData>): any => {
   return {
     patient: formData.patientId,
     doctor: formData.doctorId,

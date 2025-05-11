@@ -1,3 +1,4 @@
+// server\src\database\models\medicalRecord.ts
 import mongoose, { type Document, type Model, Schema } from "mongoose"
 
 export interface MedicalRecord extends Document {
