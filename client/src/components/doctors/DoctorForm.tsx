@@ -25,19 +25,36 @@ const DoctorForm: React.FC<DoctorFormProps> = ({ initialData, onSubmit, isEditin
     watch,
   } = useForm<DoctorFormSchema>({
     resolver: zodResolver(doctorSchema),
-    defaultValues: initialData || {
-      specialization: "",
-      qualifications: "",
-      experience: 0,
-      licenseNumber: "",
-      bio: "",
-      languages: "",
-      consultationFee: 0,
-      availability: getDaysOfWeek().map((day) => createEmptyAvailability(day)),
+    defaultValues: {
+      userId: initialData?.userId || "",
+      specialization: initialData?.specialization || "",
+      qualifications: initialData?.qualifications || "",
+      experience: initialData?.experience || 0,
+      licenseNumber: initialData?.licenseNumber || "",
+      bio: initialData?.bio || "",
+      languages: initialData?.languages || "",
+      consultationFee: initialData?.consultationFee || 0,
+      availability: initialData?.availability || getDaysOfWeek().map((day) => createEmptyAvailability(day)),
     },
   })
 
-  const availability = watch("availability") || []
+  const availability = watch("availability")
+
+  const handleFormSubmit = (data: DoctorFormSchema) => {
+    // Convert form schema to DoctorFormData
+    const formData: DoctorFormData = {
+      userId: data.userId,
+      specialization: data.specialization,
+      qualifications: data.qualifications,
+      experience: data.experience,
+      licenseNumber: data.licenseNumber,
+      bio: data.bio,
+      languages: data.languages,
+      consultationFee: data.consultationFee,
+      availability: data.availability,
+    }
+    onSubmit(formData)
+  }
 
   const handleAddTimeSlot = (dayIndex: number) => {
     const newAvailability = [...availability]
@@ -56,7 +73,7 @@ const DoctorForm: React.FC<DoctorFormProps> = ({ initialData, onSubmit, isEditin
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         {users.length > 0 && (
           <div className="sm:col-span-2">
@@ -216,7 +233,7 @@ const DoctorForm: React.FC<DoctorFormProps> = ({ initialData, onSubmit, isEditin
               name="availability"
               render={({ field }) => (
                 <div className="space-y-6">
-                  {field.value?.map((daySchedule, dayIndex) => (
+                  {field.value.map((daySchedule, dayIndex) => (
                     <div key={daySchedule.day} className="border rounded-md p-4">
                       <h4 className="font-medium text-gray-700 mb-2">{formatDayOfWeek(daySchedule.day)}</h4>
                       <div className="space-y-3">

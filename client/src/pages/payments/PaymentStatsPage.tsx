@@ -1,3 +1,4 @@
+// client\src\pages\payments\PaymentStatsPage.tsx
 "use client"
 
 import type React from "react"

@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
 import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import { CreditCard, ArrowRight, TrendingUp, TrendingDown, DollarSign } from "lucide-react"
-import { useAuthStore } from "../../store/auth-store"
+// import { useAuthStore } from "../../store/auth-store"
 
 interface PaymentStats {
   totalPayments: number
@@ -25,7 +24,7 @@ interface PaymentStats {
 const PaymentDashboardWidget = () => {
   const [stats, setStats] = useState<PaymentStats | null>(null)
   const [loading, setLoading] = useState(true)
-  const { user } = useAuthStore()
+  // const { user } = useAuthStore()
 
   useEffect(() => {
     const fetchPaymentStats = async () => {

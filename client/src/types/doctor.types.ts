@@ -9,7 +9,7 @@ export interface Doctor {
   qualifications: string[]
   experience: number
   licenseNumber: string
-  bio?: string
+  bio: string
   languages: string[]
   consultationFee: number
   availability: Availability[]
@@ -19,7 +19,7 @@ export interface Doctor {
   updatedAt: string
 }
 
-// Form data for creating/updating doctors
+// Form data for creating/updating doctors - matches the form schema
 export interface DoctorFormData {
   userId?: string
   specialization: string
@@ -29,7 +29,7 @@ export interface DoctorFormData {
   bio: string
   languages: string
   consultationFee: number
-  availability?: Availability[]
+  availability: Availability[]
 }
 
 // Availability schedule

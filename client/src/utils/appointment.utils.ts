@@ -39,7 +39,7 @@ export const appointmentToFormData = (appointment: Appointment): AppointmentForm
     date: appointment.date ? new Date(appointment.date).toISOString().split("T")[0] : "",
     startTime: appointment.startTime || "",
     endTime: appointment.endTime || "",
-    type: appointment.type || "consultation",
+    type: appointment.type ,
     notes: appointment.notes || "",
     reason: appointment.reason || "",
   }

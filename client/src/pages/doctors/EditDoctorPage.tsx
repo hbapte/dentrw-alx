@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable */
 "use client"
 
 import type React from "react"
@@ -131,7 +130,14 @@ const EditDoctorPage: React.FC = () => {
 
       <div className="overflow-hidden rounded-lg bg-white shadow">
         <div className="px-4 py-5 sm:p-6">
-          <DoctorForm initialData={initialData} onSubmit={handleSubmit} isEditing users={users} />
+          {usersLoading ? (
+            <div className="flex h-32 items-center justify-center">
+              <Loader size="medium" />
+              <span className="ml-2 text-gray-600">Loading users...</span>
+            </div>
+          ) : (
+            <DoctorForm initialData={initialData} onSubmit={handleSubmit} isEditing users={users} />
+          )}
         </div>
       </div>
     </div>

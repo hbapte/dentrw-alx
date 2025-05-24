@@ -1,3 +1,4 @@
+// server\src\database\models\doctor.ts
 import mongoose, { type Document, type Model, Schema, type Types } from "mongoose"
 
 export interface Doctor extends Document {

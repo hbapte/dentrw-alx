@@ -1,63 +1,11 @@
+// client\src\components\payments\PaymentStats.tsx
 import type React from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
 import { DollarSign, CreditCard, Wallet, BanknoteIcon, TrendingUp, TrendingDown } from 'lucide-react'
+import { PaymentStatsApiResponse } from "../../types/payment.types"
 
-interface PaymentStatsApiResponse {
-  totalRevenue: number
-  paymentMethods: {
-    stripe: {
-      count: number
-      amount: number
-      percentage: number
-    }
-    cash?: {
-      count: number
-      amount: number
-      percentage: number
-    }
-    paypal?: {
-      count: number
-      amount: number
-      percentage: number
-    }
-    MoMo?: {
-      count: number
-      amount: number
-      percentage: number
-    }
-  }
-  statuses: {
-    failed: {
-      count: number
-      amount: number
-    }
-    refunded: {
-      count: number
-      amount: number
-    }
-    pending: {
-      count: number
-      amount: number
-    }
-    completed: {
-      count: number
-      amount: number
-    }
-  }
-  dailyRevenue: {
-    _id: string
-    total: number
-    count: number
-  }[]
-  averagePaymentAmount: number
-  refundStats: {
-    totalRefunded: number
-    count: number
-    averageRefund: number | null
-  }
-}
 
 interface PaymentStatsProps {
   stats: PaymentStatsApiResponse
@@ -147,12 +95,6 @@ const PaymentStats: React.FC<PaymentStatsProps> = ({ stats }) => {
                 </>
               )}
               
-              {stats.paymentMethods.paypal && (
-                <>
-                  <DollarSign className="h-4 w-4 text-blue-700 ml-2" />
-                  <span className="text-sm">{stats.paymentMethods.paypal.count}</span>
-                </>
-              )}
             </div>
           </CardContent>
         </Card>

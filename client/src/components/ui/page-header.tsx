@@ -12,9 +12,10 @@ interface PageHeaderProps {
   description?: string
   children?: React.ReactNode
   breadcrumbs?: Breadcrumb[]
+   actions?: React.ReactNode
 }
 
-const PageHeader = ({ title, description, children, breadcrumbs }: PageHeaderProps) => {
+const PageHeader = ({ title, description, children, breadcrumbs, actions }: PageHeaderProps) => {
   return (
     <div className="mb-6">
       {/* Breadcrumbs */}
@@ -46,6 +47,8 @@ const PageHeader = ({ title, description, children, breadcrumbs }: PageHeaderPro
         </div>
         {children && <div className="mt-4 sm:mt-0">{children}</div>}
       </div>
+
+         {actions && <div className="flex-shrink-0 flex items-center gap-2">{actions}</div>}
     </div>
   )
 }

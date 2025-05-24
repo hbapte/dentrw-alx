@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
 import type React from "react"
@@ -19,73 +18,19 @@ import {
   Legend,
 } from "recharts"
 import paymentService from "../../services/payment.service"
-
-interface PaymentStatsData {
-  totalRevenue: number
-  paymentMethods: {
-    stripe: {
-      count: number
-      amount: number
-      percentage: number
-    }
-    cash?: {
-      count: number
-      amount: number
-      percentage: number
-    }
-    paypal?: {
-      count: number
-      amount: number
-      percentage: number
-    }
-    MoMo?: {
-      count: number
-      amount: number
-      percentage: number
-    }
-  }
-  statuses: {
-    failed: {
-      count: number
-      amount: number
-    }
-    refunded: {
-      count: number
-      amount: number
-    }
-    pending: {
-      count: number
-      amount: number
-    }
-    completed: {
-      count: number
-      amount: number
-    }
-  }
-  dailyRevenue: {
-    _id: string
-    total: number
-    count: number
-  }[]
-}
+import type { PaymentStatsApiResponse } from "../../types/payment.types"
 
 const COLORS = ["#4f46e5", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"]
 
 const PaymentStatistics: React.FC = () => {
-  const [stats, 
-    // setStats
-  ] = useState<PaymentStatsData | null>(null)
+  const [stats, setStats] = useState<PaymentStatsApiResponse | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
         const response = await paymentService.getPaymentStats()
-        if (response.success) {
-          // setStats(response.data)
-        } else {
-          console.error("Failed to fetch payment stats:", response.error)
-        }
+        setStats(response)
       } catch (error) {
         console.error("Error fetching payment stats:", error)
       } finally {
@@ -225,8 +170,7 @@ const PaymentStatistics: React.FC = () => {
                 </ResponsiveContainer>
               </div>
               <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-            
-                {paymentMethodData.map((method, _index) => (
+                {paymentMethodData.map((method) => (
                   <div key={method.name} className="bg-gray-50 p-3 rounded-lg">
                     <p className="text-sm text-gray-500">{method.name}</p>
                     <p className="text-xl font-bold">{formatCurrency(method.value)}</p>

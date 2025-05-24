@@ -96,7 +96,7 @@ const AppointmentService = {
       date: data.date || "",
       startTime: data.startTime || "",
       endTime: data.endTime || "",
-      type: data.type || "",
+      type: data.type || "consultation",
       notes: data.notes || "",
       reason: data.reason || ""
     })

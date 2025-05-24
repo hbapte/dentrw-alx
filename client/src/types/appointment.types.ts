@@ -4,7 +4,7 @@ import type { Doctor } from "./doctor.types"
 // Basic appointment information
 export interface Appointment {
   id: string
-  _id?: string 
+  _id?: string
   patient: string | Patient | null
   doctor: string | Doctor
   date: string
@@ -14,7 +14,7 @@ export interface Appointment {
   type: "consultation" | "checkup" | "treatment" | "follow-up"
   notes?: string
   reason: string
-  payment?: string 
+  payment?: string
   reminders: AppointmentReminder[]
   createdAt: string
   updatedAt: string
@@ -27,14 +27,14 @@ export interface AppointmentReminder {
   status: "sent" | "failed"
 }
 
-// Form data for creating/updating appointments
+// Form data for creating/updating appointments - made type required
 export interface AppointmentFormData {
   patientId: string
   doctorId: string
   date: string
   startTime: string
   endTime: string
-  type: "consultation" | "checkup" | "treatment" | "follow-up"
+  type: "consultation" | "checkup" | "treatment" | "follow-up" // Required field
   notes?: string
   reason: string
 }
@@ -116,7 +116,7 @@ export interface AppointmentState {
   error: string | null
   pagination: PaginationMeta
   filters: AppointmentFilterParams
-  
+
   // Actions
   fetchAppointments: (params?: AppointmentPaginationParams & AppointmentFilterParams) => Promise<void>
   fetchAppointmentById: (id: string) => Promise<void>
@@ -129,12 +129,12 @@ export interface AppointmentState {
   changeAppointmentStatus: (id: string, status: Appointment["status"]) => Promise<void>
   addAppointmentReminder: (id: string, type: "email" | "sms") => Promise<void>
   checkDoctorAvailability: (data: AvailabilityCheckData) => Promise<boolean>
-  
+
   // Filter and pagination actions
   setFilters: (filters: Partial<AppointmentFilterParams>) => void
   resetFilters: () => void
   setPage: (page: number) => void
-  
+
   // Utility actions
   clearSelectedAppointment: () => void
   clearError: () => void

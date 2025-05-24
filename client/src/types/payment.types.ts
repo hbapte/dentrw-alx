@@ -51,10 +51,64 @@ export interface PaymentFilterParams {
   maxAmount?: number
 }
 
+// API Response format for payment statistics
+export interface PaymentStatsApiResponse {
+  totalRevenue: number
+  paymentMethods: {
+    stripe: {
+      count: number
+      amount: number
+      percentage: number
+    }
+    cash?: {
+      count: number
+      amount: number
+      percentage: number
+    }
+    paypal?: {
+      count: number
+      amount: number
+      percentage: number
+    }
+    MoMo?: {
+      count: number
+      amount: number
+      percentage: number
+    }
+  }
+  statuses: {
+    failed: {
+      count: number
+      amount: number
+    }
+    refunded: {
+      count: number
+      amount: number
+    }
+    pending: {
+      count: number
+      amount: number
+    }
+    completed: {
+      count: number
+      amount: number
+    }
+  }
+  dailyRevenue: {
+    _id: string
+    total: number
+    count: number
+  }[]
+  averagePaymentAmount: number
+  refundStats: {
+    totalRefunded: number
+    count: number
+    averageRefund: number | null
+  }
+}
+
+// Legacy PaymentStats interface for backward compatibility
 export interface PaymentStats {
-  error(arg0: string, error: any): unknown
-  data(data: any): unknown
-  [x: string]: any
   totalPayments: number
   totalAmount: number
   completedPayments: number
@@ -89,7 +143,7 @@ export interface PaymentState {
   patientPayments: Payment[]
   appointmentPayments: Payment[]
   outstandingPayments: Payment[]
-  paymentStats: PaymentStats | null
+  paymentStats: PaymentStatsApiResponse | null
   loading: boolean
   error: string | null
   pagination: {

@@ -1,5 +1,5 @@
 import api from "./api"
-import type { Payment, PaymentFormData, PaymentStats, PaymentFilterParams } from "../types/payment.types"
+import type { Payment, PaymentFormData, PaymentStatsApiResponse, PaymentFilterParams } from "../types/payment.types"
 
 /**
  * Service for handling payment-related API calls
@@ -112,7 +112,7 @@ class PaymentService {
   /**
    * Get payment statistics
    */
-  async getPaymentStats(startDate?: string, endDate?: string): Promise<PaymentStats> {
+  async getPaymentStats(startDate?: string, endDate?: string): Promise<PaymentStatsApiResponse> {
     const queryParams = new URLSearchParams({
       ...(startDate && { startDate }),
       ...(endDate && { endDate }),
