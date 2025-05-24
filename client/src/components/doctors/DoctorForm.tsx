@@ -5,7 +5,7 @@ import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Briefcase, Award, FileText, Globe, DollarSign, Clock, Plus, Trash2 } from "lucide-react"
 import { doctorSchema, type DoctorFormSchema } from "../../validations/doctor.validations"
-import type { DoctorFormData } from "../../types/doctor.types"
+import type { DoctorFormData, DayOfWeek } from "../../types/doctor.types"
 import { createEmptyAvailability, createEmptyTimeSlot, getDaysOfWeek, formatDayOfWeek } from "../../utils/doctor.utils"
 
 interface DoctorFormProps {
@@ -38,20 +38,23 @@ const DoctorForm: React.FC<DoctorFormProps> = ({ initialData, onSubmit, isEditin
     },
   })
 
-  const availability = watch("availability")
+  const availability = watch("availability") || []
 
   const handleFormSubmit = (data: DoctorFormSchema) => {
-    // Convert form schema to DoctorFormData
+    // Convert form schema to DoctorFormData with proper type safety
     const formData: DoctorFormData = {
       userId: data.userId,
       specialization: data.specialization,
       qualifications: data.qualifications,
       experience: data.experience,
       licenseNumber: data.licenseNumber,
-      bio: data.bio,
+      bio: data.bio || "", // Ensure bio is always a string
       languages: data.languages,
       consultationFee: data.consultationFee,
-      availability: data.availability,
+      availability: (data.availability || []).map((a) => ({
+        ...a,
+        day: a.day as DayOfWeek,
+      })),
     }
     onSubmit(formData)
   }
@@ -233,79 +236,86 @@ const DoctorForm: React.FC<DoctorFormProps> = ({ initialData, onSubmit, isEditin
               name="availability"
               render={({ field }) => (
                 <div className="space-y-6">
-                  {field.value.map((daySchedule, dayIndex) => (
-                    <div key={daySchedule.day} className="border rounded-md p-4">
-                      <h4 className="font-medium text-gray-700 mb-2">{formatDayOfWeek(daySchedule.day)}</h4>
-                      <div className="space-y-3">
-                        {daySchedule.slots.map((slot, slotIndex) => (
-                          <div key={slot.id || slotIndex} className="flex items-center space-x-3">
-                            <div className="flex-shrink-0">
-                              <Clock className="h-5 w-5 text-gray-400" />
-                            </div>
-                            <div className="flex-grow grid grid-cols-2 gap-3">
-                              <div>
-                                <label
-                                  htmlFor={`start-${dayIndex}-${slotIndex}`}
-                                  className="block text-xs font-medium text-gray-500"
-                                >
-                                  Start Time
-                                </label>
-                                <input
-                                  type="time"
-                                  id={`start-${dayIndex}-${slotIndex}`}
-                                  value={slot.startTime}
-                                  onChange={(e) => {
-                                    const newValue = [...field.value]
-                                    newValue[dayIndex].slots[slotIndex].startTime = e.target.value
-                                    field.onChange(newValue)
-                                  }}
-                                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                />
+                  {field.value &&
+                    field.value.map((daySchedule, dayIndex) => (
+                      <div key={daySchedule.day} className="border rounded-md p-4">
+                        <h4 className="font-medium text-gray-700 mb-2">
+                          {formatDayOfWeek(daySchedule.day as DayOfWeek)}
+                        </h4>
+                        <div className="space-y-3">
+                          {daySchedule.slots.map((slot, slotIndex) => (
+                            <div key={slot.id || slotIndex} className="flex items-center space-x-3">
+                              <div className="flex-shrink-0">
+                                <Clock className="h-5 w-5 text-gray-400" />
                               </div>
-                              <div>
-                                <label
-                                  htmlFor={`end-${dayIndex}-${slotIndex}`}
-                                  className="block text-xs font-medium text-gray-500"
+                              <div className="flex-grow grid grid-cols-2 gap-3">
+                                <div>
+                                  <label
+                                    htmlFor={`start-${dayIndex}-${slotIndex}`}
+                                    className="block text-xs font-medium text-gray-500"
+                                  >
+                                    Start Time
+                                  </label>
+                                  <input
+                                    type="time"
+                                    id={`start-${dayIndex}-${slotIndex}`}
+                                    value={slot.startTime}
+                                    onChange={(e) => {
+                                      if (field.value) {
+                                        const newValue = [...field.value]
+                                        newValue[dayIndex].slots[slotIndex].startTime = e.target.value
+                                        field.onChange(newValue)
+                                      }
+                                    }}
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                  />
+                                </div>
+                                <div>
+                                  <label
+                                    htmlFor={`end-${dayIndex}-${slotIndex}`}
+                                    className="block text-xs font-medium text-gray-500"
+                                  >
+                                    End Time
+                                  </label>
+                                  <input
+                                    type="time"
+                                    id={`end-${dayIndex}-${slotIndex}`}
+                                    value={slot.endTime}
+                                    onChange={(e) => {
+                                      if (field.value) {
+                                        const newValue = [...field.value]
+                                        newValue[dayIndex].slots[slotIndex].endTime = e.target.value
+                                        field.onChange(newValue)
+                                      }
+                                    }}
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                  />
+                                </div>
+                              </div>
+                              <div className="flex-shrink-0">
+                                <button
+                                  type="button"
+                                  onClick={() => handleRemoveTimeSlot(dayIndex, slotIndex)}
+                                  disabled={daySchedule.slots.length <= 1}
+                                  className="inline-flex items-center p-1 border border-transparent rounded-full text-red-600 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
                                 >
-                                  End Time
-                                </label>
-                                <input
-                                  type="time"
-                                  id={`end-${dayIndex}-${slotIndex}`}
-                                  value={slot.endTime}
-                                  onChange={(e) => {
-                                    const newValue = [...field.value]
-                                    newValue[dayIndex].slots[slotIndex].endTime = e.target.value
-                                    field.onChange(newValue)
-                                  }}
-                                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                />
+                                  <Trash2 className="h-4 w-4" />
+                                  <span className="sr-only">Remove time slot</span>
+                                </button>
                               </div>
                             </div>
-                            <div className="flex-shrink-0">
-                              <button
-                                type="button"
-                                onClick={() => handleRemoveTimeSlot(dayIndex, slotIndex)}
-                                disabled={daySchedule.slots.length <= 1}
-                                className="inline-flex items-center p-1 border border-transparent rounded-full text-red-600 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                                <span className="sr-only">Remove time slot</span>
-                              </button>
-                            </div>
-                          </div>
-                        ))}
-                        <button
-                          type="button"
-                          onClick={() => handleAddTimeSlot(dayIndex)}
-                          className="mt-2 inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                        >
-                          <Plus className="mr-2 h-4 w-4" />
-                          Add Time Slot
-                        </button>
+                          ))}
+                          <button
+                            type="button"
+                            onClick={() => handleAddTimeSlot(dayIndex)}
+                            className="mt-2 inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                          >
+                            <Plus className="mr-2 h-4 w-4" />
+                            Add Time Slot
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
                 </div>
               )}
             />
