@@ -3,29 +3,39 @@
 
 import type React from "react"
 import { useState, useEffect } from "react"
-import { useLocation, useNavigate } from "react-router-dom"
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom"
 import { useAuthStore } from "../../store/auth-store"
 import { useNotificationStore } from "../../store/notification-store"
 import { Activity } from "lucide-react"
 import { ResendVerificationForm } from "../../components/auth/ResendVerificationForm"
 import { VerificationEmailSent } from "../../components/auth/VerificationEmailSent"
+import { motion } from "framer-motion"
 
 const ResendVerificationPage: React.FC = () => {
   const [emailSent, setEmailSent] = useState(false)
   const [sentToEmail, setSentToEmail] = useState("")
   const [initialEmail, setInitialEmail] = useState("")
 
+
   const { resendVerification, loading, error, clearError, isAuthenticated } = useAuthStore()
   const { showError, showSuccess } = useNotificationStore()
   const navigate = useNavigate()
   const location = useLocation()
+  const [searchParams] = useSearchParams()
 
-  // Get email from location state if available
+  // Get email from location state or query param if available
   useEffect(() => {
-    if (location.state?.email) {
-      setInitialEmail(location.state.email)
+    const emailFromState = location.state?.email
+    const emailFromQuery = searchParams.get("email")
+
+    if (emailFromState) {
+      setInitialEmail(emailFromState)
+    } else if (emailFromQuery) {
+      // Decode the URL-encoded email parameter
+      const decodedEmail = decodeURIComponent(emailFromQuery)
+      setInitialEmail(decodedEmail)
     }
-  }, [location.state])
+  }, [location.state, searchParams])
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -71,25 +81,48 @@ const ResendVerificationPage: React.FC = () => {
     }
   }
 
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 flex items-center justify-center p-4">
+      {/* Background decoration */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-cyan-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div className="absolute top-40 left-40 w-80 h-80 bg-indigo-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
+      </div>
+
+      <motion.div
+        className="w-full max-w-[31rem] relative z-10"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         {!emailSent ? (
           <>
-            <div className="flex justify-center">
-              <Activity className="h-12 w-12 text-primary" />
-            </div>
+            <motion.div
+              className="flex justify-center mb-8"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+            >
+              <div className="relative">
+                <div className="absolute inset-0 bg-blue-600 rounded-full blur-lg opacity-30"></div>
+                <div className="relative bg-white p-4 rounded-full shadow-lg border border-blue-100">
+                  <Activity className="h-8 w-8 text-blue-600" />
+                </div>
+              </div>
+            </motion.div>
             <ResendVerificationForm
               onSubmit={handleSubmit}
               loading={loading}
               error={error}
-              initialEmail={initialEmail}
+              initialEmail={initialEmail} 
             />
           </>
         ) : (
           <VerificationEmailSent email={sentToEmail} />
         )}
-      </div>
+      </motion.div>
     </div>
   )
 }

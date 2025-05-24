@@ -325,12 +325,12 @@ const LoginPage: React.FC = () => {
                       {helpText && <p className="mt-2 text-sm">{helpText}</p>}
                       {formError.includes("verify") && (
                         <motion.div className="mt-2" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                          <Link
-                            to="/resend-verification"
+                            <Link
+                            to={`/resend-verification?email=${encodeURIComponent((document.querySelector('input[type="email"]') as HTMLInputElement)?.value || "")}`}
                             className="text-sm font-medium text-blue-600 hover:text-blue-500 underline"
-                          >
+                            >
                             Resend verification email
-                          </Link>
+                            </Link>
                         </motion.div>
                       )}
                     </AlertDescription>

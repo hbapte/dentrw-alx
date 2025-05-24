@@ -1,44 +1,29 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import type React from "react"
-import { useState, useEffect } from "react"
-import { Link } from "react-router-dom"
-import { Mail, AlertCircle, ArrowLeft } from "lucide-react"
+import { useState } from "react"
+import { Mail, AlertCircle } from "lucide-react"
 import { Input } from "../ui/input"
 import { Button } from "../ui/button"
 import { Label } from "../ui/label"
 import { Alert, AlertDescription } from "../ui/alert"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
 import { motion } from "framer-motion"
 
-interface ResendVerificationFormProps {
+interface ForgotPasswordFormProps {
   onSubmit: (email: string) => Promise<void>
   loading: boolean
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   error: any | null
-  initialEmail?: string
 }
 
-export const ResendVerificationForm: React.FC<ResendVerificationFormProps> = ({
-  onSubmit,
-  loading,
-  error,
-  initialEmail = "",
-}) => {
-  const [email, setEmail] = useState(initialEmail)
+export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onSubmit, loading, error }) => {
+  const [email, setEmail] = useState("")
   const [formError, setFormError] = useState("")
 
-  // Update email state when initialEmail prop changes
-  useEffect(() => {
-    if (initialEmail) {
-      setEmail(initialEmail)
-    }
-  }, [initialEmail])
-
-  // Validate email
   const validateEmail = (email: string): boolean => {
     if (!email.trim()) {
-      setFormError("Email is required")
+      setFormError("Please enter your email address")
       return false
     }
 
@@ -52,7 +37,6 @@ export const ResendVerificationForm: React.FC<ResendVerificationFormProps> = ({
     return true
   }
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -63,16 +47,8 @@ export const ResendVerificationForm: React.FC<ResendVerificationFormProps> = ({
     await onSubmit(email)
   }
 
-  // Format error message from API
   const getErrorMessage = () => {
     if (!error) return null
-
-    // Handle standardized API error response format
-    if (error.error?.message) {
-      return error.error.message
-    }
-
-    // Handle legacy error format
     return error.details || error.message || "An error occurred"
   }
 
@@ -88,16 +64,16 @@ export const ResendVerificationForm: React.FC<ResendVerificationFormProps> = ({
         <CardHeader className="space-y-1 pb-6">
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}>
             <CardTitle className="text-2xl font-bold text-center bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
-              Resend Verification Email
+              Forgot Password
             </CardTitle>
             <CardDescription className="text-center text-gray-600 mt-2">
-              Enter your email address to receive a new verification link
+              Enter your email to receive a reset link
             </CardDescription>
           </motion.div>
         </CardHeader>
 
         <CardContent className="space-y-6">
-          {errorMessage && (
+          {(errorMessage || formError) && (
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -105,7 +81,7 @@ export const ResendVerificationForm: React.FC<ResendVerificationFormProps> = ({
             >
               <Alert variant="destructive" className="border-red-200 bg-red-50">
                 <AlertCircle className="h-4 w-4" />
-                <AlertDescription className="text-red-800">{errorMessage}</AlertDescription>
+                <AlertDescription className="text-red-800">{formError || errorMessage}</AlertDescription>
               </Alert>
             </motion.div>
           )}
@@ -141,16 +117,6 @@ export const ResendVerificationForm: React.FC<ResendVerificationFormProps> = ({
                   disabled={loading}
                 />
               </div>
-              {formError && (
-                <motion.p
-                  className="text-sm text-red-600"
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  {formError}
-                </motion.p>
-              )}
             </div>
 
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
@@ -169,54 +135,12 @@ export const ResendVerificationForm: React.FC<ResendVerificationFormProps> = ({
                     Sending...
                   </>
                 ) : (
-                  "Send Verification Email"
+                  "Send reset link"
                 )}
               </Button>
             </motion.div>
           </motion.form>
         </CardContent>
-
-        <CardFooter className="flex flex-col space-y-4 pt-6">
-          <div className="flex flex-col space-y-3 w-full">
-            <motion.div className="text-center" whileHover={{ scale: 1.02 }}>
-              <Link
-                to="/login"
-                className="inline-flex items-center text-sm text-gray-600 hover:text-blue-600 transition-colors group"
-              >
-                <ArrowLeft className="mr-1 h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-                Back to Login
-              </Link>
-            </motion.div>
-
-            <div className="text-center">
-              <p className="text-sm text-gray-600">
-                Already verified?{" "}
-                <motion.span whileHover={{ scale: 1.05 }} className="inline-block">
-                  <Link
-                    to="/login"
-                    className="font-medium text-blue-600 hover:text-blue-700 hover:underline transition-colors"
-                  >
-                    Sign in
-                  </Link>
-                </motion.span>
-              </p>
-            </div>
-
-            <div className="text-center">
-              <p className="text-sm text-gray-600">
-                Don't have an account?{" "}
-                <motion.span whileHover={{ scale: 1.05 }} className="inline-block">
-                  <Link
-                    to="/register"
-                    className="font-medium text-blue-600 hover:text-blue-700 hover:underline transition-colors"
-                  >
-                    Create an account
-                  </Link>
-                </motion.span>
-              </p>
-            </div>
-          </div>
-        </CardFooter>
       </Card>
     </motion.div>
   )
