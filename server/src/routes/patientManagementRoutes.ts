@@ -16,8 +16,8 @@ const router = express.Router()
 router.use(authenticateToken)
 
 // Routes that require admin role
-router.get("/", authorizeRoles("admin"), getAllPatients)
-router.get("/stats", authorizeRoles("admin"), getPatientStats)
+router.get("/", authorizeRoles("admin", "doctor", "receptionist", "patient"), getAllPatients)
+router.get("/stats", authorizeRoles("admin", "doctor", "receptionist"), getPatientStats)
 
 
 

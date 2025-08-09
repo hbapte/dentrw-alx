@@ -9,7 +9,9 @@ import {
   deleteDoctor,
   createDoctor,
 } from "../modules/user/controllers/doctorManagementController"
-import { authenticateToken, authorizeRoles } from "../middlewares/auth.middleware"
+import {
+   authenticateToken,
+   authorizeRoles } from "../middlewares/auth.middleware"
 
 const router = express.Router()
 

@@ -33,11 +33,11 @@ const servicePriceSchema: Schema = new Schema(
 )
 
 // Create indexes for better query performance
-servicePriceSchema.index({ code: 1 }, { unique: true })
-servicePriceSchema.index({ name: 1 })
-servicePriceSchema.index({ category: 1 })
-servicePriceSchema.index({ price: 1 })
-servicePriceSchema.index({ active: 1 })
+// servicePriceSchema.index({ code: 1 }, { unique: true })
+// servicePriceSchema.index({ name: 1 })
+// servicePriceSchema.index({ category: 1 })
+// servicePriceSchema.index({ price: 1 })
+// servicePriceSchema.index({ active: 1 })
 
 const ServicePrice: Model<ServicePrice> = mongoose.model<ServicePrice>("ServicePrice", servicePriceSchema)
 

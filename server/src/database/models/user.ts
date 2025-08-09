@@ -1,6 +1,7 @@
+// server\src\database\models\user.ts
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose, { type Document, type Model, Schema, type Types } from "mongoose"
-import bcrypt from "bcryptjs"
+import { comparePasswords, hashPassword } from "../../utils/passwordUtil"
 
 export interface User extends Document {
   _id: Types.ObjectId
@@ -8,7 +9,7 @@ export interface User extends Document {
   email: string
   username?: string
   password?: string
-  role: "patient" | "doctor" | "admin"
+  role: "patient" | "doctor" | "admin" | "receptionist"
   emailVerified: boolean
   emailVerificationToken: string
   emailVerificationTokenCreated: Date
@@ -16,6 +17,7 @@ export interface User extends Document {
   resetPasswordExpires?: Date
   googleId?: string
   picture?: string
+  picturePublicId?: string
   preferredLanguage: "en" | "fr" | "rw"
   phoneNumber?: string
   phoneVerified: boolean
@@ -23,9 +25,15 @@ export interface User extends Document {
   active: boolean
   totpSecret?: string
   totpEnabled: boolean
-  tokenVersion: number // Added for refresh token security
+  tokenVersion: number
+  // Additional fields for dental clinic
+  nationalId?: string // Rwanda National ID
+  dateOfBirth?: Date
+  gender?: "male" | "female" | "other"
+  maritalStatus?: "single" | "married" | "divorced" | "widowed"
+  occupation?: string
   comparePassword(candidatePassword: string): Promise<boolean>
-  incrementTokenVersion(): Promise<number> // Added for token invalidation
+  incrementTokenVersion(): Promise<number>
 }
 
 const userSchema: Schema = new Schema(
@@ -34,14 +42,19 @@ const userSchema: Schema = new Schema(
     email: { type: String, required: true, unique: true },
     username: { type: String, unique: true, sparse: true },
     password: { type: String },
-    role: { type: String, enum: ["patient", "doctor", "admin"], default: "patient" },
+    role: { 
+      type: String, 
+      enum: ["patient", "doctor", "admin", "receptionist"], 
+      default: "patient" 
+    },
     emailVerified: { type: Boolean, default: false },
     emailVerificationToken: { type: String },
     emailVerificationTokenCreated: { type: Date, default: Date.now },
     resetPasswordToken: String,
     resetPasswordExpires: Date,
-    googleId: { type: String, unique: true, sparse: true }, // sparse: true ensures uniqueness only for non-null values
+    googleId: { type: String, unique: true, sparse: true },
     picture: String,
+    picturePublicId: String,
     preferredLanguage: { type: String, enum: ["en", "fr", "rw"], default: "en" },
     phoneNumber: { type: String },
     phoneVerified: { type: Boolean, default: false },
@@ -49,7 +62,13 @@ const userSchema: Schema = new Schema(
     active: { type: Boolean, default: true },
     totpSecret: { type: String },
     totpEnabled: { type: Boolean, default: false },
-    tokenVersion: { type: Number, default: 0 }, // Added for refresh token security
+    tokenVersion: { type: Number, default: 0 },
+    // Additional fields for dental clinic
+    nationalId: { type: String, unique: true, sparse: true },
+    dateOfBirth: { type: Date },
+    gender: { type: String, enum: ["male", "female", "other"] },
+    maritalStatus: { type: String, enum: ["single", "married", "divorced", "widowed"] },
+    occupation: { type: String },
   },
   {
     timestamps: true,
@@ -59,10 +78,8 @@ const userSchema: Schema = new Schema(
 // Pre-save hook to hash password
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next()
-
-  try {
-    const salt = await bcrypt.genSalt(10)
-    this.password = await bcrypt.hash(this.password as string, salt)
+  try {  
+    this.password = await hashPassword(this.password as string)
     next()
   } catch (error: any) {
     next(error)
@@ -71,10 +88,10 @@ userSchema.pre("save", async function (next) {
 
 // Method to compare password
 userSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
-  return bcrypt.compare(candidatePassword, this.password)
+  return comparePasswords(candidatePassword, this.password as string)
 }
 
-// Method to increment token version (invalidates all refresh tokens)
+// Method to increment token version
 userSchema.methods.incrementTokenVersion = async function (): Promise<number> {
   this.tokenVersion = (this.tokenVersion || 0) + 1
   await this.save()
@@ -82,5 +99,4 @@ userSchema.methods.incrementTokenVersion = async function (): Promise<number> {
 }
 
 const User: Model<User> = mongoose.model<User>("User", userSchema)
-
 export default User

@@ -1,8 +1,10 @@
+// server\src\database\seeders\runSeeder.ts
 import { exec } from "child_process"
 import path from "path"
 
 const runSeeder = () => {
-  const seederPath = path.join(__dirname, "sampleData.ts")
+  const seederPath = path.join(__dirname, "userSeeds.ts")
+  
 
   console.log("Running seeder...")
 

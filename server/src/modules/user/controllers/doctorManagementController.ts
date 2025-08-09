@@ -19,7 +19,7 @@ import { logAction } from "../../../utils/auditLogUtil"
 export const getAllDoctors = asyncHandler(async (req: Request, res: Response) => {
   const {
     page = "1",
-    limit = "10",
+    limit = "20",
     sortBy = "createdAt",
     sortOrder = "desc",
     search = "",

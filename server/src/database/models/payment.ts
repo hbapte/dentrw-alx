@@ -31,7 +31,7 @@ const paymentSchema: Schema = new Schema(
     },
     paymentMethod: {
       type: String,
-      enum: ["stripe", "paypal", "cash"],
+      enum: ["stripe", "mobile-money", "cash"],
       required: true,
     },
     transactionId: { type: String },

@@ -132,6 +132,78 @@ export const getAppointmentById = asyncHandler(async (req: Request, res: Respons
 })
 
 /**
+ * Get Appointment by patient ID
+ */
+export const getAppointmentsByPatientId = asyncHandler(async (req: Request, res: Response) => {
+  const startTime = performance.now()
+  const { patientId } = req.params
+
+  try {
+    const appointments = await appointmentRepository.getAppointmentsByPatient(patientId)
+
+    if (!appointments || appointments.length === 0) {
+      return notFoundResponse(res, "No appointments found for this patient", {
+        startTime,
+        help: "Check the patient ID and ensure they have appointments"
+      })
+    }
+
+    // Generate HATEOAS links
+    const links = {
+      self: `/api/v1/patients/${patientId}/appointments`,
+      patient: `/api/v1/patients/${patientId}`
+    }
+
+    return successResponse(res, { appointments }, "Appointments retrieved successfully", {
+      startTime,
+      links
+    })
+  } catch (error) {
+    return internalErrorResponse(res, "Failed to retrieve appointments by patient ID", {
+      startTime,
+      debug: error
+    })
+  }
+})
+
+
+/**
+ * Get Appointment by doctor ID
+ */
+export const getAppointmentsByDoctorId = asyncHandler(async (req: Request, res: Response) => {
+  const startTime = performance.now()
+  const { doctorId } = req.params
+
+  try {
+    const appointments = await appointmentRepository.getAppointmentsByDoctor(doctorId)
+
+    if (!appointments || appointments.length === 0) {
+      return notFoundResponse(res, "No appointments found for this doctor", {
+        startTime,
+        help: "Check the doctor ID and ensure they have appointments"
+      })
+    }
+
+    // Generate HATEOAS links
+    const links = {
+      self: `/api/v1/doctors/${doctorId}/appointments`,
+      doctor: `/api/v1/doctors/${doctorId}`
+    }
+
+    return successResponse(res, { appointments }, "Appointments retrieved successfully", {
+      startTime,
+      links
+    })
+  } catch (error) {
+    return internalErrorResponse(res, "Failed to retrieve appointments by doctor ID", {
+      startTime,
+      debug: error
+    })
+  }
+})
+
+
+/**
  * Create a new appointment
  */
 export const createAppointment = asyncHandler(async (req: Request, res: Response) => {

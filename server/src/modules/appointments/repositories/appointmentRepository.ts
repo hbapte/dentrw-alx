@@ -17,14 +17,40 @@ interface AppointmentQueryOptions {
 }
 
 class AppointmentRepository {
+   /**
+   * Get consistent population configuration for appointments
+   */
+  private getPopulationConfig() {
+    return [
+      {
+        path: "patient",
+        select: "-password -totpSecret -__v",
+        populate: {
+          path: "user",
+          select: "-password -totpSecret -__v -resetPasswordToken -resetPasswordExpires -emailVerificationToken -totpEnabled -tokenVersion",
+        },
+      },
+      {
+        path: "doctor",
+        select: "-__v",
+        populate: {
+          path: "user",
+          select: "-password -totpSecret -__v -resetPasswordToken -resetPasswordExpires -emailVerificationToken -totpEnabled -tokenVersion",
+        },
+      },
+      {
+        path: "payment",
+        select: "-__v",
+      },
+    ]
+  }
+
   /**
    * Find an appointment by ID
    */
   async findById(id: string | Types.ObjectId): Promise<any> {
     return Appointment.findById(id)
-      .populate("patient", "-password -totpSecret")
-      .populate("doctor", "-password -totpSecret")
-      .populate("payment", "amount status paymentMethod")
+      .populate(this.getPopulationConfig())
   }
 
   /**
@@ -55,7 +81,6 @@ class AppointmentRepository {
 
     // Build query
     const query: any = {}
-
     if (doctorId) query.doctor = doctorId
     if (patientId) query.patient = patientId
     if (status) query.status = status
@@ -68,18 +93,9 @@ class AppointmentRepository {
       if (endDate) query.date.$lte = endDate
     }
 
-    // Execute query
+    // Execute query with consistent population
     const appointments = await Appointment.find(query)
-      .populate("patient", "names email phoneNumber picture")
-      .populate({
-        path: "doctor",
-        select: "user specialization consultationFee",
-        populate: {
-          path: "user",
-          select: "names email phoneNumber picture",
-        },
-      })
-      .populate("payment", "amount status paymentMethod")
+      .populate(this.getPopulationConfig())
       .sort({ [sortBy]: sortDirection })
       .skip(skip)
       .limit(limit)
@@ -101,6 +117,40 @@ class AppointmentRepository {
   async createAppointment(appointmentData: any): Promise<any> {
     const appointment = new Appointment(appointmentData)
     return appointment.save()
+  }
+
+    /**
+   * Get all appointments for a specific patient
+   */
+  async getAppointmentsByPatient(patientId: string | Types.ObjectId): Promise<any[]> {
+    return Appointment.find({ patient: patientId })
+      .populate("patient", "names email phoneNumber picture")
+      .populate({
+        path: "doctor",
+        select: "user specialization consultationFee",
+        populate: {
+          path: "user",
+          select: "names email phoneNumber picture",
+        },
+      })
+      .sort({ date: 1, startTime: 1 })
+  }
+
+  /**
+   * Get all appointments for a specific doctor
+   */
+  async getAppointmentsByDoctor(doctorId: string | Types.ObjectId): Promise<any[]> {
+    return Appointment.find({ doctor: doctorId })
+       .populate("doctor", "names email phoneNumber picture")
+      .populate({
+        path: "patient",
+        select: "user names email phoneNumber picture",
+        populate: {
+          path: "user",
+          select: "names email phoneNumber picture",
+        },
+      })
+      .sort({ date: 1, startTime: 1 })
   }
 
   /**

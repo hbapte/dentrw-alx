@@ -210,7 +210,9 @@ class DoctorRepository {
       rating,
       review,
       patient: new Types.ObjectId(patientId.toString()),
-      date: new Date(),
+      appointmentDate: new Date(), // You may want to set this to the actual appointment date if available
+      reviewDate: new Date(),
+      isVerified: false, // Set to true if you have verification logic
     })
 
     // Calculate new average rating

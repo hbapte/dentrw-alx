@@ -13,6 +13,8 @@ import {
   addAppointmentReminder,
   checkDoctorAvailability,
   getAppointmentsNeedingReminders,
+  getAppointmentsByDoctorId,
+  getAppointmentsByPatientId,
 } from "../modules/appointments/controllers/appointmentController"
 
 import { authenticateToken, authorizeRoles } from "../middlewares/auth.middleware"
@@ -37,6 +39,9 @@ appointmentRouter.get("/by-date", getAppointmentsByDate)
 appointmentRouter.get("/upcoming", getUpcomingAppointments)
 appointmentRouter.get("/:id", getAppointmentById)
 appointmentRouter.post("/check-availability", validate(checkAvailabilitySchema), checkDoctorAvailability)
+appointmentRouter.get("/by-patient/:patientId", getAppointmentsByPatientId)
+appointmentRouter.get("/by-doctor/:doctorId", getAppointmentsByDoctorId)
+
 
 // Routes for creating and managing appointments
 appointmentRouter.post("/", validate(createAppointmentSchema), createAppointment)

@@ -3,6 +3,9 @@ import type { Request, Response } from "express"
 import httpStatus from "http-status"
 import User from "../../../database/models/user"
 import Patient from "../../../database/models/patient"
+import Admin from "../../../database/models/admin"
+import Doctor from "../../../database/models/doctor"
+import Receptionist from "../../../database/models/receptionist"
 import RefreshToken from "../../../database/models/refreshToken"
 import { addDays } from "date-fns"
 
@@ -27,6 +30,7 @@ import {
   internalErrorResponse,
   conflictResponse,
 } from "../../../utils/api-response"
+
 
 // Helper function to set cookies
 const setTokenCookies = (res: Response, accessToken: string, refreshToken: string) => {
@@ -54,10 +58,195 @@ const clearTokenCookies = (res: Response) => {
   res.clearCookie("refreshToken", { path: "/api/auth/refresh" })
 }
 
+
+
+
+// Login user
+export const loginController = async (req: Request, res: Response) => {
+  const startTime = performance.now()
+  const { email, password , } = req.body
+
+  // Adjust token expiration based on "rememberMe"
+
+
+
+  try {
+    // Find user by email
+    const user = await User.findOne({ email })
+
+    if (!user) {
+      return unauthorizedResponse(res, "Invalid email or password", { startTime })
+    }
+
+    // Check if email is verified
+    if (!user.emailVerified) {
+      return unauthorizedResponse(res, "Please verify your email before logging in", {
+        startTime,
+        debug: { needsVerification: true, userId: user._id },
+      })
+    }
+
+    // Check if user is active
+    if (!user.active) {
+      return unauthorizedResponse(res, "Your account has been deactivated. Please contact support.", { startTime })
+    }
+
+    // Check if user has Google auth only
+    if (user.googleId && !user.password) {
+      return badRequestResponse(res, "Please use Google Sign-In to log in.", { useGoogle: true }, { startTime })
+    }
+
+    // Verify password
+    if (!user.password) {
+      return unauthorizedResponse(res, "Invalid email or password", { startTime })
+    }
+
+    const isPasswordValid = await user.comparePassword(password)
+
+    if (!isPasswordValid) {
+      return unauthorizedResponse(res, "Invalid email or password", { startTime })
+    }
+
+    // Check if 2FA is enabled
+    if (user.totpEnabled) {
+      // Generate a temporary token for 2FA verification
+      const tempToken = generateActionToken(user._id.toString(), "2fa-pending", "5m")
+
+      return successResponse(
+        res,
+        {
+          requiresTwoFactor: true,
+          tempToken,
+          userId: user._id,
+        },
+        "2FA verification required",
+        {
+          statusCode: httpStatus.OK,
+          startTime,
+          links: {
+            verifyTwoFactor: `/api/auth/verify-2fa`,
+          },
+        },
+      )
+    }
+
+    // Generate tokens
+    const { accessToken, refreshToken } = generateTokenPair(user._id.toString(), user.role, user.tokenVersion)
+
+
+    // Store refresh token
+    const expiresAt = addDays(new Date(), 7) // 7 days
+    await RefreshToken.create({
+      userId: user._id,
+      token: refreshToken,
+      tokenVersion: user.tokenVersion,
+      userAgent: req.headers["user-agent"],
+      ipAddress: req.ip,
+      expiresAt,
+    })
+
+    // Set cookies
+    setTokenCookies(res, accessToken, refreshToken)
+
+    // Update last login
+    user.lastLogin = new Date()
+    await user.save()
+
+    // Log the action
+    await logAction(req, "login", "user", user._id.toString())
+
+    // Return user data (excluding sensitive information)
+    const userData: {
+      id: typeof user._id,
+      names: typeof user.names,
+      email: typeof user.email,
+      username: typeof user.username,
+      role: typeof user.role,
+      picture: typeof user.picture,
+      preferredLanguage: typeof user.preferredLanguage,
+      phoneNumber: typeof user.phoneNumber,
+      patientId?: string,
+      doctorId?: string,
+      adminId?: string,
+      receptionistId?: string,
+    } = {
+      id: user._id,
+      names: user.names,
+      email: user.email,
+      username: user.username,
+      role: user.role,
+      picture: user.picture,
+      preferredLanguage: user.preferredLanguage,
+      phoneNumber: user.phoneNumber,
+    }
+
+    // return patient ID/ doctorID / admin ID / receptionist ID based on role
+    if (user.role === "patient") {
+      const patient = await Patient.findOne({ user: user._id }).select("_id")
+      if (!patient) {
+        return unauthorizedResponse(res, "Patient profile not found", { startTime })
+      }
+      userData.patientId = patient._id.toString()
+    }
+    if (user.role === "doctor") {
+      const doctor = await Doctor.findOne({ user: user._id }).select("_id")
+      if (!doctor) {
+        return unauthorizedResponse(res, "Doctor profile not found", { startTime })
+      }
+      userData.doctorId = doctor._id.toString()
+    }
+
+    if (user.role === "admin") {
+      const admin = await Admin.findOne({ user: user._id }).select("_id")
+      if (!admin) {
+        return unauthorizedResponse(res, "Admin profile not found", { startTime })
+      }
+      userData.adminId = admin._id.toString()
+    }
+
+    if (user.role === "receptionist") {
+      const receptionist = await Receptionist.findOne({ user: user._id }).select("_id")
+      if (!receptionist) {
+        return unauthorizedResponse(res, "Receptionist profile not found", { startTime })
+      }
+      userData.receptionistId = receptionist._id.toString()
+    }
+
+    return successResponse(
+      res,
+      {
+        user: userData,
+        token: accessToken, // For clients that don't use cookies
+      },
+      "Login successful",
+      {
+        statusCode: httpStatus.OK,
+        startTime,
+        links: {
+          profile: `/api/users/me`,
+          logout: `/api/auth/logout`,
+        },
+      },
+    )
+  } catch (error) {
+    console.error("Error logging in user:", error)
+    return internalErrorResponse(res, "Internal server error", {
+      startTime,
+      debug: process.env.NODE_ENV === "development" ? error : undefined,
+    })
+  }
+}
+
+
+
 // Register a new user
 export const registerController = async (req: Request, res: Response) => {
+
   const startTime = performance.now()
   const { names, email, username, password, phoneNumber, preferredLanguage } = req.body
+  console.log("Register body", req.body)
+
+  //hash password
 
   try {
     // Check if user email exists
@@ -181,136 +370,6 @@ export const checkUsernameController = async (req: Request, res: Response) => {
   }
 }
 
-
-
-// Login user
-export const loginController = async (req: Request, res: Response) => {
-  const startTime = performance.now()
-  const { email, password } = req.body
-
-  // Adjust token expiration based on "rememberMe"
-
-
-  try {
-    // Find user by email
-    const user = await User.findOne({ email })
-
-    if (!user) {
-      return unauthorizedResponse(res, "Invalid email or password", { startTime })
-    }
-
-    // Check if email is verified
-    if (!user.emailVerified) {
-      return unauthorizedResponse(res, "Please verify your email before logging in", {
-        startTime,
-        debug: { needsVerification: true, userId: user._id },
-      })
-    }
-
-    // Check if user is active
-    if (!user.active) {
-      return unauthorizedResponse(res, "Your account has been deactivated. Please contact support.", { startTime })
-    }
-
-    // Check if user has Google auth only
-    if (user.googleId && !user.password) {
-      return badRequestResponse(res, "Please use Google Sign-In to log in.", { useGoogle: true }, { startTime })
-    }
-
-    // Verify password
-    if (!user.password) {
-      return unauthorizedResponse(res, "Invalid email or password", { startTime })
-    }
-
-    const isPasswordValid = await user.comparePassword(password)
-
-    if (!isPasswordValid) {
-      return unauthorizedResponse(res, "Invalid email or password", { startTime })
-    }
-
-    // Check if 2FA is enabled
-    if (user.totpEnabled) {
-      // Generate a temporary token for 2FA verification
-      const tempToken = generateActionToken(user._id.toString(), "2fa-pending", "5m")
-
-      return successResponse(
-        res,
-        {
-          requiresTwoFactor: true,
-          tempToken,
-          userId: user._id,
-        },
-        "2FA verification required",
-        {
-          statusCode: httpStatus.OK,
-          startTime,
-          links: {
-            verifyTwoFactor: `/api/auth/verify-2fa`,
-          },
-        },
-      )
-    }
-
-    // Generate tokens
-    const { accessToken, refreshToken } = generateTokenPair(user._id.toString(), user.role, user.tokenVersion)
-
-    // Store refresh token
-    const expiresAt = addDays(new Date(), 7) // 7 days
-    await RefreshToken.create({
-      userId: user._id,
-      token: refreshToken,
-      tokenVersion: user.tokenVersion,
-      userAgent: req.headers["user-agent"],
-      ipAddress: req.ip,
-      expiresAt,
-    })
-
-    // Set cookies
-    setTokenCookies(res, accessToken, refreshToken)
-
-    // Update last login
-    user.lastLogin = new Date()
-    await user.save()
-
-    // Log the action
-    await logAction(req, "login", "user", user._id.toString())
-
-    // Return user data (excluding sensitive information)
-    const userData = {
-      id: user._id,
-      names: user.names,
-      email: user.email,
-      username: user.username,
-      role: user.role,
-      picture: user.picture,
-      preferredLanguage: user.preferredLanguage,
-      phoneNumber: user.phoneNumber,
-    }
-
-    return successResponse(
-      res,
-      {
-        user: userData,
-        token: accessToken, // For clients that don't use cookies
-      },
-      "Login successful",
-      {
-        statusCode: httpStatus.OK,
-        startTime,
-        links: {
-          profile: `/api/users/me`,
-          logout: `/api/auth/logout`,
-        },
-      },
-    )
-  } catch (error) {
-    console.error("Error logging in user:", error)
-    return internalErrorResponse(res, "Internal server error", {
-      startTime,
-      debug: process.env.NODE_ENV === "development" ? error : undefined,
-    })
-  }
-}
 
 // Verify 2FA code
 export const verifyTwoFactorController = async (req: Request, res: Response) => {
