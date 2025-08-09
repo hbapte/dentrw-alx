@@ -1,3 +1,4 @@
+// client\src\pages\auth\RegisterPage.tsx
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
@@ -7,10 +8,11 @@ import { Link, useNavigate } from "react-router-dom"
 import { useAuthStore } from "../../store/auth-store"
 import { useNotificationStore } from "../../store/notification-store"
 import { UserPlus, CheckCircle2, ShieldCheck, Users, Stethoscope, AlertTriangle, ShieldAlert } from "lucide-react"
-import { RegisterForm, type RegisterFormData } from "../../components/auth/RegisterForm"
+import { RegisterForm,  } from "../../components/auth/RegisterForm"
 import { RegistrationSuccess } from "../../components/auth/RegistrationSuccess"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence, type Variants } from "framer-motion"
 import { Alert, AlertDescription, AlertTitle } from "../../components/ui/alert"
+import { type RegisterFormData } from "@/store/register-form-store"
 
 const RegisterPage: React.FC = () => {
   const [registrationSuccess, setRegistrationSuccess] = useState(false)
@@ -191,13 +193,14 @@ const RegisterPage: React.FC = () => {
     exit: { opacity: 0, transition: { duration: 0.3 } },
   }
 
-  const featureVariants = {
+
+  const featureVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
-    visible: (i: number) => ({
+    visible: (i: number = 0) => ({
       opacity: 1,
       y: 0,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 300,
         damping: 20,
         delay: 0.4 + i * 0.1,
@@ -209,10 +212,11 @@ const RegisterPage: React.FC = () => {
   const alertVariants = {
     hidden: { opacity: 0, y: -20, scale: 0.95 },
     visible: {
+      
       opacity: 1,
       y: 0,
       scale: 1,
-      transition: { type: "spring", stiffness: 400, damping: 20 },
+      transition: { type: "spring" as const, stiffness: 400, damping: 20 },
     },
     exit: {
       opacity: 0,

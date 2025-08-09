@@ -3,16 +3,16 @@
 
 import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { useDoctorStore } from "../../store/doctor-store"
-import { useNotificationStore } from "../../store/notification-store"
-import { useAuthStore } from "../../store/auth-store"
-import { getDoctorFullName } from "../../utils/doctor.utils"
+import { useDoctorStore } from "@/store/doctor-store"
+import { useNotificationStore } from "@/store/notification-store"
+import { useAuthStore } from "@/store/auth-store"
+import { getDoctorFullName } from "@/utils/doctor.utils"
 import { Edit, Plus, Trash2, UserPlus, Star, Briefcase, SlidersHorizontal } from "lucide-react"
-import Loader from "../../components/ui/Loader"
-import ErrorAlert from "../../components/ui/ErrorAlert"
-import SearchInput from "../../components/ui/SearchInput"
-import Pagination from "../../components/ui/Pagination"
-import ConfirmDialog from "../../components/ui/ConfirmDialog"
+import Loader from "@/components/ui/Loader"
+import ErrorAlert from "@/components/ui/ErrorAlert"
+import SearchInput from "@/components/ui/SearchInput"
+import Pagination from "@/components/ui/Paginationn"
+import ConfirmDialog from "@/components/ui/ConfirmDialog"
 
 const DoctorsPage = () => {
   const { doctors, loading, error, pagination, filters, setFilters, fetchDoctors, deleteDoctor, clearError } =

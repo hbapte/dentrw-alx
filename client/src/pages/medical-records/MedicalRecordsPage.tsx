@@ -5,20 +5,20 @@
 import type React from "react"
 import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { useMedicalRecordStore } from "../../store/medical-record-store"
-import { useNotificationStore } from "../../store/notification-store"
+import { useMedicalRecordStore } from "@/store/medical-record-store"
+import { useNotificationStore } from "@/store/notification-store"
 import {
   formatMedicalRecord,
   getMedicalRecordStatus,
   getStatusColor,
   getStatusLabel,
-} from "../../utils/medical-record.utils"
+} from "@/utils/medical-record.utils"
 import { Edit, Plus, Trash2, FileText, Filter } from "lucide-react"
-import Loader from "../../components/ui/Loader"
-import ErrorAlert from "../../components/ui/ErrorAlert"
-import SearchInput from "../../components/ui/SearchInput"
-import Pagination from "../../components/ui/Pagination"
-import ConfirmDialog from "../../components/ui/ConfirmDialog"
+import Loader from "@/components/ui/Loader"
+import ErrorAlert from "@/components/ui/ErrorAlert"
+import SearchInput from "@/components/ui/SearchInput"
+import Pagination from "@/components/ui/Paginationn"
+import ConfirmDialog from "@/components/ui/ConfirmDialog"
 
 const MedicalRecordsPage: React.FC = () => {
   const { records, loading, error, fetchRecords, deleteRecord, clearError } = useMedicalRecordStore()

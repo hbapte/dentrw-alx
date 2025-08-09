@@ -3,14 +3,14 @@
 import type React from "react"
 import { useEffect } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
-import { usePatientStore } from "../../store/patient-store"
-import { useNotificationStore } from "../../store/notification-store"
+import { usePatientStore } from "@/store/patient-store"
+import { useNotificationStore } from "@/store/notification-store"
 import { ArrowLeft } from "lucide-react"
-import PatientForm from "../../components/patients/PatientForm"
-import Loader from "../../components/ui/Loader"
-import ErrorAlert from "../../components/ui/ErrorAlert"
-import { patientToFormData } from "../../utils/patient.utils"
-import type { PatientFormData } from "../../types/patient.types"
+import PatientForm from "@/components/admin/patients/PatientForm"
+import Loader from "@/components/ui/Loader"
+import ErrorAlert from "@/components/ui/ErrorAlert"
+import { patientToFormData } from "@/utils/patient.utils"
+import type { PatientFormData } from "@/types/patient.types"
 
 const EditPatientPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()

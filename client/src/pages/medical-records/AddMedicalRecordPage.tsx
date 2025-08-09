@@ -2,11 +2,11 @@
 
 import type React from "react"
 import { Link, useNavigate, useLocation } from "react-router-dom"
-import { useMedicalRecordStore } from "../../store/medical-record-store"
-import { useNotificationStore } from "../../store/notification-store"
+import { useMedicalRecordStore } from "@/store/medical-record-store"
+import { useNotificationStore } from "@/store/notification-store"
 import { ArrowLeft } from "lucide-react"
-import MedicalRecordForm from "../../components/medical-records/MedicalRecordForm"
-import type { MedicalRecordFormData } from "../../types/medical-record.types"
+import type { MedicalRecordFormData } from "@/types/medical-record.types"
+import MedicalRecordForm from "@/components/admin/medical-records/MedicalRecordForm"
 
 const AddMedicalRecordPage: React.FC = () => {
   const navigate = useNavigate()

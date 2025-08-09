@@ -17,7 +17,7 @@ import DoctorStatistics from "../../components/dashboard/DoctorStatistics"
 import MedicalRecordStatistics from "../../components/dashboard/MedicalRecordStatistics"
 import AppointmentStatistics from "../../components/dashboard/AppointmentStatistics"
 import PaymentStatistics from "../../components/dashboard/PaymentStatistics"
-import AppointmentCalendar from "../../components/appointments/AppointmentCalendar"
+import AppointmentCalendar from "../../components/appointment-calendar/AppointmentCalendar"
 import { useAuthStore } from "../../store/auth-store"
 import PageHeader from "../../components/ui/page-header"
 

@@ -1,7 +1,7 @@
 import type React from "react"
 // import { useLocation } from "react-router-dom"
-// import CreatePaymentForm from "../../components/payments/CreatePaymentForm"
-import PageHeader from "../../components/ui/page-header"
+// import CreatePaymentForm from "@/components/payments/CreatePaymentForm"
+import PageHeader from "@/components/ui/page-header"
 
 const CreatePaymentPage: React.FC = () => {
   // const location = useLocation()

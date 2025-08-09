@@ -4,12 +4,12 @@
 import type React from "react"
 import { useEffect, useState } from "react"
 import { format } from "date-fns"
-import { Calendar } from "../../components/ui/calendar"
-import { Button } from "../../components/ui/button"
-import { Popover, PopoverContent, PopoverTrigger } from "../../components/ui/popover"
-import { usePaymentStore } from "../../store/payment-store"
-import PaymentStats from "../../components/payments/PaymentStats"
-import PageHeader from "../../components/ui/page-header"
+import { Calendar } from "@/components/ui/calendar"
+import { Button } from "@/components/ui/button"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { usePaymentStore } from "@/store/payment-store"
+import PaymentStats from "@/components/admin/payments/PaymentStats"
+import PageHeader from "@/components/ui/page-header"
 
 const PaymentStatsPage: React.FC = () => {
   const { paymentStats, loading, error, fetchPaymentStats } = usePaymentStore()
@@ -37,7 +37,7 @@ const PaymentStatsPage: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
+    <div className="container mx-auto space-y-6">
       <PageHeader
         title="Payment Statistics"
         description="View payment statistics and trends"

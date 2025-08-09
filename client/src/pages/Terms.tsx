@@ -1,5 +1,5 @@
 import React from 'react';
-import TermsOfServices from '../components/Terms';
+import TermsOfServices from '../components/sections/Terms';
 
 const TermsPage: React.FC = () => {
     return (

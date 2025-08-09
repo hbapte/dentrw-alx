@@ -4,20 +4,20 @@
 import type React from "react"
 import { useEffect, useState } from "react"
 import { useParams, Link, useNavigate } from "react-router-dom"
-import { useMedicalRecordStore } from "../../store/medical-record-store"
-import { useNotificationStore } from "../../store/notification-store"
+import { useMedicalRecordStore } from "@/store/medical-record-store"
+import { useNotificationStore } from "@/store/notification-store"
 import {
   formatMedicalRecord,
   getMedicalRecordStatus,
   getStatusColor,
   getStatusLabel,
-} from "../../utils/medical-record.utils"
+} from "@/utils/medical-record.utils"
 import { ArrowLeft, Edit, Trash2, FileText, Stethoscope, Clipboard, Calendar, User, UserPlus } from "lucide-react"
-import Loader from "../../components/ui/Loader"
-import ErrorAlert from "../../components/ui/ErrorAlert"
-import ConfirmDialog from "../../components/ui/ConfirmDialog"
-import PrescriptionForm from "../../components/medical-records/PrescriptionForm"
-import AttachmentUploader from "../../components/medical-records/AttachmentUploader"
+import Loader from "@/components/ui/Loader"
+import ErrorAlert from "@/components/ui/ErrorAlert"
+import ConfirmDialog from "@/components/ui/ConfirmDialog"
+import PrescriptionForm from "@/components/admin/medical-records/PrescriptionForm"
+import AttachmentUploader from "@/components/admin/medical-records/AttachmentUploader"
 
 const MedicalRecordDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
@@ -187,7 +187,7 @@ const MedicalRecordDetailsPage: React.FC = () => {
               </dt>
               <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
                 <Link
-                  to={`/patients/${typeof selectedRecord.patient === "object" ? selectedRecord.patient.id || selectedRecord.patient._id : selectedRecord.patient}`}
+                  to={`/patients/${typeof selectedRecord.patient === "object" ? selectedRecord.patient._id || selectedRecord.patient._id : selectedRecord.patient}`}
                   className="text-indigo-600 hover:text-indigo-900"
                 >
                   {formattedRecord.patientName}
@@ -201,7 +201,7 @@ const MedicalRecordDetailsPage: React.FC = () => {
               </dt>
               <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
                 <Link
-                  to={`/doctors/${typeof selectedRecord.doctor === "object" ? selectedRecord.doctor.id || selectedRecord.doctor._id : selectedRecord.doctor}`}
+                  to={`/doctors/${typeof selectedRecord.doctor === "object" ? selectedRecord.doctor._id || selectedRecord.doctor._id : selectedRecord.doctor}`}
                   className="text-indigo-600 hover:text-indigo-900"
                 >
                   {formattedRecord.doctorName}

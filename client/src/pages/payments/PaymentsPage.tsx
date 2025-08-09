@@ -5,13 +5,13 @@ import type React from "react"
 import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { Plus } from "lucide-react"
-import { Button } from "../../components/ui/button"
-import { usePaymentStore } from "../../store/payment-store"
-import PaymentFilters from "../../components/payments/PaymentFilters"
-import PaymentList from "../../components/payments/PaymentList"
-import PaymentPagination from "../../components/payments/PaymentPagination"
-import PageHeader from "../../components/ui/page-header"
-import toast from "react-hot-toast"
+import { Button } from "@/components/ui/button"
+import { usePaymentStore } from "@/store/payment-store"
+import PaymentFilters from "@/components/admin/payments/PaymentFilters"
+import PaymentList from "@/components/admin/payments/PaymentList"
+import PaymentPagination from "@/components/admin/payments/PaymentPagination"
+import PageHeader from "@/components/ui/page-header"
+import { toast } from "sonner"
 
 const PaymentsPage: React.FC = () => {
   const navigate = useNavigate()
@@ -66,7 +66,7 @@ const PaymentsPage: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
+    <div className="container mx-auto space-y-6">
       <PageHeader
         title="Payments"
         description="Manage and track all payments"

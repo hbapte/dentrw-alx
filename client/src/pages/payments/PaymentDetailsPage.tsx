@@ -3,9 +3,9 @@
 import type React from "react"
 import { useEffect } from "react"
 import { useParams } from "react-router-dom"
-import { usePaymentStore } from "../../store/payment-store"
-import PaymentDetails from "../../components/payments/PaymentDetails"
-import PageHeader from "../../components/ui/page-header"
+import { usePaymentStore } from "@/store/payment-store"
+import PaymentDetails from "@/components/admin/payments/PaymentDetails"
+import PageHeader from "@/components/ui/page-header"
 
 const PaymentDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
@@ -28,7 +28,7 @@ const PaymentDetailsPage: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
+    <div className="container mx-auto space-y-6">
       <PageHeader title="Payment Details" description="View and manage payment information" />
 
       {loading ? (

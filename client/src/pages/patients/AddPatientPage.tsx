@@ -3,11 +3,11 @@
 
 import type React from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { usePatientStore } from "../../store/patient-store"
-import { useNotificationStore } from "../../store/notification-store"
+import { usePatientStore } from "@/store/patient-store"
+import { useNotificationStore } from "@/store/notification-store"
 import { ArrowLeft } from "lucide-react"
-import PatientForm from "../../components/patients/PatientForm"
-import type { PatientFormData } from "../../types/patient.types"
+import PatientForm from "@/components/admin/patients/PatientForm"
+import type { PatientFormData } from "@/types/patient.types"
 
 const AddPatientPage: React.FC = () => {
   const navigate = useNavigate()

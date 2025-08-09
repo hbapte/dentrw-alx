@@ -3,18 +3,17 @@
 
 import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { usePatientStore } from "../../store/patient-store"
-import { useNotificationStore } from "../../store/notification-store"
-import { useAuthStore } from "../../store/auth-store"
-import { formatDate } from "../../utils/date-utils"
-import { formatPhoneNumber } from "../../utils/format-utils"
-import { getPatientFullName } from "../../utils/patient.utils"
+import { usePatientStore } from "@/store/patient-store"
+import { useNotificationStore } from "@/store/notification-store"
+import { useAuthStore } from "@/store/auth-store"
+import { formatDate, formatPhoneNumber } from "@/utils/format-utils"
+import { getPatientFullName } from "@/utils/patient.utils"
 import { Edit, Plus, Trash2, User, UserPlus, SlidersHorizontal } from "lucide-react"
-import Loader from "../../components/ui/Loader"
-import ErrorAlert from "../../components/ui/ErrorAlert"
-import SearchInput from "../../components/ui/SearchInput"
-import Pagination from "../../components/ui/Pagination"
-import ConfirmDialog from "../../components/ui/ConfirmDialog"
+import Loader from "@/components/ui/Loader"
+import ErrorAlert from "@/components/ui/ErrorAlert"
+import SearchInput from "@/components/ui/SearchInput"
+import Pagination from "@/components/ui/Paginationn"
+import ConfirmDialog from "@/components/ui/ConfirmDialog"
 
 const PatientsPage = () => {
   const { patients, loading, error, pagination, filters, setFilters, fetchPatients, deletePatient, clearError } =

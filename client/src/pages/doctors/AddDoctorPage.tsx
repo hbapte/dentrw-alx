@@ -6,12 +6,12 @@
 import type React from "react"
 import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { useDoctorStore } from "../../store/doctor-store"
-import { useNotificationStore } from "../../store/notification-store"
+import { useDoctorStore } from "@/store/doctor-store"
+import { useNotificationStore } from "@/store/notification-store"
 import { ArrowLeft } from "lucide-react"
-import DoctorForm from "../../components/doctors/DoctorForm"
-import type { DoctorFormData } from "../../types/doctor.types"
-import api from "../../services/api"
+import DoctorForm from "@/components/admin/doctors/doctor-form/DoctorForm"
+import type { DoctorFormData } from "@/types/doctor.types"
+import api from "@/services/api"
 
 interface User {
   id: string
