@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client"
 
 import { useState, useEffect } from "react"
@@ -12,7 +11,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
 import { Loader2 } from "lucide-react"
-import toast from 'react-hot-toast'
 
 const basicInfoSchema = z.object({
   names: z.string().min(2, "Name must be at least 2 characters"),
@@ -38,6 +36,7 @@ export const BasicInfoForm = () => {
       username: "",
       phoneNumber: "",
       preferredLanguage: "en",
+      
     },
   })
 
@@ -54,25 +53,23 @@ export const BasicInfoForm = () => {
 
   useEffect(() => {
     if (success) {
-      toast.success('Profile updated successfully')
       setIsEditing(false)
       clearSuccess()
     }
-  }, [success, toast, clearSuccess])
+  }, [success, clearSuccess])
 
   useEffect(() => {
     if (error) {
-      toast.error(error.message || "Failed to update profile")
       clearError()
     }
-  }, [error, toast, clearError])
+  }, [error,clearError])
 
   const onSubmit = async (data: BasicInfoFormValues) => {
     await updateUserProfile(data)
   }
 
   return (
-    <Card>
+    <Card className="">
       <CardHeader>
         <div className="flex justify-between items-center">
           <div>

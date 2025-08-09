@@ -8,7 +8,7 @@ import { Users, UserPlus } from "lucide-react"
 import PatientService from "../../services/patient.service"
 import Loader from "../ui/Loader"
 import type { PatientStatistics as PatientStatsType } from "../../types/patient.types"
-import { formatDate } from "../../utils/date-utils"
+import { formatDate } from "@/utils/format-utils"
 import { getPatientFullName } from "../../utils/patient.utils"
 
 const COLORS = ["#3b82f6", "#ec4899", "#10b981", "#6b7280"]

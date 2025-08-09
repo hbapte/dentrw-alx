@@ -91,8 +91,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, loading, disabled, disa
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <Card className="w-full border-1 overflow-hidden bg-white/80 backdrop-blur-sm shadow-xl rounded-xl">
-        <CardContent className="px-6">
+      <Card className="w-full md:min-w-[28rem]  border-1 overflow-hidden bg-white/80 backdrop-blur-sm shadow-xl rounded-xl">
+        <CardContent className="px-8 py-3">
           <Form {...form}>
             <motion.form
               className="space-y-5"

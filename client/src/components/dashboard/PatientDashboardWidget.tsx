@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { usePatientStore } from "../../store/patient-store"
-import { formatDate } from "../../utils/date-utils"
+import { formatDate } from "@/utils/format-utils"
 import { getPatientFullName } from "../../utils/patient.utils"
 import { Users, UserPlus, User } from "lucide-react"
 import Loader from "../ui/Loader"
