@@ -1,4 +1,3 @@
-// server\src\modules\profile\profileController.ts
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Request, Response } from "express"
 import User from "../../database/models/user"
@@ -7,18 +6,19 @@ import Doctor from "../../database/models/doctor"
 import {
   successResponse,
   notFoundResponse,
-  forbiddenResponse,
   badRequestResponse,
   unauthorizedResponse,
   databaseErrorResponse,
   validationErrorResponse,
+  forbiddenResponse,
 } from "../../utils/api-response"
 import asyncHandler from "../../utils/asyncHandler"
 import { logAction } from "../../utils/auditLogUtil"
+import { deleteImageFromCloudinary, getOptimizedImageUrl } from "../../utils/uploadUtils"
+import Admin from "../../database/models/admin"
+import Receptionist from "../../database/models/receptionist"
 
-/**
- * Get user profile
- */
+/** * Get user profile */
 export const getUserProfileController = asyncHandler(async (req: Request, res: Response) => {
   try {
     if (!req.user || !req.user.userId) {
@@ -44,11 +44,37 @@ export const getUserProfileController = asyncHandler(async (req: Request, res: R
 
     // Get profile data based on role
     let profileData = null
+    switch (user.role) {
+      case "patient":
+        profileData = await Patient.findOne({ user: userId })
+        break
+      case "doctor":
+        profileData = await Doctor.findOne({ user: userId })
+        break
+      case "receptionist":
+        profileData = await Receptionist.findOne({ user: userId })
+          .populate("clinicAssignments.clinicId", "name address")
+          .populate("performanceReviews.reviewer", "names email")
+        break
+      case "admin":
+        profileData = await Admin.findOne({ user: userId })
+          .populate("managedClinics.clinicId", "name address")
+          .populate("managedUsers.userId", "names email role")
+          .populate("reportingTo", "names email")
+        break
+      default:
+        break
+    }
 
-    if (user.role === "patient") {
-      profileData = await Patient.findOne({ user: userId })
-    } else if (user.role === "doctor") {
-      profileData = await Doctor.findOne({ user: userId })
+    // Optimize profile picture URL if exists
+    let optimizedPictureUrl = user.picture
+    if (user.picture && user.picturePublicId) {
+      optimizedPictureUrl = getOptimizedImageUrl(user.picturePublicId, {
+        width: 400,
+        height: 400,
+        crop: "fill",
+        quality: "auto",
+      })
     }
 
     // Generate cache control based on data freshness
@@ -57,7 +83,10 @@ export const getUserProfileController = asyncHandler(async (req: Request, res: R
     return successResponse(
       res,
       {
-        user,
+        user: {
+          ...user.toObject(),
+          picture: optimizedPictureUrl,
+        },
         profile: profileData,
       },
       "User profile retrieved successfully",
@@ -67,7 +96,13 @@ export const getUserProfileController = asyncHandler(async (req: Request, res: R
         links: {
           self: "/api/profile",
           updateProfile: "/api/profile",
-          updatePassword: "/api/profile/password",
+          updatePatientProfile: "/api/profile/patient",
+          updateDoctorProfile: "/api/profile/doctor",
+          updateReceptionistProfile: "/api/profile/receptionist",
+          updateAdminProfile: "/api/profile/admin",
+          updatePassword: "/api/profile/change-password",
+          setPassword: "/api/profile/set-password",
+          uploadPicture: "/api/profile/upload-picture",
           documentation: `/docs/api/profile/${user.role}`,
         },
       },
@@ -80,9 +115,7 @@ export const getUserProfileController = asyncHandler(async (req: Request, res: R
   }
 })
 
-/**
- * Update user profile
- */
+/** * Update user profile */
 export const updateUserProfileController = asyncHandler(async (req: Request, res: Response) => {
   try {
     if (!req.user || !req.user.userId) {
@@ -93,25 +126,40 @@ export const updateUserProfileController = asyncHandler(async (req: Request, res
     }
 
     const userId = req.user.userId
-    const { names, username, phoneNumber, preferredLanguage } = req.body
+    const {
+      names,
+      username,
+      phoneNumber,
+      preferredLanguage,
+      nationalId,
+      dateOfBirth,
+      gender,
+      maritalStatus,
+      occupation,
+    } = req.body
 
     // Validate input
     const validationErrors: Record<string, string> = {}
-
     if (names && (typeof names !== "string" || names.length < 2)) {
       validationErrors.names = "Names must be at least 2 characters long"
     }
-
     if (username && (typeof username !== "string" || username.length < 3)) {
       validationErrors.username = "Username must be at least 3 characters long"
     }
-
     if (phoneNumber && !/^\+?[0-9]{10,15}$/.test(phoneNumber)) {
       validationErrors.phoneNumber = "Invalid phone number format"
     }
-
     if (preferredLanguage && !["en", "fr", "rw"].includes(preferredLanguage)) {
       validationErrors.preferredLanguage = "Preferred language must be one of: en, fr, rw"
+    }
+    if (nationalId && !/^[0-9]{16}$/.test(nationalId)) {
+      validationErrors.nationalId = "National ID must be 16 digits"
+    }
+    if (gender && !["male", "female", "other"].includes(gender)) {
+      validationErrors.gender = "Gender must be one of: male, female, other"
+    }
+    if (maritalStatus && !["single", "married", "divorced", "widowed"].includes(maritalStatus)) {
+      validationErrors.maritalStatus = "Marital status must be one of: single, married, divorced, widowed"
     }
 
     if (Object.keys(validationErrors).length > 0) {
@@ -123,7 +171,6 @@ export const updateUserProfileController = asyncHandler(async (req: Request, res
 
     // Update user data
     const user = await User.findById(userId)
-
     if (!user) {
       return notFoundResponse(res, "User not found", {
         help: "The user account may have been deleted.",
@@ -134,7 +181,6 @@ export const updateUserProfileController = asyncHandler(async (req: Request, res
     // Check if username is already taken
     if (username && username !== user.username) {
       const existingUser = await User.findOne({ username })
-
       if (existingUser) {
         return badRequestResponse(
           res,
@@ -146,27 +192,68 @@ export const updateUserProfileController = asyncHandler(async (req: Request, res
           },
         )
       }
-
       user.username = username
+    }
+
+    // Check if national ID is already taken
+    if (nationalId && nationalId !== user.nationalId) {
+      const existingUser = await User.findOne({ nationalId })
+      if (existingUser) {
+        return badRequestResponse(
+          res,
+          "National ID is already registered",
+          { nationalId },
+          {
+            help: "This National ID is already associated with another account.",
+            startTime: req.startTime,
+          },
+        )
+      }
+      user.nationalId = nationalId
     }
 
     // Update fields if provided
     let updated = false
-    if (names) {
+    const updatedFields: any = {}
+
+    if (names && names !== user.names) {
       user.names = names
+      updatedFields.names = names
       updated = true
     }
-    if (phoneNumber) {
+    if (phoneNumber && phoneNumber !== user.phoneNumber) {
       user.phoneNumber = phoneNumber
+      updatedFields.phoneNumber = phoneNumber
       updated = true
     }
-    if (preferredLanguage) {
+    if (preferredLanguage && preferredLanguage !== user.preferredLanguage) {
       user.preferredLanguage = preferredLanguage
+      updatedFields.preferredLanguage = preferredLanguage
+      updated = true
+    }
+    if (dateOfBirth && dateOfBirth !== user.dateOfBirth?.toISOString()) {
+      user.dateOfBirth = new Date(dateOfBirth)
+      updatedFields.dateOfBirth = dateOfBirth
+      updated = true
+    }
+    if (gender && gender !== user.gender) {
+      user.gender = gender
+      updatedFields.gender = gender
+      updated = true
+    }
+    if (maritalStatus && maritalStatus !== user.maritalStatus) {
+      user.maritalStatus = maritalStatus
+      updatedFields.maritalStatus = maritalStatus
+      updated = true
+    }
+    if (occupation && occupation !== user.occupation) {
+      user.occupation = occupation
+      updatedFields.occupation = occupation
       updated = true
     }
 
     // If no fields were updated
-    if (!updated && !username) {
+    if (!updated && !username && !nationalId) {
       return successResponse(
         res,
         {
@@ -179,6 +266,11 @@ export const updateUserProfileController = asyncHandler(async (req: Request, res
             picture: user.picture,
             preferredLanguage: user.preferredLanguage,
             phoneNumber: user.phoneNumber,
+            nationalId: user.nationalId,
+            dateOfBirth: user.dateOfBirth,
+            gender: user.gender,
+            maritalStatus: user.maritalStatus,
+            occupation: user.occupation,
           },
         },
         "No changes made to profile",
@@ -193,7 +285,7 @@ export const updateUserProfileController = asyncHandler(async (req: Request, res
 
     // Log the action
     await logAction(req, "update", "user", userId.toString(), {
-      updatedFields: { names, username, phoneNumber, preferredLanguage },
+      updatedFields,
     })
 
     return successResponse(
@@ -208,6 +300,11 @@ export const updateUserProfileController = asyncHandler(async (req: Request, res
           picture: user.picture,
           preferredLanguage: user.preferredLanguage,
           phoneNumber: user.phoneNumber,
+          nationalId: user.nationalId,
+          dateOfBirth: user.dateOfBirth,
+          gender: user.gender,
+          maritalStatus: user.maritalStatus,
+          occupation: user.occupation,
         },
       },
       "Profile updated successfully",
@@ -226,9 +323,7 @@ export const updateUserProfileController = asyncHandler(async (req: Request, res
   }
 })
 
-/**
- * Update patient profile
- */
+/** * Update patient profile */
 export const updatePatientProfileController = asyncHandler(async (req: Request, res: Response) => {
   try {
     if (!req.user || !req.user.userId) {
@@ -238,117 +333,98 @@ export const updatePatientProfileController = asyncHandler(async (req: Request, 
       })
     }
 
-    const userId = req.user.userId
-
-    // Check if user is a patient
-    const user = await User.findById(userId)
-
-    if (!user) {
-      return notFoundResponse(res, "User not found", {
-        help: "The user account may have been deleted.",
-        startTime: req.startTime,
-      })
-    }
-
-    if (user.role !== "patient") {
-      return forbiddenResponse(res, "Access denied. User is not a patient.", {
+    if (req.user.role !== "patient") {
+      return forbiddenResponse(res, "Access denied", {
         help: "Only patients can update patient profiles.",
         startTime: req.startTime,
       })
     }
 
-    // Validate input data
-    const { dateOfBirth, gender, address, emergencyContact, medicalHistory, insuranceInfo } = req.body
+    const userId = req.user.userId
+    const profileData = req.body
 
-    const validationErrors: Record<string, string> = {}
-
-    if (dateOfBirth && isNaN(new Date(dateOfBirth).getTime())) {
-      validationErrors.dateOfBirth = "Invalid date format"
-    }
-
-    if (gender && !["male", "female", "other"].includes(gender)) {
-      validationErrors.gender = "Gender must be one of: male, female, other"
-    }
-
-    if (Object.keys(validationErrors).length > 0) {
-      return validationErrorResponse(res, "Invalid input data", validationErrors, {
-        help: "Please provide valid values for all fields.",
-        startTime: req.startTime,
-      })
-    }
-
-    // Get patient profile
+    // Find or create patient profile
     let patient = await Patient.findOne({ user: userId })
-
     if (!patient) {
-      // Create patient profile if it doesn't exist
       patient = new Patient({ user: userId })
     }
 
-    // Update patient data
-    let updated = false
-
-    if (dateOfBirth) {
-      patient.dateOfBirth = new Date(dateOfBirth)
-      updated = true
+    // Update patient fields
+    if (profileData.dateOfBirth) {
+      patient.dateOfBirth = new Date(profileData.dateOfBirth)
     }
-    if (gender) {
-      patient.gender = gender
-      updated = true
+    if (profileData.gender) {
+      patient.gender = profileData.gender
+    }
+    if (profileData.nationalId) {
+      patient.nationalId = profileData.nationalId
+    }
+    if (profileData.maritalStatus) {
+      patient.maritalStatus = profileData.maritalStatus
+    }
+    if (profileData.occupation) {
+      patient.occupation = profileData.occupation
     }
 
-    if (address) {
+    // Update address
+    if (profileData.address) {
       patient.address = {
         ...patient.address,
-        ...address,
+        ...profileData.address,
       }
-      updated = true
     }
 
-    if (emergencyContact) {
+    // Update emergency contact
+    if (profileData.emergencyContact) {
       patient.emergencyContact = {
         ...patient.emergencyContact,
-        ...emergencyContact,
+        ...profileData.emergencyContact,
       }
-      updated = true
     }
 
-    if (medicalHistory) {
+    // Update dental history
+    if (profileData.dentalHistory) {
+      patient.dentalHistory = {
+        ...patient.dentalHistory,
+        ...profileData.dentalHistory,
+        lastDentalVisit: profileData.dentalHistory.lastDentalVisit
+          ? new Date(profileData.dentalHistory.lastDentalVisit)
+          : patient.dentalHistory?.lastDentalVisit,
+      }
+    }
+
+    // Update medical history
+    if (profileData.medicalHistory) {
       patient.medicalHistory = {
         ...patient.medicalHistory,
-        ...medicalHistory,
+        ...profileData.medicalHistory,
       }
-      updated = true
     }
 
-    if (insuranceInfo) {
+    // Update insurance info
+    if (profileData.insuranceInfo) {
       patient.insuranceInfo = {
         ...patient.insuranceInfo,
-        ...insuranceInfo,
+        ...profileData.insuranceInfo,
+        expiryDate: profileData.insuranceInfo.expiryDate
+          ? new Date(profileData.insuranceInfo.expiryDate)
+          : patient.insuranceInfo?.expiryDate,
       }
-      updated = true
     }
 
-    // If no fields were updated
-    if (!updated) {
-      return successResponse(
-        res,
-        {
-          profile: patient,
-        },
-        "No changes made to patient profile",
-        {
-          startTime: req.startTime,
-          warnings: ["No fields were updated. Request body contained no valid update fields."],
-        },
-      )
+    // Update preferences
+    if (profileData.preferences) {
+      patient.preferences = {
+        ...patient.preferences,
+        ...profileData.preferences,
+      }
     }
 
     await patient.save()
 
     // Log the action
-    await logAction(req, "update", "patient", patient._id.toString(), {
-      updatedFields: { dateOfBirth, gender, address, emergencyContact, medicalHistory, insuranceInfo },
+    await logAction(req, "update", "patient_profile", userId.toString(), {
+      updatedFields: Object.keys(profileData),
     })
 
     return successResponse(
@@ -361,7 +437,7 @@ export const updatePatientProfileController = asyncHandler(async (req: Request, 
         startTime: req.startTime,
         links: {
           self: "/api/profile/patient",
-          user: "/api/profile",
+          profile: "/api/profile",
         },
       },
     )
@@ -373,9 +449,7 @@ export const updatePatientProfileController = asyncHandler(async (req: Request, 
   }
 })
 
-/**
- * Update doctor profile
- */
+/** * Update doctor profile */
 export const updateDoctorProfileController = asyncHandler(async (req: Request, res: Response) => {
   try {
     if (!req.user || !req.user.userId) {
@@ -385,115 +459,39 @@ export const updateDoctorProfileController = asyncHandler(async (req: Request, r
       })
     }
 
-    const userId = req.user.userId
-
-    // Check if user is a doctor
-    const user = await User.findById(userId)
-
-    if (!user) {
-      return notFoundResponse(res, "User not found", {
-        help: "The user account may have been deleted.",
-        startTime: req.startTime,
-      })
-    }
-
-    if (user.role !== "doctor") {
-      return forbiddenResponse(res, "Access denied. User is not a doctor.", {
+    if (req.user.role !== "doctor") {
+      return forbiddenResponse(res, "Access denied", {
         help: "Only doctors can update doctor profiles.",
         startTime: req.startTime,
       })
     }
 
-    // Validate input data
-    const { specialization, qualifications, experience, bio, languages, consultationFee, availability } = req.body
+    const userId = req.user.userId
+    const profileData = req.body
 
-    const validationErrors: Record<string, string> = {}
-
-    if (experience !== undefined && (isNaN(experience) || experience < 0)) {
-      validationErrors.experience = "Experience must be a non-negative number"
-    }
-
-    if (consultationFee !== undefined && (isNaN(consultationFee) || consultationFee < 0)) {
-      validationErrors.consultationFee = "Consultation fee must be a non-negative number"
-    }
-
-    if (languages && !Array.isArray(languages)) {
-      validationErrors.languages = "Languages must be an array"
-    }
-
-    if (qualifications && !Array.isArray(qualifications)) {
-      validationErrors.qualifications = "Qualifications must be an array"
-    }
-
-    if (Object.keys(validationErrors).length > 0) {
-      return validationErrorResponse(res, "Invalid input data", validationErrors, {
-        help: "Please provide valid values for all fields.",
-        startTime: req.startTime,
-      })
-    }
-
-    // Get doctor profile
-    const doctor = await Doctor.findOne({ user: userId })
-
+    // Find or create doctor profile
+    let doctor = await Doctor.findOne({ user: userId })
     if (!doctor) {
-      return notFoundResponse(res, "Doctor profile not found", {
-        help: "The doctor profile may have been deleted. Please contact an administrator.",
-        startTime: req.startTime,
-      })
+      doctor = new Doctor({ user: userId })
     }
 
-    // Update doctor data
-    let updated = false
+    // Update doctor fields
+    Object.keys(profileData).forEach((key) => {
+      if (profileData[key] !== undefined) {
+        ;(doctor as any)[key] = profileData[key]
+      }
+    })
 
-    if (specialization) {
-      doctor.specialization = specialization
-      updated = true
-    }
-    if (qualifications) {
-      doctor.qualifications = qualifications
-      updated = true
-    }
-    if (experience !== undefined) {
-      doctor.experience = experience
-      updated = true
-    }
-    if (bio) {
-      doctor.bio = bio
-      updated = true
-    }
-    if (languages) {
-      doctor.languages = languages
-      updated = true
-    }
-    if (consultationFee !== undefined) {
-      doctor.consultationFee = consultationFee
-      updated = true
-    }
-    if (availability) {
-      doctor.availability = availability
-      updated = true
-    }
-
-    // If no fields were updated
-    if (!updated) {
-      return successResponse(
-        res,
-        {
-          profile: doctor,
-        },
-        "No changes made to doctor profile",
-        {
-          startTime: req.startTime,
-          warnings: ["No fields were updated. Request body contained no valid update fields."],
-        },
-      )
+    // Handle date fields
+    if (profileData.licenseExpiryDate) {
+      doctor.licenseExpiryDate = new Date(profileData.licenseExpiryDate)
     }
 
     await doctor.save()
 
     // Log the action
-    await logAction(req, "update", "doctor", doctor._id.toString(), {
-      updatedFields: { specialization, qualifications, experience, bio, languages, consultationFee, availability },
+    await logAction(req, "update", "doctor_profile", userId.toString(), {
+      updatedFields: Object.keys(profileData),
     })
 
     return successResponse(
@@ -506,8 +504,7 @@ export const updateDoctorProfileController = asyncHandler(async (req: Request, r
         startTime: req.startTime,
         links: {
           self: "/api/profile/doctor",
-          user: "/api/profile",
-          availability: "/api/profile/doctor/availability",
+          profile: "/api/profile",
         },
       },
     )
@@ -518,6 +515,297 @@ export const updateDoctorProfileController = asyncHandler(async (req: Request, r
     })
   }
 })
+
+/** * Update receptionist profile */
+export const updateReceptionistProfileController = asyncHandler(async (req: Request, res: Response) => {
+  try {
+    if (!req.user || !req.user.userId) {
+      return unauthorizedResponse(res, "Authentication required", {
+        help: "Please log in to update your receptionist profile.",
+        startTime: req.startTime,
+      })
+    }
+
+    if (req.user.role !== "receptionist") {
+      return forbiddenResponse(res, "Access denied", {
+        help: "Only receptionists can update receptionist profiles.",
+        startTime: req.startTime,
+      })
+    }
+
+    const userId = req.user.userId
+    const profileData = req.body
+
+    // Find or create receptionist profile
+    let receptionist = await Receptionist.findOne({ user: userId })
+    if (!receptionist) {
+      receptionist = new Receptionist({ user: userId })
+    }
+
+    // Update receptionist fields
+    Object.keys(profileData).forEach((key) => {
+      if (profileData[key] !== undefined) {
+        ;(receptionist as any)[key] = profileData[key]
+      }
+    })
+
+    // Handle date fields
+    if (profileData.hireDate) {
+      receptionist.hireDate = new Date(profileData.hireDate)
+    }
+
+    await receptionist.save()
+
+    // Log the action
+    await logAction(req, "update", "receptionist_profile", userId.toString(), {
+      updatedFields: Object.keys(profileData),
+    })
+
+    return successResponse(
+      res,
+      {
+        profile: receptionist,
+      },
+      "Receptionist profile updated successfully",
+      {
+        startTime: req.startTime,
+        links: {
+          self: "/api/profile/receptionist",
+          profile: "/api/profile",
+        },
+      },
+    )
+  } catch (error: any) {
+    return databaseErrorResponse(res, "Failed to update receptionist profile", error, {
+      startTime: req.startTime,
+      debug: error,
+    })
+  }
+})
+
+/** * Update admin profile */
+export const updateAdminProfileController = asyncHandler(async (req: Request, res: Response) => {
+  try {
+    if (!req.user || !req.user.userId) {
+      return unauthorizedResponse(res, "Authentication required", {
+        help: "Please log in to update your admin profile.",
+        startTime: req.startTime,
+      })
+    }
+
+    if (req.user.role !== "admin") {
+      return forbiddenResponse(res, "Access denied", {
+        help: "Only admins can update admin profiles.",
+        startTime: req.startTime,
+      })
+    }
+
+    const userId = req.user.userId
+    const profileData = req.body
+
+    // Find or create admin profile
+    let admin = await Admin.findOne({ user: userId })
+    if (!admin) {
+      admin = new Admin({ user: userId })
+    }
+
+    // Update admin fields
+    Object.keys(profileData).forEach((key) => {
+      if (profileData[key] !== undefined) {
+        ;(admin as any)[key] = profileData[key]
+      }
+    })
+
+    // Handle date fields
+    if (profileData.hireDate) {
+      admin.hireDate = new Date(profileData.hireDate)
+    }
+
+    await admin.save()
+
+    // Log the action
+    await logAction(req, "update", "admin_profile", userId.toString(), {
+      updatedFields: Object.keys(profileData),
+    })
+
+    return successResponse(
+      res,
+      {
+        profile: admin,
+      },
+      "Admin profile updated successfully",
+      {
+        startTime: req.startTime,
+        links: {
+          self: "/api/profile/admin",
+          profile: "/api/profile",
+        },
+      },
+    )
+  } catch (error: any) {
+    return databaseErrorResponse(res, "Failed to update admin profile", error, {
+      startTime: req.startTime,
+      debug: error,
+    })
+  }
+})
+
+
+/** * Upload user profile picture */
+export const uploadProfilePictureController = asyncHandler(async (req: Request, res: Response) => {
+  try {
+    if (!req.user || !req.user.userId) {
+      return unauthorizedResponse(res, "Authentication required", {
+        help: "Please log in to upload your profile picture.",
+        startTime: req.startTime,
+      })
+    }
+
+    const userId = req.user.userId
+
+    // Get user
+    const user = await User.findById(userId)
+    if (!user) {
+      return notFoundResponse(res, "User not found", {
+        help: "The user account may have been deleted.",
+        startTime: req.startTime,
+      })
+    }
+
+    // Check if file is provided (handled by middleware)
+    if (!req.file) {
+      return validationErrorResponse(
+        res,
+        "No file uploaded",
+        { file: "Profile picture is required" },
+        {
+          help: "Please upload a valid image file.",
+          startTime: req.startTime,
+        },
+      )
+    }
+
+    // Delete old profile picture if exists
+    if (user.picturePublicId) {
+      await deleteImageFromCloudinary(user.picturePublicId)
+    }
+
+    // Save the new picture URL and public ID
+    user.picture = req.file.path // Cloudinary URL
+    user.picturePublicId = (req.file as any).filename // Cloudinary public ID
+
+    await user.save()
+
+    // Log the action
+    await logAction(req, "upload_picture", "user", userId.toString(), {
+      pictureUrl: user.picture,
+      publicId: user.picturePublicId,
+    })
+
+    // Get optimized picture URL
+    const optimizedPictureUrl = getOptimizedImageUrl(user.picturePublicId, {
+      width: 400,
+      height: 400,
+      crop: "fill",
+      quality: "auto",
+    })
+
+    return successResponse(
+      res,
+      {
+        pictureUrl: optimizedPictureUrl,
+        originalUrl: user.picture,
+        publicId: user.picturePublicId,
+        metadata: {
+          size: req.file.size,
+          mimetype: req.file.mimetype,
+          originalName: req.file.originalname,
+        },
+      },
+      "Profile picture uploaded successfully",
+      {
+        startTime: req.startTime,
+        links: {
+          self: "/api/profile",
+          picture: optimizedPictureUrl,
+          profile: "/api/profile",
+        },
+      },
+    )
+  } catch (error: any) {
+    return databaseErrorResponse(res, "Failed to upload profile picture", error, {
+      startTime: req.startTime,
+      debug: error,
+    })
+  }
+})
+
+/** * Delete user profile picture */
+export const deleteProfilePictureController = asyncHandler(async (req: Request, res: Response) => {
+  try {
+    if (!req.user || !req.user.userId) {
+      return unauthorizedResponse(res, "Authentication required", {
+        help: "Please log in to delete your profile picture.",
+        startTime: req.startTime,
+      })
+    }
+
+    const userId = req.user.userId
+
+    // Get user
+    const user = await User.findById(userId)
+    if (!user) {
+      return notFoundResponse(res, "User not found", {
+        help: "The user account may have been deleted.",
+        startTime: req.startTime,
+      })
+    }
+
+    if (!user.picturePublicId) {
+      return badRequestResponse(
+        res,
+        "No profile picture to delete",
+        {},
+        {
+          help: "User doesn't have a profile picture.",
+          startTime: req.startTime,
+        },
+      )
+    }
+
+    // Delete from Cloudinary
+    const deleted = await deleteImageFromCloudinary(user.picturePublicId)
+
+    if (!deleted) {
+      return databaseErrorResponse(res, "Failed to delete profile picture from storage", null, {
+        startTime: req.startTime,
+      })
+    }
+
+    // Remove from user record
+    user.picture = undefined
+    user.picturePublicId = undefined
+    await user.save()
+
+    // Log the action
+    await logAction(req, "delete_picture", "user", userId.toString(), {})
+
+    return successResponse(res, null, "Profile picture deleted successfully", {
+      startTime: req.startTime,
+      links: {
+        self: "/api/profile",
+        uploadPicture: "/api/profile/upload-picture",
+      },
+    })
+  } catch (error: any) {
+    return databaseErrorResponse(res, "Failed to delete profile picture", error, {
+      startTime: req.startTime,
+      debug: error,
+    })
+  }
+})
+
+
 
 /**
  * Change password
@@ -701,9 +989,4 @@ export const setPasswordController = asyncHandler(async (req: Request, res: Resp
     })
   }
 })  
-
-
-/**
- * Upload user profile picture
- */
 
