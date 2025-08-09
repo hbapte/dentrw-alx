@@ -4,7 +4,7 @@ import type React from "react"
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import { Calendar, Phone, Mail, Clock, MapPin, ChevronRight, Star, CheckCircle } from "lucide-react"
-import { useAuthStore } from "../store/auth-store"
+import { useAuthStore } from "../../store/auth-store"
 
 const HomePage: React.FC = () => {
   const { isAuthenticated } = useAuthStore()
