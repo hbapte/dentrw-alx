@@ -1,15 +1,46 @@
 {
   "name": "dentrw-backend",
   "version": "1.0.0",
-  "description": "DentRW backend API services",
+  "description": "DentRW - Comprehensive dental clinic management platform backend API services",
   "main": "dist/app.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hbapte/dentrw.git"
+  },
+  "keywords": [
+    "dentistry",
+    "healthcare",
+    "api",
+    "backend",
+    "typescript",
+    "clinic-management",
+    "medical-records",
+    "appointment-scheduling",
+    "patient-management"
+  ],
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "private": false,  
+  "files": [
+    "dist",
+    "package.json",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc",
     "start": "ts-node src/app.ts",
     "render-start": "node dist/app.js",
+    
     "dev": "nodemon --exec ts-node src/app.ts",
+    "dev:debug": "nodemon --trace-warnings --inspect=0.0.0.0:9229 --exec ts-node src/app.ts",
+    "dev:trace": "nodemon --trace-warnings --trace-deprecation --trace-uncaught --exec ts-node src/app.ts",
+
     "seed": "ts-node src/database/seeders/runSeeder.ts",
     "seed:fresh": "ts-node src/database/seeders/runSeeder.ts --fresh",
+    "seed:prod": "NODE_ENV=production node dist/database/seeders/runSeeder.js",
     "reset-db": "ts-node src/database/seeders/resetDatabase.ts",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
@@ -21,10 +52,13 @@
   "license": "MIT",
   "dependencies": {
     "@types/cookie-parser": "^1.4.8",
+    "@types/express": "^5.0.3",
+    "@types/express-serve-static-core": "^5.0.7",
     "@types/morgan": "^1.9.9",
+    "@types/multer": "^2.0.0",
     "@types/qrcode": "^1.5.5",
     "bcryptjs": "^3.0.2",
-    "cloudinary": "^2.2.0",
+    "cloudinary": "^2.7.0",
     "compression": "^1.8.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -43,6 +77,7 @@
     "mongoose": "^8.2.4",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
+    "multer-storage-cloudinary": "^4.0.0",
     "nodemailer": "^6.9.13",
     "nodemon": "^3.1.0",
     "otplib": "^12.0.1",
@@ -62,7 +97,6 @@
   "devDependencies": {
     "@eslint/js": "^9.24.0",
     "@types/cors": "^2.8.17",
-    "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^20.12.2",
     "@types/nodemailer": "^6.4.17",
@@ -72,5 +106,29 @@
     "eslint": "^9.24.0",
     "globals": "^16.0.0",
     "typescript-eslint": "^8.29.0"
+},
+
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "roots": [
+      "<rootDir>/src"
+    ],
+    "testMatch": [
+      "**/__tests__/**/*.ts",
+      "**/?(*.)+(spec|test).ts"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.ts",
+      "!src/**/*.d.ts",
+      "!src/**/*.test.ts",
+      "!src/**/*.spec.ts"
+    ],
+    "coverageDirectory": "coverage",
+    "coverageReporters": [
+      "text",
+      "lcov",
+      "html"
+    ]
   }
 }
