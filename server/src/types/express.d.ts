@@ -8,6 +8,12 @@ declare global {
       startTime?: number
     }
   }
+     namespace Multer {
+      interface File {
+        filename?: string // Cloudinary public ID
+        path: string // Cloudinary URL
+      }
+    }
 }
 
 

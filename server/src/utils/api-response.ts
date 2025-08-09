@@ -101,6 +101,26 @@ export type ApiResponseMetadata = {
     allServices?: string
 
     checkUsername?: string
+    picture?: string
+    uploadPicture?: string
+    uploadDocument?: string
+
+    setPassword?: string
+
+    updatePatientProfile?: string
+    updateDoctorProfile?: string
+    updateReceptionistProfile?: string
+    updateAdminProfile?: string
+
+    thumbnail?:string
+    small?: string
+    medium?: string
+    large?: string
+    original?: string
+    profilePicture?: string
+    document?: string
+    images?: string
+    multipleImages?: string
   }
 }
 

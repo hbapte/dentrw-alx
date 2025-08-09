@@ -9,6 +9,7 @@ import doctorManagementRouter from "./doctorManagementRoutes"
 import appointmentRouter from "./appointmentRoutes"
 import medicalRecordRouter from "./medicalRecordRoutes"
 import paymentRouter from "./paymentRoutes"
+import UploadRouter from "./uploadRoutes"
 
 const router = express.Router()
 
@@ -21,6 +22,10 @@ router.use("/doctors", doctorManagementRouter)
 router.use("/appointments", appointmentRouter)
 router.use("/medical-records", medicalRecordRouter)
 router.use("/payments", paymentRouter) 
+
+// Additional routes 
+router.use("/upload", UploadRouter) 
+
 
 export default router
 
