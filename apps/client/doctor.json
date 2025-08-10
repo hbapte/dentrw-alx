@@ -1,0 +1,1049 @@
+{
+    "success": true,
+    "data": [
+        {
+            "consultationFee": {
+                "initial": 50000,
+                "followUp": 30000,
+                "emergency": 80000,
+                "currency": "RWF"
+            },
+            "statistics": {
+                "totalPatients": 0,
+                "totalAppointments": 0,
+                "completedTreatments": 0,
+                "patientSatisfactionRate": 0,
+                "averageWaitTime": 0
+            },
+            "preferences": {
+                "appointmentReminders": true,
+                "patientCommunication": "both",
+                "workloadAlerts": true,
+                "emergencyAvailability": false,
+                "telemedicineEnabled": false,
+                "autoConfirmAppointments": false
+            },
+            "_id": "68907518be7de920d66d8f94",
+            "user": {
+                "_id": "68907516be7de920d66d8f29",
+                "names": "Dr. Robert Karemera",
+                "email": "robert.karemera@dentrw.com",
+                "username": "rkaremera",
+                "role": "doctor",
+                "emailVerified": true,
+                "preferredLanguage": "rw",
+                "phoneNumber": "+250700000012",
+                "phoneVerified": true,
+                "active": true,
+                "totpEnabled": false,
+                "tokenVersion": 0,
+                "nationalId": "1198012345678912",
+                "dateOfBirth": "1978-03-17T22:00:00.000Z",
+                "gender": "male",
+                "maritalStatus": "divorced",
+                "occupation": "Oral Surgeon",
+                "emailVerificationTokenCreated": "2025-08-04T08:53:42.354Z",
+                "createdAt": "2025-08-04T08:53:42.356Z",
+                "updatedAt": "2025-08-09T04:13:32.685Z",
+                "__v": 0,
+                "lastLogin": "2025-08-09T04:13:32.684Z",
+                "picture": "https://res.cloudinary.com/dcfnliruh/image/upload/v1754371141/dentrw/profile_pictures/profile-68907516be7de920d66d8f29-1754371139910.jpg",
+                "picturePublicId": "dentrw/profile_pictures/profile-68907516be7de920d66d8f29-1754371139910"
+            },
+            "specialization": [
+                "Oral Surgery",
+                "Implantology"
+            ],
+            "subSpecializations": [
+                "Maxillofacial Surgery"
+            ],
+            "qualifications": [
+                {
+                    "degree": "Doctor of Dental Surgery (DDS)",
+                    "institution": "University of Rwanda",
+                    "year": 2007,
+                    "country": "Rwanda",
+                    "_id": "68907518be7de920d66d8f95"
+                },
+                {
+                    "degree": "Master of Dental Science",
+                    "institution": "Makerere University",
+                    "year": 2010,
+                    "country": "Uganda",
+                    "_id": "68907518be7de920d66d8f96"
+                }
+            ],
+            "experience": 11,
+            "licenseNumber": "RW-DENT-1002",
+            "licenseExpiryDate": "2025-12-30T22:00:00.000Z",
+            "registrationNumber": "RMC-2002",
+            "bio": "Experienced dental professional with 11 years of practice. Specializes in Oral Surgery and Implantology. Committed to providing high-quality, patient-centered care.",
+            "languages": [
+                "English",
+                "French",
+                "Kinyarwanda"
+            ],
+            "dentalSpecialties": [
+                "Oral Surgery",
+                "Dental Implants",
+                "Emergency Care",
+                "TMJ Treatment"
+            ],
+            "procedures": [
+                "Tooth Extraction",
+                "Implant Placement",
+                "Jaw Surgery"
+            ],
+            "equipment": [],
+            "certifications": [
+                {
+                    "name": "Advanced Restorative Dentistry",
+                    "issuingBody": "International Dental Association",
+                    "issueDate": "2017-06-30T22:00:00.000Z",
+                    "expiryDate": "2027-06-30T22:00:00.000Z",
+                    "certificateNumber": "CERT-DENT-3002",
+                    "_id": "68907518be7de920d66d8f97"
+                }
+            ],
+            "workingHours": [
+                {
+                    "day": "monday",
+                    "isWorking": true,
+                    "slots": [
+                        {
+                            "startTime": "09:00",
+                            "endTime": "12:00",
+                            "breakStart": "10:30",
+                            "breakEnd": "10:45",
+                            "_id": "68907518be7de920d66d8f99"
+                        },
+                        {
+                            "startTime": "14:00",
+                            "endTime": "17:00",
+                            "breakStart": "15:30",
+                            "breakEnd": "15:45",
+                            "_id": "68907518be7de920d66d8f9a"
+                        }
+                    ],
+                    "_id": "68907518be7de920d66d8f98"
+                },
+                {
+                    "day": "tuesday",
+                    "isWorking": true,
+                    "slots": [
+                        {
+                            "startTime": "09:00",
+                            "endTime": "12:00",
+                            "_id": "68907518be7de920d66d8f9c"
+                        },
+                        {
+                            "startTime": "14:00",
+                            "endTime": "17:00",
+                            "_id": "68907518be7de920d66d8f9d"
+                        }
+                    ],
+                    "_id": "68907518be7de920d66d8f9b"
+                },
+                {
+                    "day": "wednesday",
+                    "isWorking": true,
+                    "slots": [
+                        {
+                            "startTime": "09:00",
+                            "endTime": "12:00",
+                            "_id": "68907518be7de920d66d8f9f"
+                        },
+                        {
+                            "startTime": "14:00",
+                            "endTime": "17:00",
+                            "_id": "68907518be7de920d66d8fa0"
+                        }
+                    ],
+                    "_id": "68907518be7de920d66d8f9e"
+                },
+                {
+                    "day": "thursday",
+                    "isWorking": true,
+                    "slots": [
+                        {
+                            "startTime": "09:00",
+                            "endTime": "12:00",
+                            "_id": "68907518be7de920d66d8fa2"
+                        },
+                        {
+                            "startTime": "14:00",
+                            "endTime": "17:00",
+                            "_id": "68907518be7de920d66d8fa3"
+                        }
+                    ],
+                    "_id": "68907518be7de920d66d8fa1"
+                },
+                {
+                    "day": "friday",
+                    "isWorking": true,
+                    "slots": [
+                        {
+                            "startTime": "09:00",
+                            "endTime": "12:00",
+                            "_id": "68907518be7de920d66d8fa5"
+                        },
+                        {
+                            "startTime": "14:00",
+                            "endTime": "16:00",
+                            "_id": "68907518be7de920d66d8fa6"
+                        }
+                    ],
+                    "_id": "68907518be7de920d66d8fa4"
+                },
+                {
+                    "day": "saturday",
+                    "isWorking": false,
+                    "slots": [],
+                    "_id": "68907518be7de920d66d8fa7"
+                },
+                {
+                    "day": "sunday",
+                    "isWorking": false,
+                    "slots": [],
+                    "_id": "68907518be7de920d66d8fa8"
+                }
+            ],
+            "availability": [
+                {
+                    "day": "monday",
+                    "slots": [
+                        {
+                            "startTime": "09:00",
+                            "endTime": "12:00",
+                            "maxPatients": 8,
+                            "appointmentDuration": 30,
+                            "_id": "68907518be7de920d66d8faa"
+                        },
+                        {
+                            "startTime": "14:00",
+                            "endTime": "17:00",
+                            "maxPatients": 6,
+                            "appointmentDuration": 30,
+                            "_id": "68907518be7de920d66d8fab"
+                        }
+                    ],
+                    "_id": "68907518be7de920d66d8fa9"
+                },
+                {
+                    "day": "tuesday",
+                    "slots": [
+                        {
+                            "startTime": "09:00",
+                            "endTime": "12:00",
+                            "maxPatients": 8,
+                            "appointmentDuration": 30,
+                            "_id": "68907518be7de920d66d8fad"
+                        },
+                        {
+                            "startTime": "14:00",
+                            "endTime": "17:00",
+                            "maxPatients": 6,
+                            "appointmentDuration": 30,
+                            "_id": "68907518be7de920d66d8fae"
+                        }
+                    ],
+                    "_id": "68907518be7de920d66d8fac"
+                },
+                {
+                    "day": "wednesday",
+                    "slots": [
+                        {
+                            "startTime": "09:00",
+                            "endTime": "12:00",
+                            "maxPatients": 8,
+                            "appointmentDuration": 30,
+                            "_id": "68907518be7de920d66d8fb0"
+                        },
+                        {
+                            "startTime": "14:00",
+                            "endTime": "17:00",
+                            "maxPatients": 6,
+                            "appointmentDuration": 30,
+                            "_id": "68907518be7de920d66d8fb1"
+                        }
+                    ],
+                    "_id": "68907518be7de920d66d8faf"
+                },
+                {
+                    "day": "thursday",
+                    "slots": [
+                        {
+                            "startTime": "09:00",
+                            "endTime": "12:00",
+                            "maxPatients": 8,
+                            "appointmentDuration": 30,
+                            "_id": "68907518be7de920d66d8fb3"
+                        },
+                        {
+                            "startTime": "14:00",
+                            "endTime": "17:00",
+                            "maxPatients": 6,
+                            "appointmentDuration": 30,
+                            "_id": "68907518be7de920d66d8fb4"
+                        }
+                    ],
+                    "_id": "68907518be7de920d66d8fb2"
+                },
+                {
+                    "day": "friday",
+                    "slots": [
+                        {
+                            "startTime": "09:00",
+                            "endTime": "12:00",
+                            "maxPatients": 8,
+                            "appointmentDuration": 30,
+                            "_id": "68907518be7de920d66d8fb6"
+                        },
+                        {
+                            "startTime": "14:00",
+                            "endTime": "16:00",
+                            "maxPatients": 4,
+                            "appointmentDuration": 30,
+                            "_id": "68907518be7de920d66d8fb7"
+                        }
+                    ],
+                    "_id": "68907518be7de920d66d8fb5"
+                }
+            ],
+            "timeZone": "Africa/Kigali",
+            "bookingAdvanceLimit": 30,
+            "cancellationPolicy": "Appointments can be cancelled up to 24 hours in advance without penalty.",
+            "professionalMemberships": [
+                {
+                    "organization": "Rwanda Dental Association",
+                    "membershipType": "Full Member",
+                    "membershipNumber": "RDA-4002",
+                    "startDate": "2011-12-31T22:00:00.000Z",
+                    "isActive": true,
+                    "_id": "68907518be7de920d66d8fb8"
+                }
+            ],
+            "ratings": [],
+            "averageRating": 0,
+            "totalReviews": 0,
+            "isActive": true,
+            "isVerified": true,
+            "verificationDate": "2020-12-31T22:00:00.000Z",
+            "lastActiveDate": "2025-08-04T08:53:44.916Z",
+            "profileCompleteness": 100,
+            "clinicAffiliations": [],
+            "continuingEducation": [],
+            "createdAt": "2025-08-04T08:53:44.937Z",
+            "updatedAt": "2025-08-04T08:53:44.937Z",
+            "__v": 0
+        },
+        {
+            "consultationFee": {
+                "initial": 40000,
+                "followUp": 25000,
+                "emergency": 65000,
+                "currency": "RWF"
+            },
+            "statistics": {
+                "totalPatients": 0,
+                "totalAppointments": 0,
+                "completedTreatments": 0,
+                "patientSatisfactionRate": 0,
+                "averageWaitTime": 0
+            },
+            "preferences": {
+                "appointmentReminders": true,
+                "patientCommunication": "both",
+                "workloadAlerts": true,
+                "emergencyAvailability": false,
+                "telemedicineEnabled": false,
+                "autoConfirmAppointments": false
+            },
+            "_id": "68907518be7de920d66d8f6e",
+            "user": {
+                "_id": "68907516be7de920d66d8f27",
+                "names": "Dr. Marie Uwase",
+                "email": "marie.uwase@dentrw.com",
+                "username": "muwase",
+                "role": "doctor",
+                "emailVerified": true,
+                "preferredLanguage": "fr",
+                "phoneNumber": "+250700000011",
+                "phoneVerified": true,
+                "active": true,
+                "totpEnabled": false,
+                "tokenVersion": 0,
+                "nationalId": "1198012345678911",
+                "dateOfBirth": "1982-12-04T22:00:00.000Z",
+                "gender": "female",
+                "maritalStatus": "single",
+                "occupation": "Orthodontist",
+                "emailVerificationTokenCreated": "2025-08-04T08:53:42.136Z",
+                "createdAt": "2025-08-04T08:53:42.136Z",
+                "updatedAt": "2025-08-05T07:27:33.016Z",
+                "__v": 0,
+                "lastLogin": "2025-08-05T07:27:33.009Z",
+                "picture": "https://res.cloudinary.com/dcfnliruh/image/upload/v1754373256/dentrw/profile_pictures/profile-68907516be7de920d66d8f27-1754373254338.jpg",
+                "picturePublicId": "dentrw/profile_pictures/profile-68907516be7de920d66d8f27-1754373254338"
+            },
+            "specialization": [
+                "Orthodontics",
+                "Cosmetic Dentistry"
+            ],
+            "subSpecializations": [
+                "Invisalign Treatment"
+            ],
+            "qualifications": [
+                {
+                    "degree": "Doctor of Dental Surgery (DDS)",
+                    "institution": "University of Rwanda",
+                    "year": 2006,
+                    "country": "Rwanda",
+                    "_id": "68907518be7de920d66d8f6f"
+                },
+                {
+                    "degree": "Master of Dental Science",
+                    "institution": "Makerere University",
+                    "year": 2009,
+                    "country": "Uganda",
+                    "_id": "68907518be7de920d66d8f70"
+                }
+            ],
+            "experience": 13,
+            "licenseNumber": "RW-DENT-1001",
+            "licenseExpiryDate": "2025-12-30T22:00:00.000Z",
+            "registrationNumber": "RMC-2001",
+            "bio": "Experienced dental professional with 13 years of practice. Specializes in Orthodontics and Cosmetic Dentistry. Committed to providing high-quality, patient-centered care.",
+            "languages": [
+                "English",
+                "French",
+                "Kinyarwanda"
+            ],
+            "dentalSpecialties": [
+                "Orthodontic Braces",
+                "Invisalign",
+                "Teeth Whitening",
+                "Cosmetic Dentistry"
+            ],
+            "procedures": [
+                "Braces Installation",
+                "Teeth Alignment",
+                "Cosmetic Bonding"
+            ],
+            "equipment": [],
+            "certifications": [
+                {
+                    "name": "Advanced Restorative Dentistry",
+                    "issuingBody": "International Dental Association",
+                    "issueDate": "2016-06-30T22:00:00.000Z",
+                    "expiryDate": "2026-06-30T22:00:00.000Z",
+                    "certificateNumber": "CERT-DENT-3001",
+                    "_id": "68907518be7de920d66d8f71"
+                }
+            ],
+            "workingHours": [
+                {
+                    "day": "monday",
+                    "isWorking": true,
+                    "slots": [
+                        {
+                            "startTime": "09:00",
+                            "endTime": "12:00",
+                            "breakStart": "10:30",
+                            "breakEnd": "10:45",
+                            "_id": "68907518be7de920d66d8f73"
+                        },
+                        {
+                            "startTime": "14:00",
+                            "endTime": "17:00",
+                            "breakStart": "15:30",
+                            "breakEnd": "15:45",
+                            "_id": "68907518be7de920d66d8f74"
+                        }
+                    ],
+                    "_id": "68907518be7de920d66d8f72"
+                },
+                {
+                    "day": "tuesday",
+                    "isWorking": true,
+                    "slots": [
+                        {
+                            "startTime": "09:00",
+                            "endTime": "12:00",
+                            "_id": "68907518be7de920d66d8f76"
+                        },
+                        {
+                            "startTime": "14:00",
+                            "endTime": "17:00",
+                            "_id": "68907518be7de920d66d8f77"
+                        }
+                    ],
+                    "_id": "68907518be7de920d66d8f75"
+                },
+                {
+                    "day": "wednesday",
+                    "isWorking": true,
+                    "slots": [
+                        {
+                            "startTime": "09:00",
+                            "endTime": "12:00",
+                            "_id": "68907518be7de920d66d8f79"
+                        },
+                        {
+                            "startTime": "14:00",
+                            "endTime": "17:00",
+                            "_id": "68907518be7de920d66d8f7a"
+                        }
+                    ],
+                    "_id": "68907518be7de920d66d8f78"
+                },
+                {
+                    "day": "thursday",
+                    "isWorking": true,
+                    "slots": [
+                        {
+                            "startTime": "09:00",
+                            "endTime": "12:00",
+                            "_id": "68907518be7de920d66d8f7c"
+                        },
+                        {
+                            "startTime": "14:00",
+                            "endTime": "17:00",
+                            "_id": "68907518be7de920d66d8f7d"
+                        }
+                    ],
+                    "_id": "68907518be7de920d66d8f7b"
+                },
+                {
+                    "day": "friday",
+                    "isWorking": true,
+                    "slots": [
+                        {
+                            "startTime": "09:00",
+                            "endTime": "12:00",
+                            "_id": "68907518be7de920d66d8f7f"
+                        },
+                        {
+                            "startTime": "14:00",
+                            "endTime": "16:00",
+                            "_id": "68907518be7de920d66d8f80"
+                        }
+                    ],
+                    "_id": "68907518be7de920d66d8f7e"
+                },
+                {
+                    "day": "saturday",
+                    "isWorking": false,
+                    "slots": [],
+                    "_id": "68907518be7de920d66d8f81"
+                },
+                {
+                    "day": "sunday",
+                    "isWorking": false,
+                    "slots": [],
+                    "_id": "68907518be7de920d66d8f82"
+                }
+            ],
+            "availability": [
+                {
+                    "day": "monday",
+                    "slots": [
+                        {
+                            "startTime": "09:00",
+                            "endTime": "12:00",
+                            "maxPatients": 8,
+                            "appointmentDuration": 30,
+                            "_id": "68907518be7de920d66d8f84"
+                        },
+                        {
+                            "startTime": "14:00",
+                            "endTime": "17:00",
+                            "maxPatients": 6,
+                            "appointmentDuration": 30,
+                            "_id": "68907518be7de920d66d8f85"
+                        }
+                    ],
+                    "_id": "68907518be7de920d66d8f83"
+                },
+                {
+                    "day": "tuesday",
+                    "slots": [
+                        {
+                            "startTime": "09:00",
+                            "endTime": "12:00",
+                            "maxPatients": 8,
+                            "appointmentDuration": 30,
+                            "_id": "68907518be7de920d66d8f87"
+                        },
+                        {
+                            "startTime": "14:00",
+                            "endTime": "17:00",
+                            "maxPatients": 6,
+                            "appointmentDuration": 30,
+                            "_id": "68907518be7de920d66d8f88"
+                        }
+                    ],
+                    "_id": "68907518be7de920d66d8f86"
+                },
+                {
+                    "day": "wednesday",
+                    "slots": [
+                        {
+                            "startTime": "09:00",
+                            "endTime": "12:00",
+                            "maxPatients": 8,
+                            "appointmentDuration": 30,
+                            "_id": "68907518be7de920d66d8f8a"
+                        },
+                        {
+                            "startTime": "14:00",
+                            "endTime": "17:00",
+                            "maxPatients": 6,
+                            "appointmentDuration": 30,
+                            "_id": "68907518be7de920d66d8f8b"
+                        }
+                    ],
+                    "_id": "68907518be7de920d66d8f89"
+                },
+                {
+                    "day": "thursday",
+                    "slots": [
+                        {
+                            "startTime": "09:00",
+                            "endTime": "12:00",
+                            "maxPatients": 8,
+                            "appointmentDuration": 30,
+                            "_id": "68907518be7de920d66d8f8d"
+                        },
+                        {
+                            "startTime": "14:00",
+                            "endTime": "17:00",
+                            "maxPatients": 6,
+                            "appointmentDuration": 30,
+                            "_id": "68907518be7de920d66d8f8e"
+                        }
+                    ],
+                    "_id": "68907518be7de920d66d8f8c"
+                },
+                {
+                    "day": "friday",
+                    "slots": [
+                        {
+                            "startTime": "09:00",
+                            "endTime": "12:00",
+                            "maxPatients": 8,
+                            "appointmentDuration": 30,
+                            "_id": "68907518be7de920d66d8f90"
+                        },
+                        {
+                            "startTime": "14:00",
+                            "endTime": "16:00",
+                            "maxPatients": 4,
+                            "appointmentDuration": 30,
+                            "_id": "68907518be7de920d66d8f91"
+                        }
+                    ],
+                    "_id": "68907518be7de920d66d8f8f"
+                }
+            ],
+            "timeZone": "Africa/Kigali",
+            "bookingAdvanceLimit": 30,
+            "cancellationPolicy": "Appointments can be cancelled up to 24 hours in advance without penalty.",
+            "professionalMemberships": [
+                {
+                    "organization": "Rwanda Dental Association",
+                    "membershipType": "Full Member",
+                    "membershipNumber": "RDA-4001",
+                    "startDate": "2010-12-31T22:00:00.000Z",
+                    "isActive": true,
+                    "_id": "68907518be7de920d66d8f92"
+                }
+            ],
+            "ratings": [],
+            "averageRating": 0,
+            "totalReviews": 0,
+            "isActive": true,
+            "isVerified": true,
+            "verificationDate": "2020-12-31T22:00:00.000Z",
+            "lastActiveDate": "2025-08-04T08:53:44.873Z",
+            "profileCompleteness": 100,
+            "clinicAffiliations": [],
+            "continuingEducation": [],
+            "createdAt": "2025-08-04T08:53:44.902Z",
+            "updatedAt": "2025-08-04T08:53:44.902Z",
+            "__v": 0
+        },
+        {
+            "consultationFee": {
+                "initial": 30000,
+                "followUp": 20000,
+                "emergency": 50000,
+                "currency": "RWF"
+            },
+            "statistics": {
+                "totalPatients": 0,
+                "totalAppointments": 0,
+                "completedTreatments": 0,
+                "patientSatisfactionRate": 0,
+                "averageWaitTime": 0
+            },
+            "preferences": {
+                "appointmentReminders": true,
+                "patientCommunication": "both",
+                "workloadAlerts": true,
+                "emergencyAvailability": true,
+                "telemedicineEnabled": false,
+                "autoConfirmAppointments": false
+            },
+            "_id": "68907518be7de920d66d8f47",
+            "user": {
+                "_id": "68907515be7de920d66d8f25",
+                "names": "Dr. Jean Mugisha",
+                "email": "jean.mugisha@dentrw.com",
+                "username": "jmugisha",
+                "role": "doctor",
+                "emailVerified": true,
+                "preferredLanguage": "en",
+                "phoneNumber": "+250700000010",
+                "phoneVerified": true,
+                "active": true,
+                "totpEnabled": false,
+                "tokenVersion": 0,
+                "nationalId": "1198012345678910",
+                "dateOfBirth": "1980-09-09T22:00:00.000Z",
+                "gender": "male",
+                "maritalStatus": "married",
+                "occupation": "Dentist",
+                "emailVerificationTokenCreated": "2025-08-04T08:53:41.915Z",
+                "createdAt": "2025-08-04T08:53:41.916Z",
+                "updatedAt": "2025-08-06T22:54:27.392Z",
+                "__v": 0,
+                "lastLogin": "2025-08-06T22:54:27.391Z",
+                "picture": "https://res.cloudinary.com/dcfnliruh/image/upload/v1754373214/dentrw/profile_pictures/profile-68907515be7de920d66d8f25-1754373212465.jpg",
+                "picturePublicId": "dentrw/profile_pictures/profile-68907515be7de920d66d8f25-1754373212465"
+            },
+            "specialization": [
+                "General Dentistry",
+                "Preventive Dentistry"
+            ],
+            "subSpecializations": [
+                "Restorative Dentistry"
+            ],
+            "qualifications": [
+                {
+                    "degree": "Doctor of Dental Surgery (DDS)",
+                    "institution": "University of Rwanda",
+                    "year": 2005,
+                    "country": "Rwanda",
+                    "_id": "68907518be7de920d66d8f48"
+                },
+                {
+                    "degree": "Master of Dental Science",
+                    "institution": "Makerere University",
+                    "year": 2008,
+                    "country": "Uganda",
+                    "_id": "68907518be7de920d66d8f49"
+                }
+            ],
+            "experience": 15,
+            "licenseNumber": "RW-DENT-1000",
+            "licenseExpiryDate": "2025-12-30T22:00:00.000Z",
+            "registrationNumber": "RMC-2000",
+            "bio": "Experienced dental professional with 15 years of practice. Specializes in General Dentistry and Preventive Care. Committed to providing high-quality, patient-centered care.",
+            "languages": [
+                "English",
+                "French",
+                "Kinyarwanda"
+            ],
+            "dentalSpecialties": [
+                "Teeth Cleaning",
+                "Fillings",
+                "Root Canal",
+                "Crowns & Bridges"
+            ],
+            "procedures": [
+                "Routine Cleaning",
+                "Cavity Filling",
+                "Root Canal Therapy"
+            ],
+            "equipment": [],
+            "certifications": [
+                {
+                    "name": "Advanced Restorative Dentistry",
+                    "issuingBody": "International Dental Association",
+                    "issueDate": "2015-06-30T22:00:00.000Z",
+                    "expiryDate": "2025-06-30T22:00:00.000Z",
+                    "certificateNumber": "CERT-DENT-3000",
+                    "_id": "68907518be7de920d66d8f4a"
+                }
+            ],
+            "workingHours": [
+                {
+                    "day": "monday",
+                    "isWorking": true,
+                    "slots": [
+                        {
+                            "startTime": "09:00",
+                            "endTime": "12:00",
+                            "breakStart": "10:30",
+                            "breakEnd": "10:45",
+                            "_id": "68907518be7de920d66d8f4c"
+                        },
+                        {
+                            "startTime": "14:00",
+                            "endTime": "17:00",
+                            "breakStart": "15:30",
+                            "breakEnd": "15:45",
+                            "_id": "68907518be7de920d66d8f4d"
+                        }
+                    ],
+                    "_id": "68907518be7de920d66d8f4b"
+                },
+                {
+                    "day": "tuesday",
+                    "isWorking": true,
+                    "slots": [
+                        {
+                            "startTime": "09:00",
+                            "endTime": "12:00",
+                            "_id": "68907518be7de920d66d8f4f"
+                        },
+                        {
+                            "startTime": "14:00",
+                            "endTime": "17:00",
+                            "_id": "68907518be7de920d66d8f50"
+                        }
+                    ],
+                    "_id": "68907518be7de920d66d8f4e"
+                },
+                {
+                    "day": "wednesday",
+                    "isWorking": true,
+                    "slots": [
+                        {
+                            "startTime": "09:00",
+                            "endTime": "12:00",
+                            "_id": "68907518be7de920d66d8f52"
+                        },
+                        {
+                            "startTime": "14:00",
+                            "endTime": "17:00",
+                            "_id": "68907518be7de920d66d8f53"
+                        }
+                    ],
+                    "_id": "68907518be7de920d66d8f51"
+                },
+                {
+                    "day": "thursday",
+                    "isWorking": true,
+                    "slots": [
+                        {
+                            "startTime": "09:00",
+                            "endTime": "12:00",
+                            "_id": "68907518be7de920d66d8f55"
+                        },
+                        {
+                            "startTime": "14:00",
+                            "endTime": "17:00",
+                            "_id": "68907518be7de920d66d8f56"
+                        }
+                    ],
+                    "_id": "68907518be7de920d66d8f54"
+                },
+                {
+                    "day": "friday",
+                    "isWorking": true,
+                    "slots": [
+                        {
+                            "startTime": "09:00",
+                            "endTime": "12:00",
+                            "_id": "68907518be7de920d66d8f58"
+                        },
+                        {
+                            "startTime": "14:00",
+                            "endTime": "16:00",
+                            "_id": "68907518be7de920d66d8f59"
+                        }
+                    ],
+                    "_id": "68907518be7de920d66d8f57"
+                },
+                {
+                    "day": "saturday",
+                    "isWorking": true,
+                    "slots": [
+                        {
+                            "startTime": "09:00",
+                            "endTime": "13:00",
+                            "_id": "68907518be7de920d66d8f5b"
+                        }
+                    ],
+                    "_id": "68907518be7de920d66d8f5a"
+                },
+                {
+                    "day": "sunday",
+                    "isWorking": false,
+                    "slots": [],
+                    "_id": "68907518be7de920d66d8f5c"
+                }
+            ],
+            "availability": [
+                {
+                    "day": "monday",
+                    "slots": [
+                        {
+                            "startTime": "09:00",
+                            "endTime": "12:00",
+                            "maxPatients": 8,
+                            "appointmentDuration": 30,
+                            "_id": "68907518be7de920d66d8f5e"
+                        },
+                        {
+                            "startTime": "14:00",
+                            "endTime": "17:00",
+                            "maxPatients": 6,
+                            "appointmentDuration": 30,
+                            "_id": "68907518be7de920d66d8f5f"
+                        }
+                    ],
+                    "_id": "68907518be7de920d66d8f5d"
+                },
+                {
+                    "day": "tuesday",
+                    "slots": [
+                        {
+                            "startTime": "09:00",
+                            "endTime": "12:00",
+                            "maxPatients": 8,
+                            "appointmentDuration": 30,
+                            "_id": "68907518be7de920d66d8f61"
+                        },
+                        {
+                            "startTime": "14:00",
+                            "endTime": "17:00",
+                            "maxPatients": 6,
+                            "appointmentDuration": 30,
+                            "_id": "68907518be7de920d66d8f62"
+                        }
+                    ],
+                    "_id": "68907518be7de920d66d8f60"
+                },
+                {
+                    "day": "wednesday",
+                    "slots": [
+                        {
+                            "startTime": "09:00",
+                            "endTime": "12:00",
+                            "maxPatients": 8,
+                            "appointmentDuration": 30,
+                            "_id": "68907518be7de920d66d8f64"
+                        },
+                        {
+                            "startTime": "14:00",
+                            "endTime": "17:00",
+                            "maxPatients": 6,
+                            "appointmentDuration": 30,
+                            "_id": "68907518be7de920d66d8f65"
+                        }
+                    ],
+                    "_id": "68907518be7de920d66d8f63"
+                },
+                {
+                    "day": "thursday",
+                    "slots": [
+                        {
+                            "startTime": "09:00",
+                            "endTime": "12:00",
+                            "maxPatients": 8,
+                            "appointmentDuration": 30,
+                            "_id": "68907518be7de920d66d8f67"
+                        },
+                        {
+                            "startTime": "14:00",
+                            "endTime": "17:00",
+                            "maxPatients": 6,
+                            "appointmentDuration": 30,
+                            "_id": "68907518be7de920d66d8f68"
+                        }
+                    ],
+                    "_id": "68907518be7de920d66d8f66"
+                },
+                {
+                    "day": "friday",
+                    "slots": [
+                        {
+                            "startTime": "09:00",
+                            "endTime": "12:00",
+                            "maxPatients": 8,
+                            "appointmentDuration": 30,
+                            "_id": "68907518be7de920d66d8f6a"
+                        },
+                        {
+                            "startTime": "14:00",
+                            "endTime": "16:00",
+                            "maxPatients": 4,
+                            "appointmentDuration": 30,
+                            "_id": "68907518be7de920d66d8f6b"
+                        }
+                    ],
+                    "_id": "68907518be7de920d66d8f69"
+                }
+            ],
+            "timeZone": "Africa/Kigali",
+            "bookingAdvanceLimit": 30,
+            "cancellationPolicy": "Appointments can be cancelled up to 24 hours in advance without penalty.",
+            "professionalMemberships": [
+                {
+                    "organization": "Rwanda Dental Association",
+                    "membershipType": "Full Member",
+                    "membershipNumber": "RDA-4000",
+                    "startDate": "2009-12-31T22:00:00.000Z",
+                    "isActive": true,
+                    "_id": "68907518be7de920d66d8f6c"
+                }
+            ],
+            "ratings": [],
+            "averageRating": 0,
+            "totalReviews": 0,
+            "isActive": true,
+            "isVerified": true,
+            "verificationDate": "2020-12-31T22:00:00.000Z",
+            "lastActiveDate": "2025-08-04T08:53:44.825Z",
+            "profileCompleteness": 100,
+            "clinicAffiliations": [],
+            "continuingEducation": [],
+            "createdAt": "2025-08-04T08:53:44.853Z",
+            "updatedAt": "2025-08-04T08:53:44.853Z",
+            "__v": 0
+        }
+    ],
+    "message": "Doctors retrieved successfully",
+    "error": null,
+    "metadata": {
+        "requestId": "aa70341b-7f69-4216-aed1-e84dc6799846",
+        "serverTimestamp": 1754717304648,
+        "processingTime": 304.28,
+        "serverTimeZone": "Africa/Kigali",
+        "apiVersion": "v1",
+        "requestMethod": "GET",
+        "requestPath": "/",
+        "userAgent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36",
+        "clientIp": "::1",
+        "environment": "development",
+        "serverName": "DentRW-API",
+        "responseTime": "304.28ms",
+        "links": {
+            "self": "http://localhost:3000/api/doctors?limit=50",
+            "documentation": "/docs/api/doctors",
+            "first": "/api/doctors?limit=50&page=1",
+            "last": "/api/doctors?limit=50&page=1"
+        },
+        "pagination": {
+            "page": 1,
+            "pageSize": 50,
+            "totalItems": 3,
+            "totalPages": 1,
+            "hasNextPage": false,
+            "hasPreviousPage": false
+        }
+    }
+}
