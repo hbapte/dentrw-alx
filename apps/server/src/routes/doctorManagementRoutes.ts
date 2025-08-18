@@ -20,10 +20,12 @@ router.use(authenticateToken)
 
 // Public routes (still require authentication)
 router.get("/", getAllDoctors)
+router.get("/stats", authorizeRoles("admin"), getDoctorStats)
+
 router.get("/:id", getDoctorById)
 
 // Routes that require admin role
-router.get("/stats", authorizeRoles("admin"), getDoctorStats)
+
 router.put("/:id", authorizeRoles("admin"), updateDoctor)
 router.post("/", authorizeRoles("admin"), createDoctor) 
 router.delete("/:id", authorizeRoles("admin"), deleteDoctor)

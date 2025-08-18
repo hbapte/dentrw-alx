@@ -109,6 +109,60 @@ export const getAllDoctors = asyncHandler(async (req: Request, res: Response) =>
 })
 
 /**
+ * Get doctor statistics
+ */
+export const getDoctorStats = asyncHandler(async (req: Request, res: Response) => {
+  try {
+    // Get total count
+    const totalDoctors = await doctorRepository.countDoctors()
+
+    // Get specialization distribution
+    const specializationDistribution = await doctorRepository.countBySpecialization()
+
+    // Get top rated doctors
+    const topRatedDoctors = await doctorRepository.getTopRatedDoctors(5)
+
+    // Get recent doctors
+    const recentDoctors = await doctorRepository.getRecentDoctors(5)
+
+    // Get all specializations
+    const specializations = await doctorRepository.getAllSpecializations()
+
+    // Get all languages
+    const languages = await doctorRepository.getAllLanguages()
+
+    // Generate cache control based on data freshness
+    const cacheControl = "private, max-age=300" // Cache for 5 minutes
+
+    return successResponse(
+      res,
+      {
+        totalDoctors,
+        specializationDistribution,
+        topRatedDoctors,
+        recentDoctors,
+        specializations,
+        languages,
+      },
+      "Doctor statistics retrieved successfully",
+      {
+        startTime: req.startTime,
+        cacheControl,
+        links: {
+          documentation: "/docs/api/doctors/statistics",
+          doctors: "/api/doctors",
+        },
+      },
+    )
+  } catch (error: any) {
+    return databaseErrorResponse(res, "Failed to retrieve doctor statistics", error, {
+      startTime: req.startTime,
+      debug: error,
+    })
+  }
+})
+
+/**
  * Get doctor by ID
  */
 export const getDoctorById = asyncHandler(async (req: Request, res: Response) => {
@@ -325,59 +379,7 @@ export const addDoctorRating = asyncHandler(async (req: Request, res: Response) 
   }
 })
 
-/**
- * Get doctor statistics
- */
-export const getDoctorStats = asyncHandler(async (req: Request, res: Response) => {
-  try {
-    // Get total count
-    const totalDoctors = await doctorRepository.countDoctors()
 
-    // Get specialization distribution
-    const specializationDistribution = await doctorRepository.countBySpecialization()
-
-    // Get top rated doctors
-    const topRatedDoctors = await doctorRepository.getTopRatedDoctors(5)
-
-    // Get recent doctors
-    const recentDoctors = await doctorRepository.getRecentDoctors(5)
-
-    // Get all specializations
-    const specializations = await doctorRepository.getAllSpecializations()
-
-    // Get all languages
-    const languages = await doctorRepository.getAllLanguages()
-
-    // Generate cache control based on data freshness
-    const cacheControl = "private, max-age=300" // Cache for 5 minutes
-
-    return successResponse(
-      res,
-      {
-        totalDoctors,
-        specializationDistribution,
-        topRatedDoctors,
-        recentDoctors,
-        specializations,
-        languages,
-      },
-      "Doctor statistics retrieved successfully",
-      {
-        startTime: req.startTime,
-        cacheControl,
-        links: {
-          documentation: "/docs/api/doctors/statistics",
-          doctors: "/api/doctors",
-        },
-      },
-    )
-  } catch (error: any) {
-    return databaseErrorResponse(res, "Failed to retrieve doctor statistics", error, {
-      startTime: req.startTime,
-      debug: error,
-    })
-  }
-})
 
 /**
  * Delete doctor by ID
