@@ -250,3 +250,68 @@ detailed explanations, cool features, and exercises to boost your skills. Give i
 <a href="https://jsm.dev/converso-nextjs" target="_blank">
   <img src="public/readme/jsmpro.jpg" alt="Project Banner">
 </a>
+
+
+
+
+
+
+# DentRW V2
+
+![DentRW V2 Screenshot](/projects/dentrw-v2.jpg)
+
+## Overview
+DentRW V2 is a **full-stack dental clinic management platform** designed to streamline clinic operations and improve patient experience. Unlike DentRW V1, which was a public-facing website, V2 introduces a **comprehensive dashboard system** with role-based access for **patients, doctors, receptionists, and admins**.  
+
+The platform integrates appointment scheduling, medical records, patient/doctor management, payments, and secure authentication — making it a complete digital solution for clinics. Built with a **monorepo architecture using Turbo**, it leverages TypeScript across both frontend and backend for consistency, scalability, and maintainability.
+
+---
+
+## Features
+- 🧑‍⚕️ **Role-based dashboards** for patients, doctors, receptionists, and admins  
+- 📅 **Appointments system** with availability checks, reminders, and status tracking  
+- 👩‍⚕️ **Doctor & patient management** with analytics, ratings, and history  
+- 📝 **Medical records module** with prescriptions, attachments, and follow-ups  
+- 🔐 **Secure authentication** (email verification, Google login, 2FA)  
+- 💳 **Payments & invoicing** with receipts and refund support  
+- 👥 **User management** (role assignments, account status, analytics)  
+- 🎨 **Modern dashboard UI** (Vite, React, TailwindCSS, Shadcn/UI, Framer Motion)  
+- ⚡ **API services** with Express, MongoDB, Redis, and Swagger docs  
+
+---
+
+## Tech Stack
+- **Frontend**: React, Vite, TailwindCSS, Shadcn/UI, Framer Motion, Zustand  
+- **Backend**: Express, TypeScript, MongoDB, Redis  
+- **Infrastructure & Tools**: Turbo (monorepo), Bun, Vercel, Cloudinary, Nodemailer, Swagger  
+
+---
+
+## Challenges
+- Designing a **scalable role-based access control** system for 4 distinct roles  
+- Synchronizing **data across appointments, records, and payments**  
+- Building a performant **monorepo with Turbo** while managing multiple apps/packages  
+- Implementing **secure authentication** with multi-factor and token refresh  
+- Maintaining **clean and strongly typed code** across frontend & backend  
+
+---
+
+## Outcomes
+- ✅ Created a **unified platform** that reduces fragmentation across clinic operations  
+- ✅ Improved **patient experience** with digital records & appointment booking  
+- ✅ Reduced **administrative workload** via automation of reminders & payments  
+- ✅ Established a **scalable SaaS-ready foundation** for future healthcare products  
+
+---
+
+## Timeline
+- **Start Date**: April 6, 2025  
+- **Release Date**: November 15, 2025  
+
+---
+
+## Links
+- 🌍 [Live Website](https://dentrw-v2.vercel.app/)  
+- 💻 [GitHub Repository](https://github.com/hbapte/dentrw)  
+
+---
