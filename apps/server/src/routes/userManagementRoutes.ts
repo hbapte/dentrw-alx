@@ -1,4 +1,4 @@
-// server\src\routes\userManagementRoutes.ts
+// apps\server\src\routes\userManagementRoutes.ts
 import express from "express"
 import {
   getAllUsers,

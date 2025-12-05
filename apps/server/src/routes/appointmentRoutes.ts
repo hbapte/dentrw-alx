@@ -1,4 +1,4 @@
-// server\src\routes\appointmentRoutes.ts
+//apps\server\src\routes\appointmentRoutes.ts
 import express from "express"
 import {
   getAllAppointments,

@@ -1,4 +1,4 @@
-// server\src\routes\paymentRoutes.ts
+// apps\server\src\routes\paymentRoutes.ts
 import express from "express"
 import {
   getAllPayments,

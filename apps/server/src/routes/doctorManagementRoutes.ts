@@ -1,4 +1,4 @@
-// server\src\routes\doctorManagementRoutes.ts
+// apps\server\src\routes\doctorManagementRoutes.ts
 import express from "express"
 import {
   getAllDoctors,

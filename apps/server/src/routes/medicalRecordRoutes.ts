@@ -1,3 +1,4 @@
+// apps\server\src\routes\medicalRecordRoutes.ts
 import express from "express"
 import {
   getAllMedicalRecords,

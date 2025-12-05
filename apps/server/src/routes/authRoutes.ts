@@ -1,4 +1,4 @@
-// server\src\routes\authRoutes.ts
+// apps\server\src\routes\authRoutes.ts
 import express from "express"
 import {
   registerController,

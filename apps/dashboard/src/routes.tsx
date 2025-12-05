@@ -1,4 +1,4 @@
-// client\src\routes.tsx
+// apps\dashboard\src\routes.tsx
 "use client"
 import { useEffect } from "react"
 import { Route, Routes } from "react-router-dom"
