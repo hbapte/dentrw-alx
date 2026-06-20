@@ -24,10 +24,10 @@ const Contact = () => {
 
     emailjs
       .sendForm(
-        "service_xisoyix",
-        "template_o8b8bzr",
+        process.env.REACT_APP_EMAILJS_SERVICE_ID,
+        process.env.REACT_APP_EMAILJS_TEMPLATE_ID,
         form.current,
-        "y5LmTUdhgknXetKeT"
+        process.env.REACT_APP_EMAILJS_PUBLIC_KEY
       )
       .then((_result) => {
         setIsSent(true)
