@@ -38,7 +38,7 @@ const Footer = () => {
           email,
         }
       );
-      console.log("Email sent successfully!");
+      console.log("Email sent successfully!", response.data);
       setEmail(""); // Resetting the email input field after successful submission
       setLoading(false);
       setSubscribed(true);
