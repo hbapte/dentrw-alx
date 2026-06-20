@@ -2,6 +2,7 @@ import React from "react"
 
 import "./index.css"
 
+import AnnouncementBar from "./components/AnnouncementBar"
 import Contact from "./components/Contact"
 import FAQs from "./components/FAQs"
 import Features from "./components/Features"
@@ -17,6 +18,7 @@ import Testimonials from "./components/Testimonials"
 export default function App() {
   return (
     <div>
+      <AnnouncementBar />
       <Navbar />
       <Hero />
       <Services />
