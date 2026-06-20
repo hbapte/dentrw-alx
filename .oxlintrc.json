@@ -1,0 +1,92 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["unicorn", "react"],
+  "categories": {
+    "correctness": "off"
+  },
+  "env": {
+    "builtin": true
+  },
+  "ignorePatterns": ["out/**", "build/**", "next-env.d.ts"],
+  "rules": {
+    "no-array-constructor": "error",
+    "no-unused-expressions": "warn",
+    "no-unused-vars": "warn",
+    "unicorn/filename-case": "off",
+    "react/react-in-jsx-scope": "off"
+  },
+  "overrides": [
+    {
+      "files": ["**/*.{js,jsx,mjs,ts,tsx,mts,cts}"],
+      "rules": {
+        "react/display-name": "error",
+        "react/jsx-key": "error",
+        "react/jsx-no-comment-textnodes": "error",
+        "react/jsx-no-duplicate-props": "error",
+        "react/jsx-no-target-blank": "off",
+        "react/jsx-no-undef": "error",
+        "react/no-children-prop": "error",
+        "react/no-danger-with-children": "error",
+        "react/no-direct-mutation-state": "error",
+        "react/no-find-dom-node": "error",
+        "react/no-is-mounted": "error",
+        "react/no-render-return-value": "error",
+        "react/no-string-refs": "error",
+        "react/no-unknown-property": "off",
+        "react/no-unsafe": "off",
+        "react/react-in-jsx-scope": "off",
+        "import/no-anonymous-default-export": "warn",
+        "jsx-a11y/alt-text": [
+          "warn",
+          {
+            "elements": ["img"]
+          }
+        ],
+        "jsx-a11y/aria-props": "warn",
+        "jsx-a11y/aria-proptypes": "warn",
+        "jsx-a11y/aria-unsupported-elements": "warn",
+        "jsx-a11y/role-has-required-aria-props": "warn",
+        "jsx-a11y/role-supports-aria-props": "warn",
+        "react/rules-of-hooks": "error",
+        "react/exhaustive-deps": "warn"
+      },
+      "globals": {
+        "AudioWorkletGlobalScope": "readonly",
+        "AudioWorkletProcessor": "readonly",
+        "currentFrame": "readonly",
+        "currentTime": "readonly",
+        "registerProcessor": "readonly",
+        "sampleRate": "readonly",
+        "WorkletGlobalScope": "readonly"
+      },
+      "plugins": ["import", "jsx-a11y"],
+      "env": {
+        "browser": true,
+        "node": true
+      }
+    },
+    {
+      "files": ["**/*.js", "**/*.jsx", "**/*.tsx", "**/*.mts", "**/*.cts"],
+      "rules": {
+        "constructor-super": "off",
+        "no-class-assign": "off",
+        "no-const-assign": "off",
+        "no-dupe-class-members": "off",
+        "no-dupe-keys": "off",
+        "no-func-assign": "off",
+        "no-import-assign": "off",
+        "no-new-native-nonconstructor": "off",
+        "no-obj-calls": "off",
+        "no-redeclare": "off",
+        "no-setter-return": "off",
+        "no-this-before-super": "off",
+        "no-unsafe-negation": "off",
+        "no-var": "error",
+        "no-with": "off",
+        "prefer-const": "error",
+        "prefer-rest-params": "error",
+        "prefer-spread": "error"
+      }
+    }
+  ]
+}
