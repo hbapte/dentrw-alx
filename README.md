@@ -1,10 +1,10 @@
 # DentRW - Dental Clinic Website || ALX Final Project
+
 [![Live](https://img.shields.io/badge/Live-dentrw.vercel.app-blue?style=flat-square)](https://dentrw.vercel.app)
 [![Built with React](https://img.shields.io/badge/React-18-61dafb?style=flat-square&logo=react)](https://react.dev)
 [![Deployed on Vercel](https://img.shields.io/badge/Deploy-Vercel-000000?style=flat-square&logo=vercel)](https://vercel.com)
 [![Javascript](https://img.shields.io/badge/Javascript-ES6-3178c6?style=flat-square&logo=javascript)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 ![GitHub Repo Views](https://gitviews.com/repo/hbapte/dentrw-alx.svg?label-color=green&style=flat-square)
-
 
 ![Screenshot](/src/components/Images/screenshot.jpg)
 

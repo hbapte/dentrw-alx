@@ -1,9 +1,10 @@
-import React from "react";
-import Arriana from "./Images/arriana.png";
-import Chance from "./Images/chance.png";
-import Gateme from "./Images/gateme.png";
-import Theodat from "./Images/theodat.png";
-import { Fade } from "react-awesome-reveal";
+import React from "react"
+import { Fade } from "react-awesome-reveal"
+
+import Arriana from "./Images/arriana.png"
+import Chance from "./Images/chance.png"
+import Gateme from "./Images/gateme.png"
+import Theodat from "./Images/theodat.png"
 
 const Team = () => {
   return (
@@ -22,16 +23,14 @@ const Team = () => {
                   <svg
                     viewBox="0 0 52 24"
                     fill="currentColor"
-                    className="absolute top-0 left-0 z-0 hidden w-32 -mt-8 -ml-20 text-blue-gray-100 lg:w-32 lg:-ml-28 lg:-mt-10 sm:block"
-                  >
+                    className="absolute top-0 left-0 z-0 hidden w-32 -mt-8 -ml-20 text-blue-gray-100 lg:w-32 lg:-ml-28 lg:-mt-10 sm:block">
                     <defs>
                       <pattern
                         id="18302e52-9e2a-4c8e-9550-0cbb21b38e55"
                         x="0"
                         y="0"
                         width=".135"
-                        height=".30"
-                      >
+                        height=".30">
                         <circle cx="1" cy="1" r=".7" />
                       </pattern>
                     </defs>
@@ -116,7 +115,7 @@ const Team = () => {
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default Team;
+export default Team

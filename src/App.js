@@ -1,17 +1,18 @@
-import React from "react";
-import "./index.css";
+import React from "react"
 
+import "./index.css"
+
+import Contact from "./components/Contact"
+import FAQs from "./components/FAQs"
+import Features from "./components/Features"
+import Footer from "./components/Footer"
+import Hero from "./components/Hero"
+import Insurance from "./components/Insurance"
 // Components
-import Navbar from "./components/Navbar";
-import Hero from "./components/Hero";
-import Insurance from "./components/Insurance";
-import Services from "./components/Services";
-import Team from "./components/Team";
-import Testimonials from "./components/Testimonials";
-import FAQs from "./components/FAQs";
-import Contact from "./components/Contact";
-import Footer from "./components/Footer";
-import Features from "./components/Features";
+import Navbar from "./components/Navbar"
+import Services from "./components/Services"
+import Team from "./components/Team"
+import Testimonials from "./components/Testimonials"
 
 export default function App() {
   return (
@@ -20,12 +21,12 @@ export default function App() {
       <Hero />
       <Services />
       <Insurance />
-      <Features  /> 
+      <Features />
       <Team />
       <Testimonials />
       <FAQs />
       <Contact />
-      < Footer />
+      <Footer />
     </div>
-  );
+  )
 }

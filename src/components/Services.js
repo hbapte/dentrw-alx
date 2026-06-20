@@ -1,13 +1,14 @@
-import React from "react";
-import Consultation from "./Images/consultation.jpg";
-import Extraction from "./Images/extraction.jpg";
-import Service1 from "./Images/beautiful-smile.jpg";
-import Xray from "./Images/xray.jpeg";
-import RootCanal from "./Images/rootcanal.jpeg";
-import Ortho from "./Images/braces.jpeg";
-import Bridge from "./Images/crown.jpeg";
-import Toothache from "./Images/inflamation.jpg";
-import { Fade } from "react-awesome-reveal";
+import React from "react"
+import { Fade } from "react-awesome-reveal"
+
+import Service1 from "./Images/beautiful-smile.jpg"
+import Ortho from "./Images/braces.jpeg"
+import Consultation from "./Images/consultation.jpg"
+import Bridge from "./Images/crown.jpeg"
+import Extraction from "./Images/extraction.jpg"
+import Toothache from "./Images/inflamation.jpg"
+import RootCanal from "./Images/rootcanal.jpeg"
+import Xray from "./Images/xray.jpeg"
 
 const Services = () => {
   return (
@@ -26,16 +27,14 @@ const Services = () => {
                   <svg
                     viewBox="0 0 52 24"
                     fill="currentColor"
-                    className="absolute top-0 left-0 z-0 hidden w-32 -mt-8 -ml-20 text-blue-gray-100 lg:w-32 lg:-ml-28 lg:-mt-10 sm:block"
-                  >
+                    className="absolute top-0 left-0 z-0 hidden w-32 -mt-8 -ml-20 text-blue-gray-100 lg:w-32 lg:-ml-28 lg:-mt-10 sm:block">
                     <defs>
                       <pattern
                         id="18302e52-9e2a-4c8e-9550-0cbb21b38e55"
                         x="0"
                         y="0"
                         width=".135"
-                        height=".30"
-                      >
+                        height=".30">
                         <circle cx="1" cy="1" r=".7" />
                       </pattern>
                     </defs>
@@ -152,7 +151,7 @@ const Services = () => {
         </ul>
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default Services;
+export default Services

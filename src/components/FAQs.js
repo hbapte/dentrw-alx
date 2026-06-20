@@ -1,6 +1,5 @@
-import React from "react";
-import { Fade } from "react-awesome-reveal";
-
+import React from "react"
+import { Fade } from "react-awesome-reveal"
 
 const FAQs = () => {
   return (
@@ -81,7 +80,7 @@ const FAQs = () => {
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default FAQs;
+export default FAQs

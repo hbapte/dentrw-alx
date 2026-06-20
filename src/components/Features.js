@@ -1,6 +1,5 @@
-import React from "react";
-import { Fade } from "react-awesome-reveal";
-
+import React from "react"
+import { Fade } from "react-awesome-reveal"
 
 const Features = () => {
   return (
@@ -17,16 +16,14 @@ const Features = () => {
               <svg
                 viewBox="0 0 52 24"
                 fill="currentColor"
-                className="absolute top-0 left-0 z-0 hidden w-32 -mt-8 -ml-20 text-blue-gray-100 lg:w-32 lg:-ml-28 lg:-mt-10 sm:block"
-              >
+                className="absolute top-0 left-0 z-0 hidden w-32 -mt-8 -ml-20 text-blue-gray-100 lg:w-32 lg:-ml-28 lg:-mt-10 sm:block">
                 <defs>
                   <pattern
                     id="18302e52-9e2a-4c8e-9550-0cbb21b38e55"
                     x="0"
                     y="0"
                     width=".135"
-                    height=".30"
-                  >
+                    height=".30">
                     <circle cx="1" cy="1" r=".7" />
                   </pattern>
                 </defs>
@@ -57,8 +54,7 @@ const Features = () => {
                 <svg
                   className="w-12 h-12 text-deep-purple-accent-400"
                   stroke="currentColor"
-                  viewBox="0 0 52 52"
-                >
+                  viewBox="0 0 52 52">
                   <polygon
                     strokeWidth="3"
                     strokeLinecap="round"
@@ -79,8 +75,7 @@ const Features = () => {
             <a
               href="/"
               aria-label=""
-              className="inline-flex  items-center font-semibold transition-colors duration-200 text-blue-800 hover:text-blue-500"
-            >
+              className="inline-flex  items-center font-semibold transition-colors duration-200 text-blue-800 hover:text-blue-500">
               Learn more
             </a>
           </div>
@@ -92,8 +87,7 @@ const Features = () => {
                 <svg
                   className="w-12 h-12 text-deep-purple-accent-400"
                   stroke="currentColor"
-                  viewBox="0 0 52 52"
-                >
+                  viewBox="0 0 52 52">
                   <polygon
                     strokeWidth="3"
                     strokeLinecap="round"
@@ -112,8 +106,7 @@ const Features = () => {
             <a
               href="/"
               aria-label=""
-              className="inline-flex items-center font-semibold transition-colors duration-200 text-blue-800 hover:text-blue-500"
-            >
+              className="inline-flex items-center font-semibold transition-colors duration-200 text-blue-800 hover:text-blue-500">
               Learn more
             </a>
           </div>
@@ -125,8 +118,7 @@ const Features = () => {
                 <svg
                   className="w-12 h-12 text-deep-purple-accent-400"
                   stroke="currentColor"
-                  viewBox="0 0 52 52"
-                >
+                  viewBox="0 0 52 52">
                   <polygon
                     strokeWidth="3"
                     strokeLinecap="round"
@@ -146,8 +138,7 @@ const Features = () => {
             <a
               href="/"
               aria-label=""
-              className="inline-flex items-center font-semibold transition-colors duration-200 text-blue-800 hover:text-blue-500"
-            >
+              className="inline-flex items-center font-semibold transition-colors duration-200 text-blue-800 hover:text-blue-500">
               Learn more
             </a>
           </div>
@@ -159,8 +150,7 @@ const Features = () => {
                 <svg
                   className="w-12 h-12 text-deep-purple-accent-400"
                   stroke="currentColor"
-                  viewBox="0 0 52 52"
-                >
+                  viewBox="0 0 52 52">
                   <polygon
                     strokeWidth="3"
                     strokeLinecap="round"
@@ -181,15 +171,14 @@ const Features = () => {
             <a
               href="/"
               aria-label=""
-              className="inline-flex items-center font-semibold transition-colors duration-200 text-blue-800 hover:text-blue-500"
-            >
+              className="inline-flex items-center font-semibold transition-colors duration-200 text-blue-800 hover:text-blue-500">
               Learn more
             </a>
           </div>
         </Fade>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Features;
+export default Features
