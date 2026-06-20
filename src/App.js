@@ -1,7 +1,6 @@
 import React from "react";
 import "./index.css";
 
-
 // Components
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
@@ -13,7 +12,6 @@ import FAQs from "./components/FAQs";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import Features from "./components/Features";
-
 
 export default function App() {
   return (

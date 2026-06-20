@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Fade } from "react-awesome-reveal";
-// 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
 
 const Footer = () => {
   const [email, setEmail] = useState("");
@@ -26,8 +25,8 @@ const Footer = () => {
     }
 
     // ConvertKit API key and form ID
-    const API_KEY = "YW9GegPZXKzE53M7vqmLvw";
-    const FORM_ID = "5258337";
+    const API_KEY = process.env.REACT_APP_CONVERTKIT_API_KEY;
+    const FORM_ID = process.env.REACT_APP_CONVERTKIT_FORM_ID;
 
     setLoading(true);
 

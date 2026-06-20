@@ -1,6 +1,7 @@
 import React from "react";
 import { Fade } from "react-awesome-reveal";
 
+
 const FAQs = () => {
   return (
     <section className="bg-white pb-7 text-slate-900">

@@ -9,6 +9,7 @@ import BK from "./Images/insurance/BK.png";
 import SANLAM from "./Images/insurance/sanlam.png";
 import { Fade } from "react-awesome-reveal";
 
+
 const Insurance = () => {
   return (
     <section className="mt-16 " id="insurance">
