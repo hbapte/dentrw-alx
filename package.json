@@ -38,7 +38,8 @@
     "format": "prettier --check .",
     "format:fix": "prettier --write .",
     "check": "prettier --write . && oxlint --fix",
-    "prepare": "husky"
+    "prepare": "husky",
+    "knip": "knip"
   },
   "eslintConfig": {
     "extends": [
@@ -66,6 +67,8 @@
     "@commitlint/cli": "^21.0.0",
     "@commitlint/config-conventional": "^21.0.0",
     "@tailwindcss/forms": "^0.5.3",
-    "tailwindcss": "^3.3.2"
+    "@types/node": "^26.0.0",
+    "tailwindcss": "^3.3.2",
+    "typescript": "^6.0.3"
   }
 }
