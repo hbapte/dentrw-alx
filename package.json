@@ -5,12 +5,19 @@
   "dependencies": {
     "@emailjs/browser": "^3.11.0",
     "@emotion/react": "^11.11.1",
+    "@ianvs/prettier-plugin-sort-imports": "^4.7.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.4.0",
     "baseline-browser-mapping": "^2.10.38",
     "caniuse-lite": "^1.0.30001799",
+    "husky": "^9.1.7",
+    "knip": "^6.17.1",
+    "lint-staged": "^17.0.7",
+    "oxlint": "^1.70.0",
+    "prettier": "^3.8.4",
+    "prettier-plugin-tailwindcss": "^0.8.0",
     "react": "^18.2.0",
     "react-awesome-reveal": "^4.2.3",
     "react-dom": "^18.2.0",
@@ -25,7 +32,13 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "format": "prettier --check .",
+    "format:fix": "prettier --write .",
+    "check": "prettier --write . && oxlint --fix",
+    "prepare": "husky"
   },
   "eslintConfig": {
     "extends": [
@@ -44,6 +57,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,md,yml,yaml,css}": "prettier --write",
+    "*.{js,jsx,ts,tsx}": "oxlint --fix"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.3",
