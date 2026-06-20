@@ -1,6 +1,12 @@
 # DentRW - Dental Clinic Website || ALX Final Project
+[![Live](https://img.shields.io/badge/Live-dentrw.vercel.app-blue?style=flat-square)](https://dentrw.vercel.app)
+[![Built with React](https://img.shields.io/badge/React-18-61dafb?style=flat-square&logo=react)](https://react.dev)
+[![Deployed on Vercel](https://img.shields.io/badge/Deploy-Vercel-000000?style=flat-square&logo=vercel)](https://vercel.com)
+[![Javascript](https://img.shields.io/badge/Javascript-ES6-3178c6?style=flat-square&logo=javascript)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+![GitHub Repo Views](https://gitviews.com/repo/hbapte/dentrw-alx.svg?label-color=green&style=flat-square)
 
-![Screenshot](/client/src/components/Images/screenshot.jpg)
+
+![Screenshot](/src/components/Images/screenshot.jpg)
 
 DentRW is a responsive web application for a Dental Clinic. It provides various features including appointment booking, newsletter subscription, and automation for data collection. This project was developed as AlX Final Project of Software Program - Frontend by me, Ishimwe Jean Baptiste.
 
@@ -67,13 +73,23 @@ Special thanks to the AlX Graduation program for providing the opportunity to sh
 
 If you have any suggestions or ideas for improving DentRW, please don't hesitate to reach out or contribute to the project.
 
+Made with [contrib.rocks](https://contrib.rocks).
+
 ## Contact
 
 For any inquiries or further information about DentRW, please reach out to me:
 
 - **Ishimwe Jean Baptiste**
 - GitHub: [hbapte](https://github.com/hbapte)
-- Portfolio: [https://hbapte.vercel.app/](https://hbapte.vercel.app/)
+- Portfolio: [https://hbapte.vercel.app/](https://hbapte.com)
 - Email: [ijbapte@gmail.com](mailto:ijbapte@gmail.com)
 
 Feel free to visit the live website at [https://dentrw.vercel.app/](https://dentrw.vercel.app/) and experience DentRW firsthand.
+
+## Repobeats Analytics
+
+![Alt](https://repobeats.axiom.co/api/embed/a42375af2d02cd0db80ac8b9f3e6a45fbcb9421a.svg "Repobeats analytics image")
+
+## Star Stats
+
+[![Star Stats](https://starchart.cc/hbapte/dentrw-alx.svg?variant=adaptive&line=%23f59e0b)](https://starchart.cc/hbapte/dentrw-alx)
