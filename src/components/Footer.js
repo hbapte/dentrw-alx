@@ -335,9 +335,9 @@ const Footer = () => {
               className="text-blue-600 text-xs sm:text-sm mr-0 sm:mr-14"
               target="_blank"
               rel="noreferrer noopener"
-              href="https://hbapte.vercel.app/">
+              href="https://hbapte.com">
               {" "}
-              Hbapte{" "}
+              hbapte{" "}
             </a>
           </div>
         </div>
