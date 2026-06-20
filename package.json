@@ -22,7 +22,7 @@
     "react-awesome-reveal": "^4.2.3",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.44.3",
-    "react-router-dom": "^6.12.1",
+    "react-router-dom": "^7.0.0",
     "react-scripts": "5.0.1",
     "react-scroll": "^1.8.9",
     "swiper": "^9.3.2",
