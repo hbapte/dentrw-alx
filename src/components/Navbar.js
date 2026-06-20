@@ -56,7 +56,7 @@ const Navbar = () => {
 
   return (
     <header
-      className={`fixed w-full flex items-center justify-between px-4 py-3 text-blue-900 transition-all ${
+      className={`fixed top-8 w-full flex items-center justify-between px-4 py-3 text-blue-900 transition-all ${
         showNavbar ? "bg-white shadow-md" : ""
       }`}
       style={{ zIndex: showMenu ? 999 : "10" }}>
