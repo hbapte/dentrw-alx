@@ -23,7 +23,7 @@ migration, then build on it (SEO/PWA, i18n).
 | 002  | Remove dead code — unused deps and orphan files       | P1       | S      | 001        | DONE   |
 | 003  | Migrate from Create React App to Vite + Vitest        | P1       | L      | 001, 002   | DONE   |
 | 004  | SEO essentials + installable PWA                      | P2       | M      | 003        | DONE   |
-| 005  | i18n foundation — react-i18next setup + first slice   | P2       | M      | 003        | TODO   |
+| 005  | i18n foundation — react-i18next setup + first slice   | P2       | M      | 003        | DONE   |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (one-line reason) | REJECTED (one-line rationale)
 
@@ -70,5 +70,9 @@ Status values: TODO | IN PROGRESS | DONE | BLOCKED (one-line reason) | REJECTED 
 - After **004** merges: run the built `index.html` through Google's Rich Results
   Test and a Lighthouse SEO/PWA audit; design a real 1200×630 OG image to
   replace the placeholder.
-- **005** ships `en` complete with `rw`/`fr` stubbed to English placeholders —
-  real Kinyarwanda/French copy is a separate content task (see `docs/i18n.md`).
+- **005** shipped **English + French only** (Kinyarwanda dropped per maintainer
+  decision). French is fully translated for the converted strings, not stubbed.
+  Extending coverage to the remaining ~13 components is the phased follow-up in
+  `docs/i18n.md`. Config note: `load: "languageOnly"` +
+  `nonExplicitSupportedLngs: true` so a browser set to `en-US` / `fr-FR` maps to
+  `en` / `fr` correctly.
