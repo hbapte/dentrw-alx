@@ -13,8 +13,8 @@ import Xray from "./Images/xray.jpeg"
 const Services = () => {
   return (
     <section className="px-5 " id="service">
-      <div class=" ">
-        <header class="">
+      <div className=" ">
+        <header className="">
           <Fade>
             <div className="max-w-xl mb-10 md:mx-auto sm:text-center lg:max-w-2xl md:mb-12">
               <div>
@@ -50,7 +50,7 @@ const Services = () => {
                 we offers
               </h2>
 
-              <p class="max-w-[40rem] text-md mx-auto mt-4 text-gray-500">
+              <p className="max-w-[40rem] text-md mx-auto mt-4 text-gray-500">
                 DentRw provide a comprehensive suite of dental services
                 including General, Cosmetic, Restorative, Pediatric and
                 Emergency Dentistry.
@@ -59,13 +59,13 @@ const Services = () => {
           </Fade>
         </header>
 
-        <ul class="grid gap-4 h-30 mt-6 sm:grid-cols-2   lg:grid-cols-4 ">
+        <ul className="grid gap-4 h-30 mt-6 sm:grid-cols-2   lg:grid-cols-4 ">
           <Fade>
             <li className="bg-slate-200 ">
-              <img src={Service1} alt="" class="" />
+              <img src={Service1} alt="" className="" />
 
-              <div class="relative py-2">
-                <h3 class="text-m text-center text-gray-700 group-hover:underline group-hover:underline-offset-4">
+              <div className="relative py-2">
+                <h3 className="text-m text-center text-gray-700 group-hover:underline group-hover:underline-offset-4">
                   Cleaning & Teeth whitening
                 </h3>
               </div>
@@ -74,20 +74,20 @@ const Services = () => {
 
           <Fade>
             <li className="bg-slate-200 ">
-              <img src={Xray} alt="" class="" />
+              <img src={Xray} alt="" className="" />
 
-              <div class="relative py-2">
-                <h3 class="text-m text-center text-gray-700 ">X-ray</h3>
+              <div className="relative py-2">
+                <h3 className="text-m text-center text-gray-700 ">X-ray</h3>
               </div>
             </li>
           </Fade>
 
           <Fade>
             <li className="bg-slate-200">
-              <img src={Ortho} alt="" class="" />
+              <img src={Ortho} alt="" className="" />
 
-              <div class="relative py-2">
-                <h3 class="text-m text-center text-gray-700 group-hover:underline group-hover:underline-offset-4">
+              <div className="relative py-2">
+                <h3 className="text-m text-center text-gray-700 group-hover:underline group-hover:underline-offset-4">
                   Orthodontic Treatment
                 </h3>
               </div>
@@ -95,10 +95,10 @@ const Services = () => {
           </Fade>
           <Fade>
             <li className="bg-slate-200 ">
-              <img src={Bridge} alt="" class="" />
+              <img src={Bridge} alt="" className="" />
 
-              <div class="relative py-2">
-                <h3 class="text-m text-center text-gray-700 group-hover:underline group-hover:underline-offset-4">
+              <div className="relative py-2">
+                <h3 className="text-m text-center text-gray-700 group-hover:underline group-hover:underline-offset-4">
                   Dental Bridge
                 </h3>
               </div>
@@ -106,10 +106,10 @@ const Services = () => {
           </Fade>
           <Fade>
             <li className="bg-slate-200">
-              <img src={Toothache} alt="" class="" />
+              <img src={Toothache} alt="" className="" />
 
-              <div class="relative py-2">
-                <h3 class="text-m text-center text-gray-700 group-hover:underline group-hover:underline-offset-4">
+              <div className="relative py-2">
+                <h3 className="text-m text-center text-gray-700 group-hover:underline group-hover:underline-offset-4">
                   Toothache relief
                 </h3>
               </div>
@@ -117,10 +117,10 @@ const Services = () => {
           </Fade>
           <Fade>
             <li className="bg-slate-200">
-              <img src={Extraction} alt="" class="" />
+              <img src={Extraction} alt="" className="" />
 
-              <div class="relative py-2">
-                <h3 class="text-m text-center text-gray-700 group-hover:underline group-hover:underline-offset-4">
+              <div className="relative py-2">
+                <h3 className="text-m text-center text-gray-700 group-hover:underline group-hover:underline-offset-4">
                   Extraction
                 </h3>
               </div>
@@ -128,10 +128,10 @@ const Services = () => {
           </Fade>
           <Fade>
             <li className="bg-slate-200">
-              <img src={RootCanal} alt="" class="" />
+              <img src={RootCanal} alt="" className="" />
 
-              <div class="relative py-2">
-                <h3 class="text-m text-center text-gray-700 group-hover:underline group-hover:underline-offset-4">
+              <div className="relative py-2">
+                <h3 className="text-m text-center text-gray-700 group-hover:underline group-hover:underline-offset-4">
                   Root Canal Treatment
                 </h3>
               </div>
@@ -139,10 +139,10 @@ const Services = () => {
           </Fade>
           <Fade>
             <li className="bg-slate-200 rounded-[4px]">
-              <img src={Consultation} alt="" class=" " />
+              <img src={Consultation} alt="" className=" " />
 
-              <div class="relative py-2 ">
-                <h3 class="text-m text-center text-gray-700 group-hover:underline group-hover:underline-offset-4">
+              <div className="relative py-2 ">
+                <h3 className="text-m text-center text-gray-700 group-hover:underline group-hover:underline-offset-4">
                   Check-ups and Consultation
                 </h3>
               </div>

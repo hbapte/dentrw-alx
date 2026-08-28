@@ -15,7 +15,7 @@ export default function App() {
     <>
       <div className="container mx-auto p-6 mt-1" id="app">
         <Fade>
-          <header class="">
+          <header className="">
             <div className="max-w-xl mb-0 mx-auto sm:text-center lg:max-w-2xl md:mb-12">
               <div>
                 <p className="inline-block px-3 py-px mb-4 text-xs font-semibold tracking-wider text-teal-900 uppercase rounded-full bg-teal-accent-400">
@@ -50,7 +50,7 @@ export default function App() {
                 <span className="text-blue-500 relative">Patients</span>
               </h2>
 
-              <p class="max-w-[40rem] text-md mx-auto mt-4 text-gray-500"></p>
+              <p className="max-w-[40rem] text-md mx-auto mt-4 text-gray-500"></p>
             </div>
           </header>
         </Fade>
@@ -84,27 +84,27 @@ export default function App() {
             },
           }}>
           <SwiperSlide className="flex rounded-[4px] my-10 justify-center items-center bg-slate-100">
-            <div class="my-auto carousel-item active relative float-left w-full">
+            <div className="my-auto carousel-item active relative float-left w-full">
               <img
-                class="rounded-full shadow-lg mb-6 mt-6  w-24 mx-auto"
+                className="rounded-full shadow-lg mb-6 mt-6  w-24 mx-auto"
                 src="https://i.ibb.co/XVFPhWP/PSX-20230524-011601.jpg"
                 alt="avatar"
               />
-              <div class="flex my-auto flex-wrap justify-center">
-                <div class="grow-0 shrink-0  basis-auto w-full lg:w-8/12 px-3">
-                  <h5 class=" text-center text-lg font-bold mb-3">
+              <div className="flex my-auto flex-wrap justify-center">
+                <div className="grow-0 shrink-0  basis-auto w-full lg:w-8/12 px-3">
+                  <h5 className=" text-center text-lg font-bold mb-3">
                     UWIMBABAZI Providence
                   </h5>
-                  <p class="text-center font-semibold text-gray-700 mb-4">
+                  <p className="text-center font-semibold text-gray-700 mb-4">
                     Manager - BPR Rwanda
                   </p>
-                  <p class="text-gray-600 mb-12">
+                  <p className="text-gray-600 mb-12">
                     <svg
                       aria-hidden="true"
                       focusable="false"
                       data-prefix="fas"
                       data-icon="quote-left"
-                      class="w-6 pr-2 inline-block"
+                      className="w-6 pr-2 inline-block"
                       role="img"
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 512 512">
@@ -118,14 +118,14 @@ export default function App() {
                     care was done with precision and expertise. Thank you DentRw
                     !
                   </p>
-                  <ul class="flex justify-center mb-6">
+                  <ul className="flex justify-center mb-6">
                     <li>
                       <svg
                         aria-hidden="true"
                         focusable="false"
                         data-prefix="fas"
                         data-icon="star"
-                        class="w-4 text-yellow-500"
+                        className="w-4 text-yellow-500"
                         role="img"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 576 512">
@@ -140,7 +140,7 @@ export default function App() {
                         focusable="false"
                         data-prefix="fas"
                         data-icon="star"
-                        class="w-4 text-yellow-500"
+                        className="w-4 text-yellow-500"
                         role="img"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 576 512">
@@ -155,7 +155,7 @@ export default function App() {
                         focusable="false"
                         data-prefix="fas"
                         data-icon="star"
-                        class="w-4 text-yellow-500"
+                        className="w-4 text-yellow-500"
                         role="img"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 576 512">
@@ -170,7 +170,7 @@ export default function App() {
                         focusable="false"
                         data-prefix="fas"
                         data-icon="star"
-                        class="w-4 text-yellow-500"
+                        className="w-4 text-yellow-500"
                         role="img"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 576 512">
@@ -185,7 +185,7 @@ export default function App() {
                         focusable="false"
                         data-prefix="far"
                         data-icon="star"
-                        class="w-4 text-yellow-500"
+                        className="w-4 text-yellow-500"
                         role="img"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 576 512">
@@ -200,27 +200,27 @@ export default function App() {
             </div>
           </SwiperSlide>
           <SwiperSlide className="flex rounded-[4px] my-10 justify-center items-center bg-slate-100">
-            <div class="my-auto carousel-item active relative float-left w-full">
+            <div className="my-auto carousel-item active relative float-left w-full">
               <img
-                class="rounded-full shadow-lg mb-6 mt-6  w-24 mx-auto"
+                className="rounded-full shadow-lg mb-6 mt-6  w-24 mx-auto"
                 src="https://i.ibb.co/8b8NJBN/PSX-20230511-214634.jpg"
                 alt="avatar"
               />
-              <div class="flex flex-wrap justify-center">
-                <div class="grow-0 shrink-0 basis-auto w-full lg:w-8/12 px-3">
-                  <h5 class="text-center text-lg font-bold mb-3">
+              <div className="flex flex-wrap justify-center">
+                <div className="grow-0 shrink-0 basis-auto w-full lg:w-8/12 px-3">
+                  <h5 className="text-center text-lg font-bold mb-3">
                     RUSHATI Emmanuel
                   </h5>
-                  <p class=" text-center font-semibold text-gray-700 mb-4">
+                  <p className=" text-center font-semibold text-gray-700 mb-4">
                     Driver
                   </p>
-                  <p class="text-gray-500 mb-12">
+                  <p className="text-gray-500 mb-12">
                     <svg
                       aria-hidden="true"
                       focusable="false"
                       data-prefix="fas"
                       data-icon="quote-left"
-                      class="w-6 pr-2 inline-block"
+                      className="w-6 pr-2 inline-block"
                       role="img"
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 512 512">
@@ -233,14 +233,14 @@ export default function App() {
                     reliable and professional dental service. Their staff is
                     knowledgeable,caring and always make me feel comfortable.
                   </p>
-                  <ul class="flex justify-center mb-6">
+                  <ul className="flex justify-center mb-6">
                     <li>
                       <svg
                         aria-hidden="true"
                         focusable="false"
                         data-prefix="fas"
                         data-icon="star"
-                        class="w-4 text-yellow-500"
+                        className="w-4 text-yellow-500"
                         role="img"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 576 512">
@@ -255,7 +255,7 @@ export default function App() {
                         focusable="false"
                         data-prefix="fas"
                         data-icon="star"
-                        class="w-4 text-yellow-500"
+                        className="w-4 text-yellow-500"
                         role="img"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 576 512">
@@ -270,7 +270,7 @@ export default function App() {
                         focusable="false"
                         data-prefix="fas"
                         data-icon="star"
-                        class="w-4 text-yellow-500"
+                        className="w-4 text-yellow-500"
                         role="img"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 576 512">
@@ -285,7 +285,7 @@ export default function App() {
                         focusable="false"
                         data-prefix="fas"
                         data-icon="star"
-                        class="w-4 text-yellow-500"
+                        className="w-4 text-yellow-500"
                         role="img"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 576 512">
@@ -300,7 +300,7 @@ export default function App() {
                         focusable="false"
                         data-prefix="fas"
                         data-icon="star-half-alt"
-                        class="w-4 text-yellow-500"
+                        className="w-4 text-yellow-500"
                         role="img"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 536 512">
@@ -316,27 +316,27 @@ export default function App() {
           </SwiperSlide>
 
           <SwiperSlide className="flex rounded-[4px] my-10 justify-center items-center bg-slate-100">
-            <div class="my-auto carousel-item active relative float-left w-full">
+            <div className="my-auto carousel-item active relative float-left w-full">
               <img
-                class="rounded-full shadow-lg mb-6 mt-6  w-24 mx-auto"
+                className="rounded-full shadow-lg mb-6 mt-6  w-24 mx-auto"
                 src="https://i.ibb.co/NCpZNrf/PSX-20230511-214524.jpg"
                 alt="avatar"
               />
-              <div class="flex  flex-wrap justify-center">
-                <div class="grow-0 shrink-0 basis-auto w-full lg:w-8/12 px-3">
-                  <h5 class="text-center text-lg font-bold mb-3">
+              <div className="flex  flex-wrap justify-center">
+                <div className="grow-0 shrink-0 basis-auto w-full lg:w-8/12 px-3">
+                  <h5 className="text-center text-lg font-bold mb-3">
                     Chance Divine
                   </h5>
-                  <p class="text-center font-semibold text-gray-700 mb-4">
+                  <p className="text-center font-semibold text-gray-700 mb-4">
                     Engineer
                   </p>
-                  <p class="text-gray-500 mb-12">
+                  <p className="text-gray-500 mb-12">
                     <svg
                       aria-hidden="true"
                       focusable="false"
                       data-prefix="fas"
                       data-icon="quote-left"
-                      class="w-6 pr-2 inline-block"
+                      className="w-6 pr-2 inline-block"
                       role="img"
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 512 512">
@@ -349,14 +349,14 @@ export default function App() {
                     service and the quality of their work in such short moment.
                     They are definitey best dental clinic in Kigali!
                   </p>
-                  <ul class="flex justify-center mb-6">
+                  <ul className="flex justify-center mb-6">
                     <li>
                       <svg
                         aria-hidden="true"
                         focusable="false"
                         data-prefix="fas"
                         data-icon="star"
-                        class="w-4 text-yellow-500"
+                        className="w-4 text-yellow-500"
                         role="img"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 576 512">
@@ -371,7 +371,7 @@ export default function App() {
                         focusable="false"
                         data-prefix="fas"
                         data-icon="star"
-                        class="w-4 text-yellow-500"
+                        className="w-4 text-yellow-500"
                         role="img"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 576 512">
@@ -386,7 +386,7 @@ export default function App() {
                         focusable="false"
                         data-prefix="fas"
                         data-icon="star"
-                        class="w-4 text-yellow-500"
+                        className="w-4 text-yellow-500"
                         role="img"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 576 512">
@@ -401,7 +401,7 @@ export default function App() {
                         focusable="false"
                         data-prefix="fas"
                         data-icon="star"
-                        class="w-4 text-yellow-500"
+                        className="w-4 text-yellow-500"
                         role="img"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 576 512">
@@ -416,7 +416,7 @@ export default function App() {
                         focusable="false"
                         data-prefix="fas"
                         data-icon="star"
-                        class="w-4 text-yellow-500"
+                        className="w-4 text-yellow-500"
                         role="img"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 576 512">
@@ -432,27 +432,27 @@ export default function App() {
           </SwiperSlide>
 
           <SwiperSlide className="flex rounded-[4px] my-10 justify-center items-center bg-slate-100">
-            <div class="my-auto carousel-item active relative float-left w-full">
+            <div className="my-auto carousel-item active relative float-left w-full">
               <img
-                class="rounded-full shadow-lg mb-6 mt-6  w-24 mx-auto"
+                className="rounded-full shadow-lg mb-6 mt-6  w-24 mx-auto"
                 src="https://i.ibb.co/59ysYDf/PSX-20230511-215559.jpg"
                 alt="avatar"
               />
-              <div class="flex my-auto flex-wrap justify-center">
-                <div class="grow-0 shrink-0  basis-auto w-full lg:w-8/12 px-3">
-                  <h5 class=" text-center text-lg font-bold mb-3">
+              <div className="flex my-auto flex-wrap justify-center">
+                <div className="grow-0 shrink-0  basis-auto w-full lg:w-8/12 px-3">
+                  <h5 className=" text-center text-lg font-bold mb-3">
                     TUMUKUNDE Candide
                   </h5>
-                  <p class="text-center font-semibold text-gray-700 mb-4">
+                  <p className="text-center font-semibold text-gray-700 mb-4">
                     CTO - Kasha
                   </p>
-                  <p class="text-gray-500 mb-12">
+                  <p className="text-gray-500 mb-12">
                     <svg
                       aria-hidden="true"
                       focusable="false"
                       data-prefix="fas"
                       data-icon="quote-left"
-                      class="w-6 pr-2 inline-block"
+                      className="w-6 pr-2 inline-block"
                       role="img"
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 512 512">
@@ -465,14 +465,14 @@ export default function App() {
                     state-of-the-art. They took great care of me, the dental
                     care was done with precision and expertise.
                   </p>
-                  <ul class="flex justify-center mb-6">
+                  <ul className="flex justify-center mb-6">
                     <li>
                       <svg
                         aria-hidden="true"
                         focusable="false"
                         data-prefix="fas"
                         data-icon="star"
-                        class="w-4 text-yellow-500"
+                        className="w-4 text-yellow-500"
                         role="img"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 576 512">
@@ -487,7 +487,7 @@ export default function App() {
                         focusable="false"
                         data-prefix="fas"
                         data-icon="star"
-                        class="w-4 text-yellow-500"
+                        className="w-4 text-yellow-500"
                         role="img"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 576 512">
@@ -502,7 +502,7 @@ export default function App() {
                         focusable="false"
                         data-prefix="fas"
                         data-icon="star"
-                        class="w-4 text-yellow-500"
+                        className="w-4 text-yellow-500"
                         role="img"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 576 512">
@@ -517,7 +517,7 @@ export default function App() {
                         focusable="false"
                         data-prefix="fas"
                         data-icon="star"
-                        class="w-4 text-yellow-500"
+                        className="w-4 text-yellow-500"
                         role="img"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 576 512">
@@ -532,7 +532,7 @@ export default function App() {
                         focusable="false"
                         data-prefix="far"
                         data-icon="star"
-                        class="w-4 text-yellow-500"
+                        className="w-4 text-yellow-500"
                         role="img"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 576 512">
@@ -547,27 +547,27 @@ export default function App() {
             </div>
           </SwiperSlide>
           <SwiperSlide className="flex rounded-[4px] my-10 justify-center items-center bg-slate-100">
-            <div class="my-auto carousel-item active relative float-left w-full">
+            <div className="my-auto carousel-item active relative float-left w-full">
               <img
-                class="rounded-full shadow-lg mb-6 mt-6  w-24 mx-auto"
+                className="rounded-full shadow-lg mb-6 mt-6  w-24 mx-auto"
                 src={Olvier}
                 alt="avatar"
               />
-              <div class="flex flex-wrap justify-center">
-                <div class="grow-0 shrink-0 basis-auto w-full lg:w-8/12 px-3">
-                  <h5 class="text-center text-lg font-bold mb-3">
+              <div className="flex flex-wrap justify-center">
+                <div className="grow-0 shrink-0 basis-auto w-full lg:w-8/12 px-3">
+                  <h5 className="text-center text-lg font-bold mb-3">
                     NDIKUMANA M. Olivier
                   </h5>
-                  <p class=" text-center font-semibold text-gray-700 mb-4">
+                  <p className=" text-center font-semibold text-gray-700 mb-4">
                     Businessman
                   </p>
-                  <p class="text-gray-500 mb-12">
+                  <p className="text-gray-500 mb-12">
                     <svg
                       aria-hidden="true"
                       focusable="false"
                       data-prefix="fas"
                       data-icon="quote-left"
-                      class="w-6 pr-2 inline-block"
+                      className="w-6 pr-2 inline-block"
                       role="img"
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 512 512">
@@ -580,14 +580,14 @@ export default function App() {
                     reliable and professional dental service. Their staff is
                     knowledgeable,caring and always make me feel comfortable.
                   </p>
-                  <ul class="flex justify-center mb-6">
+                  <ul className="flex justify-center mb-6">
                     <li>
                       <svg
                         aria-hidden="true"
                         focusable="false"
                         data-prefix="fas"
                         data-icon="star"
-                        class="w-4 text-yellow-500"
+                        className="w-4 text-yellow-500"
                         role="img"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 576 512">
@@ -602,7 +602,7 @@ export default function App() {
                         focusable="false"
                         data-prefix="fas"
                         data-icon="star"
-                        class="w-4 text-yellow-500"
+                        className="w-4 text-yellow-500"
                         role="img"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 576 512">
@@ -617,7 +617,7 @@ export default function App() {
                         focusable="false"
                         data-prefix="fas"
                         data-icon="star"
-                        class="w-4 text-yellow-500"
+                        className="w-4 text-yellow-500"
                         role="img"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 576 512">
@@ -632,7 +632,7 @@ export default function App() {
                         focusable="false"
                         data-prefix="fas"
                         data-icon="star"
-                        class="w-4 text-yellow-500"
+                        className="w-4 text-yellow-500"
                         role="img"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 576 512">
@@ -647,7 +647,7 @@ export default function App() {
                         focusable="false"
                         data-prefix="fas"
                         data-icon="star-half-alt"
-                        class="w-4 text-yellow-500"
+                        className="w-4 text-yellow-500"
                         role="img"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 536 512">
@@ -663,27 +663,27 @@ export default function App() {
           </SwiperSlide>
 
           <SwiperSlide className="flex rounded-[4px] my-10 justify-center items-center bg-slate-100">
-            <div class="my-auto carousel-item active relative float-left w-full">
+            <div className="my-auto carousel-item active relative float-left w-full">
               <img
-                class="rounded-full shadow-lg mb-6 mt-6  w-24 mx-auto"
+                className="rounded-full shadow-lg mb-6 mt-6  w-24 mx-auto"
                 src="https://i.ibb.co/4gv6mm7/PSX-20230511-213331.jpg"
                 alt="avatar"
               />
-              <div class="flex  flex-wrap justify-center">
-                <div class="grow-0 shrink-0 basis-auto w-full lg:w-8/12 px-3">
-                  <h5 class="text-center text-lg font-bold mb-3">
+              <div className="flex  flex-wrap justify-center">
+                <div className="grow-0 shrink-0 basis-auto w-full lg:w-8/12 px-3">
+                  <h5 className="text-center text-lg font-bold mb-3">
                     UMWASE Castro Samuel
                   </h5>
-                  <p class="text-center font-semibold text-gray-700 mb-4">
+                  <p className="text-center font-semibold text-gray-700 mb-4">
                     UR Student
                   </p>
-                  <p class="text-gray-500 mb-12">
+                  <p className="text-gray-500 mb-12">
                     <svg
                       aria-hidden="true"
                       focusable="false"
                       data-prefix="fas"
                       data-icon="quote-left"
-                      class="w-6 pr-2 inline-block"
+                      className="w-6 pr-2 inline-block"
                       role="img"
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 512 512">
@@ -696,14 +696,14 @@ export default function App() {
                     treatment I received was outstanding. They made me feel like
                     a valued patient, and I highly recommend their services.
                   </p>
-                  <ul class="flex justify-center mb-6">
+                  <ul className="flex justify-center mb-6">
                     <li>
                       <svg
                         aria-hidden="true"
                         focusable="false"
                         data-prefix="fas"
                         data-icon="star"
-                        class="w-4 text-yellow-500"
+                        className="w-4 text-yellow-500"
                         role="img"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 576 512">
@@ -718,7 +718,7 @@ export default function App() {
                         focusable="false"
                         data-prefix="fas"
                         data-icon="star"
-                        class="w-4 text-yellow-500"
+                        className="w-4 text-yellow-500"
                         role="img"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 576 512">
@@ -733,7 +733,7 @@ export default function App() {
                         focusable="false"
                         data-prefix="fas"
                         data-icon="star"
-                        class="w-4 text-yellow-500"
+                        className="w-4 text-yellow-500"
                         role="img"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 576 512">
@@ -748,7 +748,7 @@ export default function App() {
                         focusable="false"
                         data-prefix="fas"
                         data-icon="star"
-                        class="w-4 text-yellow-500"
+                        className="w-4 text-yellow-500"
                         role="img"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 576 512">
@@ -763,7 +763,7 @@ export default function App() {
                         focusable="false"
                         data-prefix="fas"
                         data-icon="star-half-alt"
-                        class="w-4 text-yellow-500"
+                        className="w-4 text-yellow-500"
                         role="img"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 536 512">
@@ -778,39 +778,39 @@ export default function App() {
             </div>
           </SwiperSlide>
         </Swiper>
-        <div class="mt-1 flex justify-center items-center gap-4">
+        <div className="mt-1 flex justify-center items-center gap-4">
           <button
             aria-label="Previous slide"
-            class="prev-button rounded-full border border-blue-600 p-2 text-blue-600 hover:bg-blue-500 hover:text-white">
+            className="prev-button rounded-full border border-blue-600 p-2 text-blue-600 hover:bg-blue-500 hover:text-white">
             <svg
-              class="h-5 w-5 -rotate-180 transform"
+              className="h-5 w-5 -rotate-180 transform"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg">
               <path
                 d="M9 5l7 7-7 7"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
               />
             </svg>
           </button>
 
           <button
             aria-label="Next slide"
-            class="next-button rounded-full border border-blue-600 p-2 text-blue-600 hover:bg-blue-500 hover:text-white">
+            className="next-button rounded-full border border-blue-600 p-2 text-blue-600 hover:bg-blue-500 hover:text-white">
             <svg
-              class="h-5 w-5"
+              className="h-5 w-5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg">
               <path
                 d="M9 5l7 7-7 7"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
               />
             </svg>
           </button>
