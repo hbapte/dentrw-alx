@@ -1,0 +1,24 @@
+{
+  "eyebrow": "Fonctionnalités",
+  "headline": "Votre solution complète de soins dentaires",
+  "subhead": "Nous nous engageons à offrir des soins dentaires exceptionnels, axés sur la commodité, la prévention et des traitements efficaces.",
+  "learnMore": "En savoir plus",
+  "cards": {
+    "virtualConsultation": {
+      "title": "Consultation virtuelle",
+      "description": "La technologie au service de votre confort : nous savons que votre temps est précieux, explorez les traitements où que vous soyez."
+    },
+    "onlineBooking": {
+      "title": "Réservation en ligne",
+      "description": "Simplifier votre parcours dentaire. Nous pensons que les soins dentaires doivent être facilement accessibles et sans tracas."
+    },
+    "preventiveCare": {
+      "title": "Soins préventifs",
+      "description": "Le fondement d'une santé dentaire durable. Nous plaçons les soins préventifs au cœur d'une santé bucco-dentaire optimale."
+    },
+    "physicalTreatment": {
+      "title": "Traitement en cabinet",
+      "description": "Que vous ayez besoin de soins esthétiques, restaurateurs, pédiatriques ou orthodontiques, notre équipe vous attend."
+    }
+  }
+}

@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { Link, animateScroll as scroll } from "react-scroll"
 
 import LanguageSwitcher from "./LanguageSwitcher"
 
 const Navbar = () => {
+  const { t } = useTranslation("navbar")
   const [showNavbar, setShowNavbar] = useState(false)
   const [showMenu, setShowMenu] = useState(false)
 
@@ -21,31 +23,11 @@ const Navbar = () => {
   }, [])
 
   const links = [
-    {
-      id: 1,
-      link: "home",
-      label: "Home",
-    },
-    {
-      id: 2,
-      link: "service",
-      label: "Services",
-    },
-    {
-      id: 3,
-      link: "insurance",
-      label: "Insurance",
-    },
-    {
-      id: 4,
-      link: "team",
-      label: "Team",
-    },
-    {
-      id: 5,
-      link: "contact",
-      label: "Book Now",
-    },
+    { id: 1, link: "home", labelKey: "home" },
+    { id: 2, link: "service", labelKey: "services" },
+    { id: 3, link: "insurance", labelKey: "insurance" },
+    { id: 4, link: "team", labelKey: "team" },
+    { id: 5, link: "contact", labelKey: "bookNow" },
   ]
 
   const scrollToTop = () => {
@@ -90,7 +72,7 @@ const Navbar = () => {
 
       <nav className="hidden md:block">
         <ul className="flex items-center space-x-6">
-          {links.map(({ id, link, label }) => (
+          {links.map(({ id, link, labelKey }) => (
             <li key={id}>
               <Link
                 to={link}
@@ -99,7 +81,7 @@ const Navbar = () => {
                 }`}
                 smooth={true}
                 duration={500}>
-                {label}
+                {t(labelKey)}
               </Link>
             </li>
           ))}
@@ -130,7 +112,7 @@ const Navbar = () => {
         </button>
         {showMenu && (
           <ul className="absolute top-14 right-0 z-50 w-48 py-2 bg-white border border-gray-300 rounded shadow-md">
-            {links.map(({ id, link, label }) => (
+            {links.map(({ id, link, labelKey }) => (
               <li key={id}>
                 <Link
                   to={link}
@@ -138,7 +120,7 @@ const Navbar = () => {
                   smooth={true}
                   duration={500}
                   onClick={toggleMenu}>
-                  {label}
+                  {t(labelKey)}
                 </Link>
               </li>
             ))}
