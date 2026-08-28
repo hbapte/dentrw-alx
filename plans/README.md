@@ -22,7 +22,7 @@ migration, then build on it (SEO/PWA, i18n).
 | 001  | Repair CI and establish a green verification baseline | P1       | S      | —          | DONE   |
 | 002  | Remove dead code — unused deps and orphan files       | P1       | S      | 001        | DONE   |
 | 003  | Migrate from Create React App to Vite + Vitest        | P1       | L      | 001, 002   | DONE   |
-| 004  | SEO essentials + installable PWA                      | P2       | M      | 003        | TODO   |
+| 004  | SEO essentials + installable PWA                      | P2       | M      | 003        | DONE   |
 | 005  | i18n foundation — react-i18next setup + first slice   | P2       | M      | 003        | TODO   |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (one-line reason) | REJECTED (one-line rationale)
