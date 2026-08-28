@@ -1,0 +1,25 @@
+{
+  "title": "Questions fréquentes",
+  "items": [
+    {
+      "question": "Quels services DentRw propose-t-il ?",
+      "answers": [
+        "DentRw propose un large éventail de services dentaires : soins préventifs, consultation virtuelle, détartrages, plombages, traitements de canal, extractions et plus encore. Notre équipe expérimentée s'engage à offrir des soins bucco-dentaires exceptionnels à ses patients."
+      ]
+    },
+    {
+      "question": "Quels sont les effets de la pratique traditionnelle appelée Gukura Ibyinyo / extraction des germes dentaires ?",
+      "answers": [
+        "Il est important de noter que l'extraction des germes dentaires peut avoir des effets graves et néfastes sur la santé bucco-dentaire. Les germes dentaires sont les dents immatures qui se développent encore sous la gencive chez l'enfant. Leur extraction perturbe l'éruption et l'alignement naturels des dents permanentes et entraîne divers problèmes dentaires.",
+        "Parmi les effets possibles : mauvais alignement des dents, dents incluses, problèmes d'occlusion et impact psychologique. Il est essentiel de privilégier des pratiques de soins fondées sur des données probantes."
+      ]
+    },
+    {
+      "question": "Comment prendre rendez-vous chez DentRw ?",
+      "answers": [
+        "Pour prendre rendez-vous chez DentRw, il vous suffit de remplir le formulaire ci-dessous et de l'envoyer.",
+        "En plus de notre système de réservation en ligne, vous pouvez aussi nous appeler. Nous proposons des horaires flexibles pour que vous puissiez recevoir les soins dont vous avez besoin au moment qui vous convient."
+      ]
+    }
+  ]
+}

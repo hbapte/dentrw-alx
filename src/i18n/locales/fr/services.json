@@ -1,0 +1,15 @@
+{
+  "eyebrow": "Services",
+  "headline": "La gamme de <hl>services</hl> dentaires que nous proposons",
+  "subhead": "DentRw propose une gamme complète de services dentaires : dentisterie générale, esthétique, restauratrice, pédiatrique et d'urgence.",
+  "items": {
+    "cleaning": "Détartrage et blanchiment des dents",
+    "xray": "Radiographie",
+    "orthodontic": "Traitement orthodontique",
+    "bridge": "Bridge dentaire",
+    "toothache": "Soulagement des maux de dents",
+    "extraction": "Extraction",
+    "rootCanal": "Traitement de canal",
+    "consultation": "Examens et consultation"
+  }
+}

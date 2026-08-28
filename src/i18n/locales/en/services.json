@@ -1,0 +1,15 @@
+{
+  "eyebrow": "Services",
+  "headline": "The Suite of dental <hl>Services</hl> we offers",
+  "subhead": "DentRw provide a comprehensive suite of dental services including General, Cosmetic, Restorative, Pediatric and Emergency Dentistry.",
+  "items": {
+    "cleaning": "Cleaning & Teeth whitening",
+    "xray": "X-ray",
+    "orthodontic": "Orthodontic Treatment",
+    "bridge": "Dental Bridge",
+    "toothache": "Toothache relief",
+    "extraction": "Extraction",
+    "rootCanal": "Root Canal Treatment",
+    "consultation": "Check-ups and Consultation"
+  }
+}

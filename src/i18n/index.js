@@ -2,39 +2,23 @@ import i18n from "i18next"
 import LanguageDetector from "i18next-browser-languagedetector"
 import { initReactI18next } from "react-i18next"
 
-import enCommon from "./locales/en/common.json"
-import enFeatures from "./locales/en/features.json"
-import enHero from "./locales/en/hero.json"
-import enInsurance from "./locales/en/insurance.json"
-import enNavbar from "./locales/en/navbar.json"
-import frCommon from "./locales/fr/common.json"
-import frFeatures from "./locales/fr/features.json"
-import frHero from "./locales/fr/hero.json"
-import frInsurance from "./locales/fr/insurance.json"
-import frNavbar from "./locales/fr/navbar.json"
-
 export const SUPPORTED_LANGUAGES = ["en", "fr"]
+
+// Auto-load every locale namespace: src/i18n/locales/<lng>/<namespace>.json
+// Adding a namespace is just adding the two JSON files — no edit here.
+const modules = import.meta.glob("./locales/*/*.json", { eager: true })
+const resources = {}
+for (const [path, mod] of Object.entries(modules)) {
+  const [, lng, ns] = path.match(/\/locales\/([^/]+)\/([^/]+)\.json$/)
+  resources[lng] ??= {}
+  resources[lng][ns] = mod.default
+}
 
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    resources: {
-      en: {
-        common: enCommon,
-        navbar: enNavbar,
-        hero: enHero,
-        insurance: enInsurance,
-        features: enFeatures,
-      },
-      fr: {
-        common: frCommon,
-        navbar: frNavbar,
-        hero: frHero,
-        insurance: frInsurance,
-        features: frFeatures,
-      },
-    },
+    resources,
     fallbackLng: "en",
     supportedLngs: SUPPORTED_LANGUAGES,
     // Treat region variants (e.g. "en-US", "fr-FR") as their base language

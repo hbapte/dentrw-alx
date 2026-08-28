@@ -1,0 +1,12 @@
+{
+  "eyebrow": "Équipe",
+  "headline": "Rencontrez notre équipe d'<hl>experts</hl>",
+  "subhead": "Notre équipe dévouée de professionnels dentaires s'engage à vous offrir les meilleurs soins dentaires possibles.",
+  "subheadExtra": "Chaque membre de notre équipe est hautement qualifié et expérimenté dans son domaine, pour vous garantir un traitement personnalisé et de haute qualité.",
+  "roles": {
+    "orthodontist": "Orthodontiste",
+    "therapist": "Thérapeute dentaire",
+    "dentalSurgeon": "Chirurgien-dentiste",
+    "assistant": "Assistante dentaire"
+  }
+}
