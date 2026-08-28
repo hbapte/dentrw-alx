@@ -20,16 +20,15 @@
     "react": "^19.0.0",
     "react-awesome-reveal": "^4.2.3",
     "react-dom": "^19.0.0",
-    "react-scripts": "5.0.1",
     "react-scroll": "^1.8.9",
     "swiper": "^9.3.2"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "dev": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "format": "prettier --check .",
@@ -37,12 +36,6 @@
     "check": "prettier --write . && oxlint --fix",
     "prepare": "husky",
     "knip": "knip"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
   },
   "browserslist": {
     "production": [
@@ -65,7 +58,13 @@
     "@commitlint/config-conventional": "^21.0.0",
     "@tailwindcss/forms": "^0.5.3",
     "@types/node": "^26.0.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "autoprefixer": "^10.5.4",
+    "jsdom": "^30.0.1",
+    "postcss": "^8.5.26",
     "tailwindcss": "^3.3.2",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vite": "^8.2.2",
+    "vitest": "^4.1.11"
   }
 }

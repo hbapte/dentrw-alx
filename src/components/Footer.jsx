@@ -25,20 +25,19 @@ const Footer = () => {
     }
 
     // ConvertKit API key and form ID
-    const API_KEY = process.env.REACT_APP_CONVERTKIT_API_KEY
-    const FORM_ID = process.env.REACT_APP_CONVERTKIT_FORM_ID
+    const API_KEY = import.meta.env.VITE_CONVERTKIT_API_KEY
+    const FORM_ID = import.meta.env.VITE_CONVERTKIT_FORM_ID
 
     setLoading(true)
 
     try {
-      const response = await axios.post(
+      await axios.post(
         `https://api.convertkit.com/v3/forms/${FORM_ID}/subscribe`,
         {
           api_key: API_KEY,
           email,
         }
       )
-      console.log("Email sent successfully!", response.data)
       setEmail("") // Resetting the email input field after successful submission
       setLoading(false)
       setSubscribed(true)
@@ -46,8 +45,7 @@ const Footer = () => {
       setTimeout(() => {
         setSubscribed(false)
       }, 3000)
-    } catch (error) {
-      console.error("Error sending email:", error)
+    } catch {
       setErrorMessage("Error occurred. Please try again!")
       setLoading(false)
 
