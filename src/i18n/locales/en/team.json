@@ -1,0 +1,12 @@
+{
+  "eyebrow": "Team",
+  "headline": "Meet Our Expert <hl>Team</hl>",
+  "subhead": "Our dedicated team of dental professionals is committed to providing you with the best dental care possible.",
+  "subheadExtra": "Each member of our team is highly skilled and experienced in their respective areas of expertise, ensuring that you receive personalized and high-quality treatment.",
+  "roles": {
+    "orthodontist": "Orthodontist",
+    "therapist": "Therapist",
+    "dentalSurgeon": "Dental Surgeon",
+    "assistant": "Assistant"
+  }
+}
