@@ -1,0 +1,24 @@
+{
+  "eyebrow": "Features",
+  "headline": "Your Comprehensive Dental Care Solution",
+  "subhead": "we are dedicated to delivering exceptional dental care with a focus on convenience, prevention, and effective treatments.",
+  "learnMore": "Learn more",
+  "cards": {
+    "virtualConsultation": {
+      "title": "Virtual Consultation",
+      "description": "Embracing Technology for your convenience, we understand that your time is valuable, explore treatments where you are."
+    },
+    "onlineBooking": {
+      "title": "Online Booking",
+      "description": "Streamlining your dental experience. We come to believe dental care should be easily accessible everytime and hassle-free."
+    },
+    "preventiveCare": {
+      "title": "Preventive Care",
+      "description": "Foundation for Lifelong Dental Wellness. We prioritize preventive care as cornerstone of mantaining optimal oral health."
+    },
+    "physicalTreatment": {
+      "title": "Physical Treatment",
+      "description": "Whether your require cosmetic, restorative, pediatric, orthodontic procedures and more. Our team awaits you."
+    }
+  }
+}
