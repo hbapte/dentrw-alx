@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react"
 import { Link, animateScroll as scroll } from "react-scroll"
 
+import LanguageSwitcher from "./LanguageSwitcher"
+
 const Navbar = () => {
   const [showNavbar, setShowNavbar] = useState(false)
   const [showMenu, setShowMenu] = useState(false)
@@ -101,6 +103,9 @@ const Navbar = () => {
               </Link>
             </li>
           ))}
+          <li>
+            <LanguageSwitcher />
+          </li>
         </ul>
       </nav>
 
@@ -137,6 +142,9 @@ const Navbar = () => {
                 </Link>
               </li>
             ))}
+            <li className="mt-1 px-4 py-2">
+              <LanguageSwitcher />
+            </li>
           </ul>
         )}
       </div>
