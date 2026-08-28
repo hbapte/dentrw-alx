@@ -78,11 +78,11 @@ bun run dev   # http://localhost:3000
 Copy `.env.example` to `.env.local` and fill in the values. See `.env.example` for descriptions of each variable.
 
 ```env
-REACT_APP_CONVERTKIT_API_KEY=
-REACT_APP_CONVERTKIT_FORM_ID=
-REACT_APP_EMAILJS_SERVICE_ID=
-REACT_APP_EMAILJS_TEMPLATE_ID=
-REACT_APP_EMAILJS_PUBLIC_KEY=
+VITE_CONVERTKIT_API_KEY=
+VITE_CONVERTKIT_FORM_ID=
+VITE_EMAILJS_SERVICE_ID=
+VITE_EMAILJS_TEMPLATE_ID=
+VITE_EMAILJS_PUBLIC_KEY=
 ```
 
 ---
