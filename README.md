@@ -68,7 +68,7 @@ bun install
 cp .env.example .env.local
 
 # Start the development server
-bun start
+bun run dev   # http://localhost:3000
 ```
 
 ---
