@@ -1,6 +1,6 @@
 // jest-dom adds custom matchers for asserting on DOM nodes.
 // https://github.com/testing-library/jest-dom
-import "@testing-library/jest-dom"
+import "@testing-library/jest-dom/vitest"
 
 // --- jsdom polyfills for browser APIs used by third-party UI libs ---
 // (swiper, react-awesome-reveal)
