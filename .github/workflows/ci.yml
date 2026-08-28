@@ -63,7 +63,7 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
-    needs: [lint, typecheck, format]
+    needs: [lint, format]
     steps:
       - uses: actions/checkout@v7
       - uses: oven-sh/setup-bun@v2
@@ -77,4 +77,4 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-bun-
       - run: bun install --frozen-lockfile
-      - run: bunx vitest run --passWithNoTests
+      - run: CI=true bun run test
