@@ -1,4 +1,3 @@
-import React from "react"
 import { Fade } from "react-awesome-reveal"
 
 import BK from "./Images/insurance/BK.png"

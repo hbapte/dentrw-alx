@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { Link, animateScroll as scroll } from "react-scroll"
 
 import LanguageSwitcher from "./LanguageSwitcher"
