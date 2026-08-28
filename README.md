@@ -2,7 +2,7 @@
 
 [![Live Demo](https://img.shields.io/badge/Live-dentrw.vercel.app-blue?style=flat-square)](https://dentrw.vercel.app)
 [![v4 Live](https://img.shields.io/badge/v4-dentrw.hbapte.com-6366f1?style=flat-square)](https://dentrw.hbapte.com)
-[![Built with React](https://img.shields.io/badge/React-18-61dafb?style=flat-square&logo=react)](https://react.dev)
+[![Built with React](https://img.shields.io/badge/React-19-61dafb?style=flat-square&logo=react)](https://react.dev)
 [![Deployed on Vercel](https://img.shields.io/badge/Deploy-Vercel-000000?style=flat-square&logo=vercel)](https://vercel.com)
 [![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-f7df1e?style=flat-square&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 ![GitHub Repo Views](https://gitviews.com/repo/hbapte/dentrw-alx.svg?label-color=green&style=flat-square)
@@ -44,7 +44,7 @@ DentRW is a responsive web application for a dental clinic, built as the ALX Sof
 
 | Tool                                             | Purpose                                         |
 | ------------------------------------------------ | ----------------------------------------------- |
-| [React 18](https://react.dev)                    | Component-based UI framework                    |
+| [React 19](https://react.dev)                    | Component-based UI framework                    |
 | [Tailwind CSS](https://tailwindcss.com)          | Utility-first styling                           |
 | [EmailJS](https://www.emailjs.com)               | Client-side email sending for appointment forms |
 | [ConvertKit](https://convertkit.com)             | Newsletter subscription management              |

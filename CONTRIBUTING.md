@@ -12,7 +12,7 @@ bun run dev          # http://localhost:3000
 
 ## Stack
 
-React 18
+React 19
 
 ## Commit format
 
