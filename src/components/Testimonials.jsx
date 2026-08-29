@@ -1,5 +1,5 @@
 import { Fade } from "react-awesome-reveal"
-import { Autoplay, Navigation, Pagination } from "swiper"
+import { Autoplay, Navigation, Pagination } from "swiper/modules"
 import { Swiper, SwiperSlide } from "swiper/react"
 
 import { testimonials } from "./testimonials.data"
