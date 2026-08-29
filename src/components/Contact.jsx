@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from "react"
-import emailjs from "@emailjs/browser"
+import { useEffect, useState } from "react"
 import { Fade } from "react-awesome-reveal"
 
+import { services } from "../../config/services.js"
+
 const Contact = () => {
-  const form = useRef()
   const [isSent, setIsSent] = useState(false)
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
@@ -18,29 +18,30 @@ const Contact = () => {
     return () => clearTimeout(timeout)
   }, [error])
 
-  const sendEmail = (e) => {
+  const sendEmail = async (e) => {
     e.preventDefault()
+    const formEl = e.currentTarget
     setIsLoading(true)
+    setError("")
 
-    emailjs
-      .sendForm(
-        import.meta.env.VITE_EMAILJS_SERVICE_ID,
-        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
-        form.current,
-        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
-      )
-      .then((_result) => {
-        setIsSent(true)
-        setIsLoading(false)
-        form.current.reset()
-        setTimeout(() => {
-          setIsSent(false)
-        }, 5000)
+    try {
+      const data = Object.fromEntries(new FormData(formEl))
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(data),
       })
-      .catch((_error) => {
-        setError("An error occurred. Please try again later.")
-        setIsLoading(false)
-      })
+      if (!res.ok) throw new Error(`Request failed: ${res.status}`)
+      setIsSent(true)
+      formEl.reset()
+      setTimeout(() => {
+        setIsSent(false)
+      }, 5000)
+    } catch {
+      setError("An error occurred. Please try again later.")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -110,10 +111,16 @@ const Contact = () => {
           </p>
         </div>
 
-        <form
-          ref={form}
-          onSubmit={sendEmail}
-          className="md:col-span-8 px-10 pt-4 pb-3">
+        <form onSubmit={sendEmail} className="md:col-span-8 px-10 pt-4 pb-3">
+          <input
+            type="text"
+            name="company"
+            tabIndex={-1}
+            autoComplete="off"
+            aria-hidden="true"
+            className="hidden"
+            defaultValue=""
+          />
           <div className="mb-3 " name="contact" id="contact">
             <label
               htmlFor="user_name"
@@ -177,19 +184,11 @@ const Contact = () => {
               name="chosen_service"
               id="chosen_service"
               className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md">
-              <option value="checkup_Consultation">
-                Dental Check-ups and Consultation
-              </option>
-              <option value="x-rays">X-rays</option>
-              <option value="fillings">Fillings</option>
-              <option value="crowns_Bridges">Crowns and Bridges</option>
-              <option value="RCT">Root Canal Treatment</option>
-              <option value="teethWhitening">
-                Cleaning and Teeth Whitening
-              </option>
-              <option value="orthodontic">Orthodontic Treatment</option>
-              <option value="periodontal">Periodontal Treatment</option>
-              <option value="dentalImplants">Dental Implants</option>
+              {services.map((s) => (
+                <option key={s.value} value={s.value}>
+                  {s.label}
+                </option>
+              ))}
             </select>
           </div>
 
