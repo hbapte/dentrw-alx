@@ -84,7 +84,7 @@ emails/
   AppointmentConfirmation.tsx    # -> patient
   AppointmentConfirmation.test.tsx
 vite/
-  api-plugin.js                  # configureServer middleware, mounts /api/* onto _lib handlers in dev
+  api-plugin.mjs                 # configureServer middleware, mounts /api/* onto _lib handlers in dev
 docs/
   email.md                       # how the email system works + local dev + env
 ```
@@ -95,9 +95,10 @@ docs/
   (`import { sendJson } from "./http.js"` from a `.ts` file). This is the `NodeNext`
   convention: TS resolves `.js` → the `.ts`/`.tsx` source, and the name Vercel emits and
   Node runs at runtime is `.js`. Vite/esbuild resolve it too.
-- `vite/api-plugin.js` stays `.js` — it is only ever loaded by Vite's config, never by
-  Node's ESM loader directly, and it uses `server.ssrLoadModule` (below) so it needs no
-  compilation of its own.
+- `vite/api-plugin.mjs` is `.mjs` (ESM) — it is only ever loaded by Vite's config, and it
+  uses `server.ssrLoadModule` (below) so it needs no compilation of its own. (`.mjs` rather
+  than `.js` because the repo has no `"type": "module"`; a `.js` here triggers a Vite
+  config-loader warning.)
 
 ## `tsconfig.json`
 
@@ -261,7 +262,7 @@ export default async function handler(req, res) {
 
 `subscribe.ts` is identical with `processSubscribe`.
 
-### `vite/api-plugin.js`
+### `vite/api-plugin.mjs`
 
 ```js
 // apiDevPlugin() -> Vite plugin
@@ -318,8 +319,8 @@ Added to `vite.config.mjs` `plugins` after `react()`.
   existing `loading` / `subscribed` / `errorMessage` UX and timeouts.
 - Drop the `VITE_CONVERTKIT_*` reads.
 
-`axios` stays a dependency — other components still use it; only the Footer's use is removed.
-(Confirm with a repo-wide `axios` grep during implementation.)
+**As-built:** the Footer was the only `axios` consumer in the repo, so `axios` was removed
+from `package.json` in the same step that drops `@emailjs/browser`.
 
 ## Email templates
 
@@ -349,21 +350,24 @@ All server-side — **no `VITE_` prefix**, so never bundled into the client.
 
 Removed: `VITE_EMAILJS_SERVICE_ID`, `VITE_EMAILJS_TEMPLATE_ID`, `VITE_EMAILJS_PUBLIC_KEY`.
 
-`.env.example` and `.env.local` updated to match. The six vars must be added in the Vercel
+`.env.example` updated to match (committed). `.env.local` is the developer's own file —
+set the same six vars there for local dev. The six vars must also be added in the Vercel
 project dashboard before the branch is merged.
 
 ## Dependencies
 
 - **add** `resend`, `@react-email/components`
 - **add dev** `react-email` (the `email` CLI)
-- **remove** `@emailjs/browser`
+- **remove** `@emailjs/browser`, and `axios` (as-built — it was already dead after the
+  Footer change)
 - already present, reused: `typescript`, `@types/node`, `react`, `react-dom`
 - `render` for tests is imported from `@react-email/components` (it re-exports
   `@react-email/render`) — no separate dep
 - new script: `"email": "email dev --dir emails --port 3001"` (3000 is Vite's)
-- `knip.json`: add `entry` for `api/**/*.ts` and `emails/**/*.tsx`; add
-  `@react-email/components` / `react-email` to `ignoreDependencies` if knip cannot see the
-  CLI usage
+- `knip.json` (as-built): `entry` = `api/**/*.ts`, `emails/**/*.tsx`, `vite/api-plugin.mjs`;
+  `ignoreDependencies` = `["@react-email/ui"]` (a phantom import knip finds inside
+  `@react-email/components`). Pre-existing knip findings (`Sign.jsx`,
+  `baseline-browser-mapping`, `caniuse-lite`, `@tailwindcss/forms`) are untouched.
 
 ## Testing (vitest)
 

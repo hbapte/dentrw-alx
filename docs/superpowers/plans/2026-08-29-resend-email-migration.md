@@ -1785,3 +1785,28 @@ failures before requesting review.
 - If Vercel's build fails to compile the `.ts`/`.tsx` functions, check that the repo's
   `typescript` dependency resolves and that `tsconfig.json` has `"jsx": "react-jsx"`; as a
   fallback add a `vercel.json` pinning `typescript` via `installCommand`. (Spec → Risks.)
+
+## As-built deviations from this plan
+
+- **`vite/api-plugin.js` → `vite/api-plugin.mjs`** — a `.js` file with ESM syntax makes
+  Vite's config loader warn (no `"type": "module"` in the repo). `.mjs` is clean. The
+  `vite.config.mjs` import and `knip.json` entry use the `.mjs` path.
+- **`axios` removed** — the plan said keep it; a repo-wide grep confirmed the Footer was
+  its only consumer, so it was dropped alongside `@emailjs/browser` in Task 14.
+- **`tsconfig.json`** gained `target`, `lib: ["ES2022","DOM"]`, `types: ["node"]`,
+  `strict: false`, `noImplicitAny: false` (two extra `chore:` commits) so
+  `bunx tsc --noEmit -p tsconfig.json` runs clean — a useful signal that Vercel's compile
+  will succeed. Still not wired into any npm script or CI.
+- **`knip.json`** — `react-email` did not need to be in `ignoreDependencies` (knip sees the
+  `email` script); the real phantom is `@react-email/ui`. `src/index.jsx` entry was
+  redundant (auto-detected). Final config in Task 15.
+- **`process-subscribe.test.ts`** uses real `new Response(...)` objects instead of ad-hoc
+  `{ ok, status, text }` literals — keeps `tsc --noEmit` clean.
+- **`api/_lib/resend.ts`** — `sendEmail(options)` takes a single `options` arg and
+  destructures inside, rather than destructuring in the signature, so TS does not infer
+  `replyTo` as required from the first call site.
+- **`.env.local` not written by the implementer** — it is the developer's local file and
+  was being edited concurrently in the IDE. `.env.example` (committed) is the reference.
+- **Both forms were verified in a real browser** (Chrome automation), not just via `curl`:
+  the appointment form submitted, reset on success, and Resend accepted the send; the
+  newsletter form submitted and cleared on success against a real ConvertKit key.
