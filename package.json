@@ -37,6 +37,7 @@
     "format": "prettier --check .",
     "format:fix": "prettier --write .",
     "check": "prettier --write . && oxlint --fix",
+    "typecheck": "tsc --noEmit",
     "prepare": "husky",
     "knip": "knip",
     "email": "email dev --dir emails --port 3001"
