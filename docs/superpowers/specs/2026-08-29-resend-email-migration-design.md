@@ -104,27 +104,27 @@ docs/
 ```json
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "lib": ["ES2022", "DOM"],
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "jsx": "react-jsx",
-    "types": ["node"],
     "allowJs": true,
     "checkJs": false,
     "noEmit": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "strict": false,
-    "isolatedModules": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "isolatedModules": true
   },
   "include": ["api", "emails", "config"]
 }
 ```
 
-Not referenced by any script. `bun run build` stays `vite build`; CI stays
-`format` / `lint` / `test` / `build`.
+Deliberately minimal: `module` / `moduleResolution` do not affect Vite/esbuild transforms,
+so the client build is unchanged, and `jsx: "react-jsx"` already matches
+`@vitejs/plugin-react`. Not referenced by any script — `bun run build` stays `vite build`;
+CI stays `format` / `lint` / `test` / `build`. Vercel's `@vercel/node` compiles the
+functions to CommonJS (a `.ts` entrypoint with no `"type": "module"`), which the plain
+`import` / `export` source emits to cleanly.
 
 ## Module contracts
 
