@@ -3,6 +3,8 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "jsx": "react-jsx",
+    "strict": false,
+    "noImplicitAny": false,
     "allowJs": true,
     "checkJs": false,
     "noEmit": true,
