@@ -58,6 +58,8 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: "./src/setupTests.js",
-    css: true,
+    // Tests assert on DOM/text, not computed styles. Skipping CSS processing
+    // avoids running the Tailwind v4 pipeline on every test run.
+    css: false,
   },
 })
