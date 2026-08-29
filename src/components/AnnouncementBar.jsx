@@ -1,20 +1,9 @@
 import { useLayoutEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 
-const ANNOUNCEMENT_ID = "v4-launch" // bump this when the message changes
-const STORAGE_KEY = "dentrw:announcement"
-
-function readDismissed() {
-  try {
-    return localStorage.getItem(STORAGE_KEY) === ANNOUNCEMENT_ID
-  } catch {
-    return false
-  }
-}
-
 const AnnouncementBar = () => {
   const { t } = useTranslation()
-  const [dismissed, setDismissed] = useState(readDismissed)
+  const [dismissed, setDismissed] = useState(false)
   const barRef = useRef(null)
 
   useLayoutEffect(() => {
@@ -29,25 +18,19 @@ const AnnouncementBar = () => {
     const measure = () =>
       root.style.setProperty("--announcement-height", `${el.offsetHeight}px`)
     measure()
+
     const observer = new ResizeObserver(measure)
     observer.observe(el)
+    window.addEventListener("resize", measure)
 
     return () => {
       observer.disconnect()
+      window.removeEventListener("resize", measure)
       root.style.setProperty("--announcement-height", "0px")
     }
   }, [dismissed])
 
   if (dismissed) return null
-
-  const dismiss = () => {
-    try {
-      localStorage.setItem(STORAGE_KEY, ANNOUNCEMENT_ID)
-    } catch {
-      // storage unavailable (private mode, disabled) — dismiss for this session only
-    }
-    setDismissed(true)
-  }
 
   return (
     <div
@@ -79,7 +62,7 @@ const AnnouncementBar = () => {
         </span>
         <button
           type="button"
-          onClick={dismiss}
+          onClick={() => setDismissed(true)}
           aria-label={t("announcement.dismiss")}
           className="absolute right-1 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded transition-colors hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white">
           <svg

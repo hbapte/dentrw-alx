@@ -33,22 +33,3 @@ if (!window.IntersectionObserver) {
 if (!window.ResizeObserver) {
   window.ResizeObserver = MockObserver
 }
-
-// The test runner's localStorage can be missing or non-functional (Node's
-// experimental web storage without a backing file). Provide an in-memory one.
-if (typeof window.localStorage?.clear !== "function") {
-  const store = new Map()
-  Object.defineProperty(window, "localStorage", {
-    configurable: true,
-    value: {
-      getItem: (k) => (store.has(String(k)) ? store.get(String(k)) : null),
-      setItem: (k, v) => void store.set(String(k), String(v)),
-      removeItem: (k) => void store.delete(String(k)),
-      clear: () => store.clear(),
-      key: (i) => [...store.keys()][i] ?? null,
-      get length() {
-        return store.size
-      },
-    },
-  })
-}
