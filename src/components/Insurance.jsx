@@ -32,26 +32,6 @@ const Insurance = () => {
             {t("eyebrow")}
           </p>
           <h2 className="relative mb-6 max-w-md font-sans text-2xl font-bold leading-none tracking-tight text-gray-900 sm:text-4xl md:mx-auto md:text-3xl">
-            <svg
-              viewBox="0 0 52 24"
-              fill="currentColor"
-              className="absolute left-2 top-0 z-0 -ml-20 -mt-8 hidden w-32 text-blue-gray-100 sm:block lg:-ml-28 lg:-mt-10 lg:w-32">
-              <defs>
-                <pattern
-                  id="18302e52-9e2a-4c8e-9550-0cbb21b38e55"
-                  x="0"
-                  y="0"
-                  width=".135"
-                  height=".30">
-                  <circle cx="1" cy="1" r=".7" />
-                </pattern>
-              </defs>
-              <rect
-                fill="url(#18302e52-9e2a-4c8e-9550-0cbb21b38e55)"
-                width="52"
-                height="24"
-              />
-            </svg>
             <span className="relative">
               <Trans
                 i18nKey="insurance:headline"
@@ -70,7 +50,7 @@ const Insurance = () => {
               src={src}
               alt={alt}
               loading="lazy"
-              className="mx-auto h-10 w-auto max-w-full object-contain sm:h-12"
+              className="mx-auto h-13 w-auto max-w-full object-contain sm:h-16"
             />
           ))}
         </div>
