@@ -24,7 +24,7 @@
     "react-i18next": "^17.0.12",
     "react-scroll": "^1.8.9",
     "resend": "^6.25.0",
-    "swiper": "^9.3.2"
+    "swiper": "^14.0.0"
   },
   "scripts": {
     "dev": "vite",
