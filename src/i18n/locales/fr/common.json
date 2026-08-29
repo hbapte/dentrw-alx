@@ -1,7 +1,8 @@
 {
   "announcement": {
     "message": "DentRW v4 est arrivé, avec de nouvelles fonctionnalités et améliorations.",
-    "cta": "Découvrir"
+    "cta": "Découvrir",
+    "dismiss": "Fermer"
   },
   "language": {
     "label": "Langue",
