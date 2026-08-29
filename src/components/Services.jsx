@@ -71,7 +71,7 @@ const Services = () => {
           </Fade>
         </header>
 
-        <ul className="grid gap-4 h-30 mt-6 sm:grid-cols-2   lg:grid-cols-4 ">
+        <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {SERVICE_ITEMS.map(({ key, image }) => (
             <Fade key={key}>
               <li className="bg-slate-200">

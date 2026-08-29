@@ -10,87 +10,71 @@ import RSSB from "./Images/insurance/rssb.png"
 import SANLAM from "./Images/insurance/sanlam.png"
 import SORAS from "./Images/insurance/Soras.png"
 
+const LOGOS = [
+  { src: RSSB, alt: "RSSB" },
+  { src: SANLAM, alt: "Sanlam" },
+  { src: MMI, alt: "MMI" },
+  { src: BRITAM, alt: "Britam" },
+  { src: SORAS, alt: "SORAS" },
+  { src: PRIME, alt: "Prime Insurance" },
+  { src: RADIANT, alt: "Radiant" },
+  { src: BK, alt: "BK" },
+]
+
 const Insurance = () => {
   const { t } = useTranslation("insurance")
 
   return (
-    <section className="mt-16 " id="insurance">
-      <header className="">
-        <Fade>
-          <div className="max-w-xl mb-10 mx-4 md:mx-auto  sm:text-center lg:max-w-2xl md:mb-12">
-            <div>
-              <p className="inline-block px-3 py-px mb-4 text-xs font-semibold tracking-wider text-teal-900 uppercase rounded-full bg-teal-accent-400">
-                {t("eyebrow")}
-              </p>
-            </div>
-            <h2 className="relative max-w-md mb-6 font-sans text-2xl md:text-3xl font-bold leading-none tracking-tight text-gray-900 sm:text-4xl md:mx-auto">
-              <svg
-                viewBox="0 0 52 24"
-                fill="currentColor"
-                className="absolute top-0 left-2 z-0 hidden w-32 -mt-8 -ml-20 text-blue-gray-100 lg:w-32 lg:-ml-28 lg:-mt-10 sm:block">
-                <defs>
-                  <pattern
-                    id="18302e52-9e2a-4c8e-9550-0cbb21b38e55"
-                    x="0"
-                    y="0"
-                    width=".135"
-                    height=".30">
-                    <circle cx="1" cy="1" r=".7" />
-                  </pattern>
-                </defs>
-                <rect
-                  fill="url(#18302e52-9e2a-4c8e-9550-0cbb21b38e55)"
-                  width="52"
-                  height="24"
-                />
-              </svg>
-              <span className="relative">
-                <Trans
-                  i18nKey="insurance:headline"
-                  components={{ hl: <span className="text-blue-500" /> }}
-                />
-              </span>
-            </h2>
+    <section className="mt-16" id="insurance">
+      <Fade>
+        <div className="mx-4 mb-10 max-w-xl sm:text-center md:mx-auto md:mb-12 lg:max-w-2xl">
+          <p className="mb-4 inline-block rounded-full bg-teal-accent-400 px-3 py-px text-xs font-semibold uppercase tracking-wider text-teal-900">
+            {t("eyebrow")}
+          </p>
+          <h2 className="relative mb-6 max-w-md font-sans text-2xl font-bold leading-none tracking-tight text-gray-900 sm:text-4xl md:mx-auto md:text-3xl">
+            <svg
+              viewBox="0 0 52 24"
+              fill="currentColor"
+              className="absolute left-2 top-0 z-0 -ml-20 -mt-8 hidden w-32 text-blue-gray-100 sm:block lg:-ml-28 lg:-mt-10 lg:w-32">
+              <defs>
+                <pattern
+                  id="18302e52-9e2a-4c8e-9550-0cbb21b38e55"
+                  x="0"
+                  y="0"
+                  width=".135"
+                  height=".30">
+                  <circle cx="1" cy="1" r=".7" />
+                </pattern>
+              </defs>
+              <rect
+                fill="url(#18302e52-9e2a-4c8e-9550-0cbb21b38e55)"
+                width="52"
+                height="24"
+              />
+            </svg>
+            <span className="relative">
+              <Trans
+                i18nKey="insurance:headline"
+                components={{ hl: <span className="text-blue-500" /> }}
+              />
+            </span>
+          </h2>
+        </div>
+      </Fade>
 
-            <p className="max-w-160 text-md mx-auto mt-4 text-gray-500"></p>
-          </div>
-        </Fade>
-      </header>
-      <div className="slider grid grid-cols-4 lg:grid-cols-8   shadow-md opacity-100 h-100 mx-auto overflow-hidden relative ">
-        {/* <div className="slide-track animate-scroll"> */}
-        <div className="slide h-100 w-250">
-          <img
-            src={RSSB}
-            className="object-cover"
-            height="100"
-            width="250"
-            alt=""
-          />
+      <Fade>
+        <div className="mx-auto grid max-w-5xl grid-cols-2 items-center gap-x-8 gap-y-10 px-4 sm:grid-cols-4 md:px-8">
+          {LOGOS.map(({ src, alt }) => (
+            <img
+              key={alt}
+              src={src}
+              alt={alt}
+              loading="lazy"
+              className="mx-auto h-10 w-auto max-w-full object-contain sm:h-12"
+            />
+          ))}
         </div>
-        <div className="slide h-100 w-250">
-          <img src={SANLAM} height="100" width="250" alt="" />
-        </div>
-        <div className="slide h-100 w-250">
-          <img src={MMI} height="10" width="250" alt="" />
-        </div>
-        <div className="slide h-100 w-250">
-          <img src={BRITAM} className="" alt="" />
-        </div>
-        <div className="slide h-100 w-250">
-          <img src={SORAS} height="100" width="250" alt="" />
-        </div>
-
-        <div className="slide h-100 w-250">
-          <img src={PRIME} height="100" width="250" alt="Prime Insurance" />
-        </div>
-        <div className="slide h-100 w-250">
-          <img src={RADIANT} height="50" width="250" alt="" />
-        </div>
-
-        <div className="slide h-100 w-250">
-          <img src={BK} height="100" width="250" alt="" />
-        </div>
-      </div>
+      </Fade>
     </section>
   )
 }
