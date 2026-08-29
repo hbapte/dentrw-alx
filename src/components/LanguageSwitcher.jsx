@@ -85,17 +85,26 @@ function CheckIcon() {
 }
 
 function PillSwitcher({ current, label, onSelect, nameOf }) {
+  const count = SUPPORTED_LANGUAGES.length
   const activeIndex = Math.max(0, SUPPORTED_LANGUAGES.indexOf(current))
 
+  // A grid guarantees exactly equal columns, so the sliding indicator lines up
+  // with each option. Flex would size them by content ("en" and "fr" render a
+  // pixel apart), leaving the indicator subtly misaligned. `p-0.5` is the 4px
+  // subtracted below.
   return (
     <div
       role="group"
       aria-label={label}
-      className="relative inline-flex items-center rounded-full bg-blue-50 p-0.5 ring-1 ring-blue-100">
+      className="relative inline-grid items-center rounded-full bg-blue-50 p-0.5 ring-1 ring-blue-100"
+      style={{ gridTemplateColumns: `repeat(${count}, minmax(0, 1fr))` }}>
       <span
         aria-hidden="true"
-        className="absolute inset-y-0.5 left-0.5 w-[calc(50%-2px)] rounded-full bg-blue-600 shadow-sm transition-transform duration-200 ease-out motion-reduce:transition-none"
-        style={{ transform: `translateX(${activeIndex * 100}%)` }}
+        className="absolute inset-y-0.5 left-0.5 rounded-full bg-blue-600 shadow-sm transition-transform duration-200 ease-out motion-reduce:transition-none"
+        style={{
+          width: `calc((100% - 4px) / ${count})`,
+          transform: `translateX(${activeIndex * 100}%)`,
+        }}
       />
       {SUPPORTED_LANGUAGES.map((lng) => {
         const Flag = FLAGS[lng]
@@ -107,7 +116,7 @@ function PillSwitcher({ current, label, onSelect, nameOf }) {
             onClick={() => onSelect(lng)}
             aria-label={nameOf(lng)}
             aria-pressed={isActive}
-            className={`relative z-10 flex flex-1 items-center justify-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold uppercase transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 motion-reduce:transition-none ${
+            className={`relative z-10 flex items-center justify-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold uppercase transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 motion-reduce:transition-none ${
               isActive ? "text-white" : "text-blue-900/70 hover:text-blue-900"
             }`}>
             {Flag ? <Flag /> : null}
