@@ -29,7 +29,7 @@ describe("readJsonBody", () => {
 
 describe("sendJson", () => {
   it("sets status, content-type and body", () => {
-    const res = { setHeader: vi.fn(), end: vi.fn() }
+    const res = { setHeader: vi.fn(), end: vi.fn(), statusCode: 0 }
     sendJson(res, 201, { ok: true })
     expect(res.statusCode).toBe(201)
     expect(res.setHeader).toHaveBeenCalledWith(

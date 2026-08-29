@@ -1,8 +1,11 @@
 {
   "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM"],
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "jsx": "react-jsx",
+    "types": ["node"],
     "strict": false,
     "noImplicitAny": false,
     "allowJs": true,
