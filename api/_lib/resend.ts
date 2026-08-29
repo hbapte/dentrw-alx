@@ -11,7 +11,8 @@ const FROM = `${senderName} <${senderEmail}>`
 export const ADMIN = process.env.ADMIN_EMAIL ?? "ijbapte@gmail.com"
 
 // sendEmail({ to, subject, react, replyTo }) -> { success, id?, error? }
-export async function sendEmail({ to, subject, react, replyTo }) {
+export async function sendEmail(options) {
+  const { to, subject, react, replyTo } = options
   try {
     const { data, error } = await resend.emails.send({
       from: FROM,
