@@ -14,7 +14,7 @@ const Hero = () => {
           <div className="flex flex-col items-center justify-between lg:flex-row">
             <div className="">
               <div className="lg:max-w-xl lg:pr-5">
-                <h2 className="md:mt-0 mt-24  mb-6 max-w-lg text-5xl font-light leading-snug tracking-tight text-blue-600 sm:text-8xl">
+                <h2 className="md:mt-0 mt-[calc(var(--announcement-height)+3rem)] mb-6 max-w-lg text-5xl font-light leading-snug tracking-tight text-blue-600 sm:text-8xl">
                   <Trans
                     i18nKey="hero:headline"
                     components={{
