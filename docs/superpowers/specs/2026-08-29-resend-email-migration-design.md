@@ -17,19 +17,32 @@ server-side code — which the project (a client-only Vite SPA on Vercel) does n
 
 ## Decisions
 
-| Question                           | Decision                                                                       |
-| ---------------------------------- | ------------------------------------------------------------------------------ |
-| Which emails on booking            | Admin notification **and** patient confirmation                                |
-| Language for new server/email code | Plain **JS / JSX** — no TypeScript, no `tsconfig` (matches the repo)           |
-| Newsletter (ConvertKit)            | Move the call **server-side**, keep ConvertKit as the provider                 |
-| Email branding                     | Text wordmark "DentRW" in brand blue `#2563eb` — no logo image                 |
-| Spam protection                    | Hidden honeypot field + best-effort in-memory per-IP rate limit                |
-| Email localization                 | English only for now (site is EN/FR; localization is a follow-up)              |
-| Server hosting                     | Vercel serverless functions in `/api`, logic shared with a Vite dev middleware |
+| Question                               | Decision                                                                                                                             |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Which emails on booking                | Admin notification **and** patient confirmation                                                                                      |
+| Language for the new server/email code | **`.ts` / `.tsx`** for `api/`, `emails/`, `config/` only — no type annotations, no CI type-check. Everything in `src/` stays `.jsx`. |
+| Newsletter (ConvertKit)                | Move the call **server-side**, keep ConvertKit as the provider                                                                       |
+| Email branding                         | Text wordmark "DentRW" in brand blue `#2563eb` — no logo image                                                                       |
+| Spam protection                        | Hidden honeypot field + best-effort in-memory per-IP rate limit                                                                      |
+| Email localization                     | English only for now (site is EN/FR; localization is a follow-up)                                                                    |
+| Server hosting                         | Vercel serverless functions in `/api`, logic shared with a Vite dev middleware                                                       |
+
+### Why a TS surface
+
+Vercel's serverless bundler (`@vercel/node`) compiles imported `.ts` / `.tsx` files but
+copies `.jsx` files **raw** — a `.jsx` React Email template imported by an `/api` function
+would crash at runtime (Node cannot parse JSX). The transform also needs a `tsconfig.json`
+with `jsx: "react-jsx"`. So the email/API layer must be `.ts` / `.tsx`.
+
+This is **not** a TypeScript adoption: the files carry no type annotations (they are the
+same JS with an `x`/`ts` extension), the repo's existing `typescript` + `@types/node`
+devDependencies already cover it, and **no `tsc` / type-check step is added to any npm
+script or to CI**. The added `tsconfig.json` is a build-tool hint consumed by Vercel's
+bundler, Vite/esbuild, and editors — nothing runs it.
 
 ## Approach (chosen: A)
 
-`/api/contact.js` and `/api/subscribe.js` are Vercel serverless functions. The real logic
+`/api/contact.ts` and `/api/subscribe.ts` are Vercel serverless functions. The real logic
 lives in `api/_lib/` as framework-agnostic `async (body, { ip }) => { status, json }`
 functions. Both the Vercel entry files **and** a small Vite `configureServer` plugin call
 those same functions, so `bun run dev` keeps serving `/api/*` locally with no extra tooling
@@ -41,199 +54,83 @@ Rejected:
   the documented single-command `bun run dev` workflow the CRA→Vite migration worked to keep.
 - **Standalone Hono/Express service** — two endpoints do not justify a second deploy
   target, CORS config, and a separate env surface.
+- **`.jsx` templates + a prebuild esbuild step** — makes dev import source while prod
+  imports compiled output, plus a build script to maintain.
+- **`.js` templates with `React.createElement`** — portable but verbose and inconsistent
+  with how the rest of the repo writes components.
 
 ## File layout
 
-```
+```text
+tsconfig.json                    # build-only: jsx + module resolution for the TS surface
 config/
-  brand.js                       # name, url, brand blue, clinic phone/email/address/hours
-  services.js                    # [{ value, label }] — single source for <select> + email labels
+  brand.ts                       # name, url, brand blue, clinic phone/email/address/hours
+  services.ts                    # [{ value, label }] — single source for <select> + email labels
 api/
-  contact.js                     # Vercel fn: method + body + IP plumbing -> processContact()
-  subscribe.js                   # Vercel fn: -> processSubscribe()
+  contact.ts                     # Vercel fn: method + body + IP plumbing -> processContact()
+  subscribe.ts                   # Vercel fn: -> processSubscribe()
   _lib/
-    resend.js                    # Resend client + sendEmail() (adapted from the provided sample)
-    process-contact.js           # honeypot, validation, compose + send both emails
-    process-subscribe.js         # validation + server-side ConvertKit POST
-    rate-limit.js                # in-memory best-effort per-IP limiter
-    http.js                      # readJsonBody(req), json(res, status, body), clientIp(req)
+    resend.ts                    # Resend client + sendEmail() (adapted from the provided sample)
+    process-contact.ts           # honeypot, validation, compose + send both emails
+    process-subscribe.ts         # validation + server-side ConvertKit POST
+    rate-limit.ts                # in-memory best-effort per-IP limiter
+    http.ts                      # readJsonBody(req), sendJson(res, status, body), clientIp(req)
+    process-contact.test.ts
+    process-subscribe.test.ts
+    rate-limit.test.ts
 emails/
-  components/EmailLayout.jsx     # wordmark header + footer + Tailwind pixelBasedPreset
-  AppointmentRequest.jsx         # -> clinic (ADMIN_EMAIL)
-  AppointmentConfirmation.jsx    # -> patient
+  components/EmailLayout.tsx     # wordmark header + footer + Tailwind pixelBasedPreset
+  AppointmentRequest.tsx         # -> clinic (ADMIN_EMAIL)
+  AppointmentConfirmation.tsx    # -> patient
+  AppointmentConfirmation.test.tsx
 vite/
   api-plugin.js                  # configureServer middleware, mounts /api/* onto _lib handlers in dev
 docs/
   email.md                       # how the email system works + local dev + env
 ```
 
-`config/` and `api/` are top level (not under `src/`) because they are shared by the client
-build and the server functions. Vite resolves imports from the project root fine; oxlint /
-prettier already glob `**/*.{js,jsx}`.
+- `config/` and `api/` are top level (not under `src/`) because both the client build and
+  the server functions import them.
+- **Relative imports inside `api/`, `emails/`, `config/` use an explicit `.js` suffix**
+  (`import { sendJson } from "./http.js"` from a `.ts` file). This is the `NodeNext`
+  convention: TS resolves `.js` → the `.ts`/`.tsx` source, and the name Vercel emits and
+  Node runs at runtime is `.js`. Vite/esbuild resolve it too.
+- `vite/api-plugin.js` stays `.js` — it is only ever loaded by Vite's config, never by
+  Node's ESM loader directly, and it uses `server.ssrLoadModule` (below) so it needs no
+  compilation of its own.
 
-## Module contracts
+## `tsconfig.json`
 
-### `api/_lib/resend.js`
-
-Adapted from the provided sample, converted to `.js` and to this project's config module.
-
-```js
-import { Resend } from "resend"
-
-import { brand } from "../../config/brand.js"
-
-const resend = new Resend(process.env.RESEND_API_KEY)
-const FROM = `${process.env.SENDER_NAME ?? brand.name} <${process.env.SENDER_EMAIL ?? "dentrwrw@updates.hbapte.com"}>`
-export const ADMIN = process.env.ADMIN_EMAIL ?? "ijbapte@gmail.com"
-
-// sendEmail({ to, subject, react, replyTo }) -> { success, id?, error? }
-// passes `react` straight to resend.emails.send; the SDK renders HTML + plain text.
-```
-
-- Errors are returned, not thrown (`{ success: false, error }`).
-- No top-level throw when `RESEND_API_KEY` is missing — the send call surfaces the error so
-  a misconfigured deploy returns a clean 500 rather than crashing the function on import.
-
-### `api/_lib/http.js`
-
-- `readJsonBody(req)` — returns `req.body` if already parsed (Vercel), else reads and
-  `JSON.parse`s the stream (Vite dev). Rejects malformed JSON.
-- `json(res, status, body)` — sets status + `content-type: application/json` + ends.
-- `clientIp(req)` — first entry of `x-forwarded-for`, else `req.socket.remoteAddress`.
-
-### `api/_lib/rate-limit.js`
-
-- `rateLimit(ip, { max, windowMs })` — module-scoped `Map<ip, timestamps[]>`; returns
-  `{ ok: boolean }`. Defaults: `max: 5`, `windowMs: 60_000`.
-- **Known limitation:** serverless instances are ephemeral and not shared, so the window
-  resets on cold starts and does not coordinate across concurrent instances. This is
-  best-effort bot friction, not a hard quota. Documented in `docs/email.md`.
-
-### `api/_lib/process-contact.js`
-
-`processContact(body, { ip }) -> { status, json }`
-
-1. `body.company` (honeypot) non-empty → `{ status: 200, json: { ok: true } }`, send nothing.
-2. `rateLimit(ip)` not ok → `{ status: 429, json: { error: "Too many requests…" } }`.
-3. Validate: `user_name` and `user_email` required, `user_email` matches a basic email
-   regex. Missing/invalid → `{ status: 400, json: { error } }`.
-4. `serviceLabel = services.find(s => s.value === body.chosen_service)?.label ?? body.chosen_service ?? "—"`.
-5. `sendEmail` **AppointmentRequest** → `ADMIN`, `replyTo: user_email`.
-   Not `success` → `{ status: 500, json: { error: "…" } }` (nothing was delivered).
-6. `sendEmail` **AppointmentConfirmation** → `user_email`. Not `success` → log a warning,
-   continue.
-7. `{ status: 200, json: { ok: true } }`.
-
-Fields consumed: `user_name`, `user_email`, `user_phone`, `chosen_service`, `user_date`,
-`user_time`, `user_message`, `company` (honeypot). Field names are unchanged from the
-current form to keep the diff focused.
-
-### `api/_lib/process-subscribe.js`
-
-`processSubscribe(body, { ip }) -> { status, json }`
-
-1. `rateLimit(ip)` not ok → `429`.
-2. `body.email` required + basic email regex → else `400`.
-3. `POST https://api.convertkit.com/v3/forms/${CONVERTKIT_FORM_ID}/subscribe` with
-   `{ api_key: CONVERTKIT_API_KEY, email }` via `fetch`.
-4. ConvertKit non-2xx → `502` with a generic message (detail logged).
-5. `{ status: 200, json: { ok: true } }`.
-
-### `api/contact.js` / `api/subscribe.js`
-
-```js
-import { clientIp, json, readJsonBody } from "./_lib/http.js"
-import { processContact } from "./_lib/process-contact.js"
-
-export default async function handler(req, res) {
-  if (req.method !== "POST")
-    return json(res, 405, { error: "Method not allowed" })
-  let body
-  try {
-    body = await readJsonBody(req)
-  } catch {
-    return json(res, 400, { error: "Invalid JSON" })
-  }
-  const { status, json: payload } = await processContact(body, {
-    ip: clientIp(req),
-  })
-  return json(res, status, payload)
+```json
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "jsx": "react-jsx",
+    "types": ["node"],
+    "allowJs": true,
+    "checkJs": false,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "isolatedModules": true,
+    "resolveJsonModule": true
+  },
+  "include": ["api", "emails", "config"]
 }
 ```
 
-### `vite/api-plugin.js`
+Not referenced by any script. `bun run build` stays `vite build`; CI stays
+`format` / `lint` / `test` / `build`.
 
-```js
-// apiDevPlugin() -> Vite plugin
-// configureServer(server): server.middlewares.use(async (req, res, next) => {
-//   route /api/contact -> processContact, /api/subscribe -> processSubscribe, else next()
-//   reuse readJsonBody / json / clientIp
-// })
-```
+## Module contracts
 
-Added to `vite.config.mjs` `plugins` array.
+### `config/brand.ts`
 
-## Client changes
-
-### `src/components/Contact.jsx`
-
-- Remove `import emailjs from "@emailjs/browser"` and the `form` ref usage for EmailJS.
-- `sendEmail` handler:
-  ```js
-  const data = Object.fromEntries(new FormData(e.currentTarget))
-  const res = await fetch("/api/contact", {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify(data),
-  })
-  if (!res.ok) throw new Error()
-  ```
-  Keep the existing `isLoading` / `isSent` / `error` state and the 5s / 8s timeouts.
-  On success `e.currentTarget.reset()`.
-- Add the honeypot inside the form:
-  ```jsx
-  <input
-    type="text"
-    name="company"
-    tabIndex={-1}
-    autoComplete="off"
-    className="hidden"
-    aria-hidden="true"
-    defaultValue=""
-  />
-  ```
-- Render the service `<select>` options from `config/services.js` via `.map`.
-
-### `src/components/Footer.jsx`
-
-- Remove `import axios from "axios"` (check no other axios use in the file — there is none).
-- `handleSubmit` posts to `/api/subscribe` with `fetch`, JSON body `{ email }`.
-- Keep the existing `loading` / `subscribed` / `errorMessage` UX and timeouts.
-- Drop the `VITE_CONVERTKIT_*` reads.
-
-Note: `axios` stays a dependency — it is still used by other components; only the Footer's
-usage is removed. (Verify with a repo-wide `axios` grep during implementation.)
-
-## Email templates
-
-- `react-email` components, `<Tailwind>` with `pixelBasedPreset`, `<Head />` inside
-  `<Tailwind>`, `<Preview>` first inside `<Body>`, container ~600px.
-- `EmailLayout.jsx` — props `{ preview, children }`. Header: "DentRW" as bold text in
-  `#2563eb`. Footer: clinic phone, email, address (`KG 14 Ave - Remera, Rwanda`), all from
-  `config/brand.js`. No `<Img>`, no SVG.
-- **AppointmentRequest.jsx** — props `{ name, email, phone, service, date, time, message }`.
-  Heading "New appointment request". A `<Section>` with label/value rows. Body text notes
-  the reply-to goes to the patient.
-- **AppointmentConfirmation.jsx** — props `{ name, service, date, time }`. Heading
-  "We received your request". Restates service / date / time, clinic hours + phone, and
-  that the clinic will reach out to confirm.
-- Each exports `PreviewProps` with realistic sample data for `email dev`.
-
-## Config modules
-
-### `config/brand.js`
-
-```js
+```ts
 export const brand = {
   name: "DentRW",
   url: "https://dentrw.hbapte.com",
@@ -249,9 +146,9 @@ export const brand = {
 }
 ```
 
-### `config/services.js`
+### `config/services.ts`
 
-```js
+```ts
 export const services = [
   { value: "checkup_Consultation", label: "Dental Check-ups and Consultation" },
   { value: "x-rays", label: "X-rays" },
@@ -263,10 +160,179 @@ export const services = [
   { value: "periodontal", label: "Periodontal Treatment" },
   { value: "dentalImplants", label: "Dental Implants" },
 ]
+
+export function serviceLabel(value) {
+  return services.find((s) => s.value === value)?.label ?? value ?? "—"
+}
 ```
 
-Values are copied verbatim from the current `Contact.jsx` `<select>` so existing behavior is
-unchanged.
+Values copied verbatim from the current `Contact.jsx` `<select>` so behavior is unchanged.
+
+### `api/_lib/resend.ts`
+
+Adapted from the provided sample.
+
+```ts
+import { Resend } from "resend"
+
+import { brand } from "../../config/brand.js"
+
+const resend = new Resend(process.env.RESEND_API_KEY)
+const senderName = process.env.SENDER_NAME ?? brand.name
+const senderEmail = process.env.SENDER_EMAIL ?? "dentrwrw@updates.hbapte.com"
+const FROM = `${senderName} <${senderEmail}>`
+
+export const ADMIN = process.env.ADMIN_EMAIL ?? "ijbapte@gmail.com"
+
+// sendEmail({ to, subject, react, replyTo }) -> { success, id?, error? }
+// `react` is passed straight to resend.emails.send; the SDK renders HTML + plain text.
+```
+
+- Errors are returned, not thrown (`{ success: false, error }`).
+- No top-level throw when `RESEND_API_KEY` is missing — the send call surfaces the error so
+  a misconfigured deploy returns a clean 500 instead of crashing on import.
+
+### `api/_lib/http.ts`
+
+- `readJsonBody(req)` — returns `req.body` if already an object (Vercel pre-parses JSON),
+  else reads the stream and `JSON.parse`s it (Vite dev). Throws on malformed JSON.
+- `sendJson(res, status, body)` — sets status + `content-type: application/json`, ends.
+- `clientIp(req)` — first entry of `x-forwarded-for`, else `req.socket?.remoteAddress ?? ""`.
+
+### `api/_lib/rate-limit.ts`
+
+- `rateLimit(key, { max = 5, windowMs = 60_000 } = {})` — module-scoped
+  `Map<string, number[]>` of timestamps; prunes entries older than `windowMs`; returns
+  `{ ok: boolean }`. `key` is `"<route>:<ip>"`.
+- **Known limitation:** serverless instances are ephemeral and not shared, so the window
+  resets on cold starts and does not coordinate across concurrent instances. Best-effort
+  bot friction, not a hard quota. Stated in `docs/email.md`.
+
+### `api/_lib/process-contact.ts`
+
+`processContact(body, { ip }) -> { status, json }`
+
+1. `body.company` (honeypot) non-empty → `{ status: 200, json: { ok: true } }`, send nothing.
+2. `rateLimit("contact:" + ip)` not ok → `{ status: 429, json: { error: "Too many requests. Please try again in a minute." } }`.
+3. Validate: `user_name` non-empty, `user_email` matches `/^[^\s@]+@[^\s@]+\.[^\s@]+$/`.
+   Fail → `{ status: 400, json: { error: "Please provide your name and a valid email." } }`.
+4. `label = serviceLabel(body.chosen_service)`.
+5. `sendEmail` **AppointmentRequest** → `ADMIN`, `replyTo: body.user_email`.
+   Not `success` → `{ status: 500, json: { error: "Could not send your request. Please try again later." } }` (nothing delivered).
+6. `sendEmail` **AppointmentConfirmation** → `body.user_email`. Not `success` →
+   `console.warn` and continue.
+7. `{ status: 200, json: { ok: true } }`.
+
+Fields consumed: `user_name`, `user_email`, `user_phone`, `chosen_service`, `user_date`,
+`user_time`, `user_message`, `company` (honeypot). Field names unchanged from the current
+form to keep the diff focused.
+
+### `api/_lib/process-subscribe.ts`
+
+`processSubscribe(body, { ip }) -> { status, json }`
+
+1. `rateLimit("subscribe:" + ip)` not ok → `429`.
+2. `body.email` matches the email regex → else `{ status: 400, json: { error: "Please provide a valid email." } }`.
+3. `POST https://api.convertkit.com/v3/forms/${process.env.CONVERTKIT_FORM_ID}/subscribe`
+   with JSON `{ api_key: process.env.CONVERTKIT_API_KEY, email: body.email }` via `fetch`.
+4. Response not ok → `console.error` the detail, return
+   `{ status: 502, json: { error: "Subscription service is unavailable. Please try again later." } }`.
+5. `{ status: 200, json: { ok: true } }`.
+
+### `api/contact.ts` / `api/subscribe.ts`
+
+```ts
+import { clientIp, readJsonBody, sendJson } from "./_lib/http.js"
+import { processContact } from "./_lib/process-contact.js"
+
+export default async function handler(req, res) {
+  if (req.method !== "POST")
+    return sendJson(res, 405, { error: "Method not allowed" })
+  let body
+  try {
+    body = await readJsonBody(req)
+  } catch {
+    return sendJson(res, 400, { error: "Invalid JSON" })
+  }
+  const { status, json } = await processContact(body, { ip: clientIp(req) })
+  return sendJson(res, status, json)
+}
+```
+
+`subscribe.ts` is identical with `processSubscribe`.
+
+### `vite/api-plugin.js`
+
+```js
+// apiDevPlugin() -> Vite plugin
+// configureServer(server) {
+//   server.middlewares.use(async (req, res, next) => {
+//     const url = (req.url || "").split("?")[0]
+//     const route = { "/api/contact": "process-contact", "/api/subscribe": "process-subscribe" }[url]
+//     if (!route || req.method !== "POST") return next()
+//     const { processContact, processSubscribe } = await server.ssrLoadModule(`/api/_lib/${route}.ts`)
+//     ... readJsonBody(req) via ssrLoadModule("/api/_lib/http.ts"), pick handler, sendJson
+//   })
+// }
+```
+
+Loading handlers through `server.ssrLoadModule` means Vite transpiles the `.ts`/`.tsx`
+chain (including the email templates) on demand — the plugin itself needs no build step.
+Added to `vite.config.mjs` `plugins` after `react()`.
+
+## Client changes
+
+### `src/components/Contact.jsx`
+
+- Remove `import emailjs from "@emailjs/browser"`. Drop the `form` ref (use `e.currentTarget`).
+- `sendEmail` handler body:
+  ```js
+  const data = Object.fromEntries(new FormData(e.currentTarget))
+  const res = await fetch("/api/contact", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(data),
+  })
+  if (!res.ok) throw new Error()
+  ```
+  Keep the `isLoading` / `isSent` / `error` state and the 5s / 8s timeouts. On success
+  `e.currentTarget.reset()`.
+- Add the honeypot inside the form:
+  ```jsx
+  <input
+    type="text"
+    name="company"
+    tabIndex={-1}
+    autoComplete="off"
+    aria-hidden="true"
+    className="hidden"
+    defaultValue=""
+  />
+  ```
+- Render the service `<select>` options from `config/services.ts` via `.map`.
+
+### `src/components/Footer.jsx`
+
+- Remove `import axios from "axios"` (no other axios use in this file).
+- `handleSubmit` posts to `/api/subscribe` with `fetch`, JSON body `{ email }`; keep the
+  existing `loading` / `subscribed` / `errorMessage` UX and timeouts.
+- Drop the `VITE_CONVERTKIT_*` reads.
+
+`axios` stays a dependency — other components still use it; only the Footer's use is removed.
+(Confirm with a repo-wide `axios` grep during implementation.)
+
+## Email templates
+
+- `@react-email/components`, `<Tailwind>` with `pixelBasedPreset`, `<Head />` inside
+  `<Tailwind>`, `<Preview>` first inside `<Body>`, container ~600px, no images.
+- `EmailLayout.tsx` — props `{ preview, children }`. Header: "DentRW" bold text in
+  `#2563eb`. Footer: clinic phone, email, address from `config/brand.ts`.
+- **AppointmentRequest.tsx** — props `{ name, email, phone, service, date, time, message }`.
+  "New appointment request" + a `<Section>` of label/value rows.
+- **AppointmentConfirmation.tsx** — props `{ name, service, date, time }`. "We received
+  your request" + restates service/date/time, clinic hours + phone, "the clinic will
+  contact you to confirm".
+- Each exports `PreviewProps` with realistic sample data for `bun run email`.
 
 ## Environment variables
 
@@ -283,61 +349,71 @@ All server-side — **no `VITE_` prefix**, so never bundled into the client.
 
 Removed: `VITE_EMAILJS_SERVICE_ID`, `VITE_EMAILJS_TEMPLATE_ID`, `VITE_EMAILJS_PUBLIC_KEY`.
 
-`.env.example` and `.env.local` are updated to match. The six vars above must be added in the
-Vercel project dashboard before the branch is merged.
+`.env.example` and `.env.local` updated to match. The six vars must be added in the Vercel
+project dashboard before the branch is merged.
 
 ## Dependencies
 
 - **add** `resend`, `@react-email/components`
-- **add dev** `react-email` (the `email` CLI), `@react-email/render` (assertions in tests)
+- **add dev** `react-email` (the `email` CLI)
 - **remove** `@emailjs/browser`
+- already present, reused: `typescript`, `@types/node`, `react`, `react-dom`
+- `render` for tests is imported from `@react-email/components` (it re-exports
+  `@react-email/render`) — no separate dep
 - new script: `"email": "email dev --dir emails --port 3001"` (3000 is Vite's)
-- `knip` config: add `api/**`, `emails/**`, `vite/**` as entry patterns so the new
-  entrypoints are not reported as unused
+- `knip.json`: add `entry` for `api/**/*.ts` and `emails/**/*.tsx`; add
+  `@react-email/components` / `react-email` to `ignoreDependencies` if knip cannot see the
+  CLI usage
 
 ## Testing (vitest)
 
-| file                                      | asserts                                                                                                                                                                                                                                                           |
-| ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `api/_lib/process-contact.test.js`        | honeypot → 200 + no send; missing `user_name`/`user_email` → 400; bad email → 400; valid → `sendEmail` called twice with expected `to` + `subject`; `chosen_service` slug mapped to label; patient-send failure still returns 200; admin-send failure returns 500 |
-| `api/_lib/process-subscribe.test.js`      | mocked `fetch`; correct ConvertKit URL + payload; missing/bad email → 400; ConvertKit failure → 502                                                                                                                                                               |
-| `api/_lib/rate-limit.test.js`             | `max` calls ok, next blocked, window resets after `windowMs`                                                                                                                                                                                                      |
-| `emails/AppointmentConfirmation.test.jsx` | `render()` HTML contains patient name + service label                                                                                                                                                                                                             |
+| file                                      | asserts                                                                                                                                                                                                                                                                                                                                 |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `api/_lib/rate-limit.test.ts`             | `max` calls `ok`, next blocked; after `windowMs` (fake timers) `ok` again; different keys independent                                                                                                                                                                                                                                   |
+| `api/_lib/process-contact.test.ts`        | `vi.mock("./resend.js")`: honeypot → 200 + `sendEmail` not called; missing name → 400; bad email → 400; valid → `sendEmail` called twice with `to` = `ADMIN` then the patient, subjects as specified; `chosen_service` slug → label in the props; admin send `{success:false}` → 500; patient send `{success:false}` but admin ok → 200 |
+| `api/_lib/process-subscribe.test.ts`      | `vi.stubGlobal("fetch", …)`: bad email → 400, no fetch; valid → fetch called with the ConvertKit URL containing `CONVERTKIT_FORM_ID` and body `{ api_key, email }`; fetch resolves `{ ok: false }` → 502                                                                                                                                |
+| `emails/AppointmentConfirmation.test.tsx` | `render(<AppointmentConfirmation {...PreviewProps} />)` HTML contains the patient name and the service label                                                                                                                                                                                                                            |
 
-`sendEmail` and `fetch` are mocked with `vi.mock` / `vi.stubGlobal`. Vitest's default
-`include` already picks up `api/**/*.test.js` and `emails/**/*.test.jsx`.
+`process-*` tests set `process.env` values in a `beforeEach`. Vitest's default `include`
+already matches `api/**/*.test.ts` and `emails/**/*.test.tsx`; `vite.config.mjs` `test`
+block is unchanged.
 
 ## Rollout / build order
 
-1. deps + `config/brand.js` + `config/services.js`; render `Contact.jsx` `<select>` from
-   `services` (no behavior change).
-2. `api/_lib/*` (http, resend, rate-limit) + unit tests for rate-limit.
-3. email templates + `EmailLayout` + `email` script; eyeball in `bun run email`.
-4. `process-contact.js` + `api/contact.js` + `vite/api-plugin.js` wired into `vite.config.mjs`
-   - tests.
-5. `process-subscribe.js` + `api/subscribe.js` + tests.
-6. rewire `src/components/Contact.jsx` (fetch + honeypot), then `src/components/Footer.jsx`
-   (fetch).
-7. remove `@emailjs/browser` + `VITE_EMAILJS_*`; update `.env.example`, `.env.local`,
-   `README.md` (Features / Tech Stack / Environment Variables), add `docs/email.md`,
-   update `knip` config.
-8. verify: `bun run format` · `bun run lint` · `bun run test` · `bun run build`; manual
-   `bun run dev` booking submit against a real Resend test key; `bun run email` preview.
-9. **before merge:** add the six env vars in Vercel; confirm `updates.hbapte.com` is a
-   verified domain in Resend.
+1. `tsconfig.json`; deps (`resend`, `@react-email/components`, dev `react-email`); remove
+   `@emailjs/browser`; `email` script; `config/brand.ts` + `config/services.ts`; render
+   `Contact.jsx` `<select>` from `services` (no behavior change). Commit.
+2. `api/_lib/http.ts` + `api/_lib/rate-limit.ts` + `rate-limit.test.ts`. Commit.
+3. `api/_lib/resend.ts`; `emails/components/EmailLayout.tsx`; `emails/AppointmentRequest.tsx`;
+   `emails/AppointmentConfirmation.tsx` + its test; eyeball with `bun run email`. Commit.
+4. `api/_lib/process-contact.ts` + test; `api/contact.ts`; `vite/api-plugin.js` wired into
+   `vite.config.mjs`; manual `bun run dev` submit. Commit.
+5. `api/_lib/process-subscribe.ts` + test; `api/subscribe.ts`. Commit.
+6. Rewire `src/components/Contact.jsx` (fetch + honeypot); then `src/components/Footer.jsx`
+   (fetch). Manual `bun run dev` check of both forms. Commit.
+7. `.env.example`, `.env.local`, `README.md` (Features / Tech Stack / Environment
+   Variables), `docs/email.md`, `knip.json`, `tailwind.config.js` `content` glob. Commit.
+8. Full verify: `bun run format` · `bun run lint` · `bun run test` · `bun run build` ·
+   `bun run knip`.
+9. **Before merge:** add the six env vars in Vercel; confirm `updates.hbapte.com` is a
+   verified domain in Resend; deploy the branch preview and submit a real test booking.
 
 ## Risks
 
 - **Resend domain not verified** → production sends fail. Pre-merge checklist item.
-- **Rate limit resets on cold start** → accepted; it is bot friction, not a quota.
-- **Vercel `/api` auto-detection** → Vercel deploys `/api/*.js` as functions for a Vite
-  project with no `vercel.json` needed (consistent with the notes from the CRA→Vite
-  migration). If a future Vercel change breaks this, add a minimal `vercel.json`.
-- **Function bundle size** → import `render`-only paths from `@react-email/components` /
-  `@react-email/render`; keep the `react-email` CLI package a devDependency so chokidar
-  etc. are not traced into the function.
+- **Rate limit resets on cold start** → accepted; bot friction, not a quota.
+- **Vercel `/api` auto-detection** → Vercel deploys `/api/*.ts` as functions for a Vite
+  project with no `vercel.json` needed. If a future platform change breaks this, add a
+  minimal `vercel.json`.
+- **`typescript` v7 in the repo** → `@vercel/node` resolves the project's `typescript` to
+  compile the functions. If v7's compiler API diverges, pin a known-good `typescript` in
+  devDependencies or add `vercel.json` `installCommand`. Verified working at preview-deploy
+  time in step 9.
 - **`config/` imported across the client/server boundary** → keep those modules pure data
   (no `import.meta`, no JSX, no Node built-ins).
+- **Function bundle size** → keep the `react-email` CLI a devDependency so chokidar etc.
+  are not traced into the deployed function; runtime imports come only from
+  `@react-email/components`.
 
 ## Out of scope
 
