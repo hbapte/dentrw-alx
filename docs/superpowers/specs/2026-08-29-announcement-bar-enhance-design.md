@@ -15,12 +15,12 @@ dismissed.
 
 ## Decisions
 
-| Question            | Decision                                                                                                                     |
-| ------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| Overlap fix         | AnnouncementBar publishes its measured height as a CSS variable; Navbar and Hero consume it                                  |
-| Dismiss persistence | `localStorage`, keyed to an announcement id — closing sticks; bumping the id re-shows it for everyone                        |
-| Visual              | Polished: brand-blue gradient, leading megaphone icon, slide-down entrance (reduced-motion aware), accessible dismiss button |
-| i18n                | Add `announcement.dismiss` (EN "Dismiss", FR "Fermer") to `common.json`                                                      |
+| Question            | Decision                                                                                                                         |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Overlap fix         | AnnouncementBar publishes its measured height as a CSS variable; Navbar and Hero consume it                                      |
+| Dismiss persistence | **Session-only** — closing hides it for the current page view; a refresh brings it back (per user follow-up). No `localStorage`. |
+| Visual              | Polished: brand-blue gradient, leading megaphone icon, slide-down entrance (reduced-motion aware), accessible dismiss button     |
+| i18n                | Add `announcement.dismiss` (EN "Dismiss", FR "Fermer") to `common.json`                                                          |
 
 ## Layout: the CSS variable
 
@@ -29,10 +29,11 @@ dismissed.
 - `AnnouncementBar` — a `ref` on the outer element. A `useLayoutEffect`:
   1. writes `el.offsetHeight + "px"` to `document.documentElement.style` as
      `--announcement-height`,
-  2. observes the element with `ResizeObserver` to keep the value current on wrap / viewport
-     change,
+  2. keeps it current on wrap / viewport change via **both** a `ResizeObserver` on the
+     element and a `window` `resize` listener (the two together survive background-tab
+     rAF throttling and cover font-swap reflows),
   3. cleanup (unmount, or `dismissed` flips true) resets the property to `"0px"` and
-     disconnects the observer.
+     tears down the observer + listener.
 - `Navbar` — `fixed top-8` → `fixed top-[var(--announcement-height)]`.
 - `Hero` — `<h2>` class `md:mt-0 mt-24` → `md:mt-0 mt-[calc(var(--announcement-height)+3rem)]`.
   Desktop is unchanged (`md:mt-0`; the hero's `md:py-36` already clears the chrome).
@@ -42,17 +43,10 @@ variable to `0px`, so the navbar animates up to `top: 0` (it already has `transi
 
 ## Dismissible
 
-```jsx
-const ANNOUNCEMENT_ID = "v4-launch" // bump when the message changes
-const STORAGE_KEY = "dentrw:announcement"
-```
-
-- Initial state: `dismissed = readDismissed() === ANNOUNCEMENT_ID`, where `readDismissed()` is a
-  guarded `localStorage.getItem` (wrapped in try/catch — Safari private mode, etc.).
-- The dismiss button calls `setDismissed(true)` and `localStorage.setItem(STORAGE_KEY, ANNOUNCEMENT_ID)`
-  (also try/catch-guarded).
-- Because the stored value is compared against the current `ANNOUNCEMENT_ID`, a previously
-  dismissed bar reappears the next time `ANNOUNCEMENT_ID` changes.
+Session-only, per the user's follow-up: `const [dismissed, setDismissed] = useState(false)`.
+The close button calls `setDismissed(true)`; the component then returns `null` and the layout
+effect resets `--announcement-height` to `0px`. A page refresh re-mounts the component and
+the bar is back — no storage, no id/version bookkeeping.
 
 ## Visual (polished)
 
@@ -84,11 +78,10 @@ rounded hover:bg-white/10`, `aria-label={t("announcement.dismiss")}`, contains a
 `ResizeObserver` and `matchMedia` are already mocked in `src/setupTests.js`.
 
 - **Keep** the 3 existing tests (message, external link, French copy).
-- Add `beforeEach(() => localStorage.clear())`.
-- Add: clicking the dismiss button (found by its `aria-label`) removes the announcement text
-  from the document.
-- Add: after dismissing and re-rendering a fresh `<AnnouncementBar />`, the announcement text
-  is not in the document (persistence via `localStorage`).
+- Add: clicking the dismiss button (found by its `aria-label` via `userEvent`) removes the
+  announcement text from the document.
+- Add: after dismissing, unmounting, and rendering a fresh `<AnnouncementBar />`, the
+  announcement text **is** back (dismissal is not persisted).
 
 ## Files
 
@@ -99,7 +92,7 @@ rounded hover:bg-white/10`, `aria-label={t("announcement.dismiss")}`, contains a
 | `src/components/Hero.jsx`                               | one class on the `<h2>`                                 |
 | `src/index.css`                                         | `--announcement-height` default + `@keyframes`          |
 | `src/i18n/locales/en/common.json`, `.../fr/common.json` | add `announcement.dismiss`                              |
-| `src/components/AnnouncementBar.test.jsx`               | +2 tests, `beforeEach`                                  |
+| `src/components/AnnouncementBar.test.jsx`               | +2 tests (dismiss hides; refresh restores)              |
 
 ## Out of scope
 

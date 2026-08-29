@@ -382,3 +382,22 @@ Wait for `lint`, `format`, `test`, `build` to pass on the PR.
   references the keyframe added to `index.css` in Task 1.
 - **`motion-reduce:animate-none`** — Tailwind's built-in `prefers-reduced-motion` variant;
   no extra config.
+
+---
+
+## As-built deviations
+
+- **Session-only dismiss** (user follow-up) — dropped `localStorage` / `ANNOUNCEMENT_ID` /
+  `STORAGE_KEY` entirely. `useState(false)`; a refresh brings the bar back. Task 1's
+  `announcement.dismiss` i18n key and Task 2's dismiss button are unchanged; the persistence
+  test became "comes back on a fresh mount".
+- **`window.resize` listener added** alongside the `ResizeObserver` in the layout effect —
+  belt-and-braces so the height stays correct after an orientation/viewport change even when
+  the tab is backgrounded (rAF-throttled, which starves `ResizeObserver` delivery).
+- **No `src/setupTests.js` change** — the localStorage polyfill from an earlier draft was
+  reverted with the session-only pivot.
+- **Browser-verified** (dev server, JS measurement): 1-line bar → `--announcement-height: 36px`,
+  navbar `top: 36px`, no overlap; forced 2-line bar (56px) + `resize` → var tracks to `56px`,
+  navbar follows; dismiss → bar removed, var `0px`, navbar `top: 0`. A true narrow viewport
+  could not be rendered in the automation environment, but the mechanism is width-agnostic
+  (the initial `useLayoutEffect` measures whatever height the bar renders at).
