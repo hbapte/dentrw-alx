@@ -1,6 +1,28 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+/*
+  The default border color changed to `currentcolor` in Tailwind CSS v4, so
+  these compatibility styles keep bare `border` / `divide` looking as they did
+  under v3. To drop this block, add an explicit border-color utility wherever an
+  element relies on the default.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+/* v4 makes <button> default to `cursor: default`; keep the pointer. */
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
 
 :root {
   --announcement-height: 0px;

@@ -35,7 +35,7 @@ const AnnouncementBar = () => {
   return (
     <div
       ref={barRef}
-      className="fixed left-0 top-0 z-50 w-full animate-[announcement-slide-down_200ms_ease-out] bg-gradient-to-r from-blue-600 to-blue-700 text-white motion-reduce:animate-none">
+      className="fixed left-0 top-0 z-50 w-full animate-[announcement-slide-down_200ms_ease-out] bg-linear-to-r from-blue-600 to-blue-700 text-white motion-reduce:animate-none">
       <div className="relative flex items-center justify-center gap-x-2 px-10 py-2 text-center text-sm">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -64,7 +64,7 @@ const AnnouncementBar = () => {
           type="button"
           onClick={() => setDismissed(true)}
           aria-label={t("announcement.dismiss")}
-          className="absolute right-1 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded transition-colors hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white">
+          className="absolute right-1 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-sm transition-colors hover:bg-white/10 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-white">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"

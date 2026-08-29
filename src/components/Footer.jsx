@@ -77,7 +77,7 @@ const Footer = () => {
                   placeholder="Enter your email"
                   value={email}
                   onChange={handleEmailChange}
-                  className="block w-full px-4 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent sm:text-sm"
+                  className="block w-full px-4 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-600 focus:border-transparent sm:text-sm"
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                   <svg
@@ -99,7 +99,7 @@ const Footer = () => {
             <button
               type="submit"
               disabled={loading}
-              className="bg-blue-700 sm:ml-1 hover:bg-blue-400 text-white font-semibold py-2 px-4 rounded">
+              className="bg-blue-700 sm:ml-1 hover:bg-blue-400 text-white font-semibold py-2 px-4 rounded-sm">
               {loading ? "Subscribing..." : "Subscribe"}
             </button>
           </form>

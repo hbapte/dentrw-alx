@@ -34,7 +34,7 @@ const Hero = () => {
                   smooth={true}
                   duration={500}
                   offset={-100}
-                  className="mb-3 inline-flex h-12 w-full items-center justify-center rounded bg-blue-700 px-6 font-medium tracking-wide text-white shadow-md transition duration-200 md:mr-4 md:mb-0 md:w-auto focus:outline-none hover:bg-blue-800">
+                  className="mb-3 inline-flex h-12 w-full items-center justify-center rounded-sm bg-blue-700 px-6 font-medium tracking-wide text-white shadow-md transition duration-200 md:mr-4 md:mb-0 md:w-auto focus:outline-hidden hover:bg-blue-800">
                   {t("bookAppointment")}
                 </Link>
                 <Link

@@ -1,3 +1,4 @@
+import tailwindcss from "@tailwindcss/vite"
 import react from "@vitejs/plugin-react"
 import { VitePWA } from "vite-plugin-pwa"
 import { defineConfig } from "vitest/config"
@@ -8,6 +9,7 @@ import { apiDevPlugin } from "./vite/api-plugin.mjs"
 export default defineConfig({
   plugins: [
     react(),
+    tailwindcss(),
     apiDevPlugin(),
     VitePWA({
       registerType: "autoUpdate",
@@ -56,6 +58,8 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: "./src/setupTests.js",
-    css: true,
+    // Tests assert on DOM/text, not computed styles. Skipping CSS processing
+    // avoids running the Tailwind v4 pipeline on every test run.
+    css: false,
   },
 })

@@ -125,7 +125,7 @@ export default function Testimonials() {
               <span className="text-blue-500 relative">Patients</span>
             </h2>
 
-            <p className="max-w-[40rem] text-md mx-auto mt-4 text-gray-500"></p>
+            <p className="max-w-160 text-md mx-auto mt-4 text-gray-500"></p>
           </div>
         </header>
       </Fade>

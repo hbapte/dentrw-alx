@@ -35,7 +35,7 @@ const Services = () => {
                   {t("eyebrow")}
                 </p>
               </div>
-              <h2 className="relative max-w-[40rem] mb-6 font-sans text-3xl font-bold leading-none tracking-tight text-gray-900 sm:text-4xl md:mx-auto">
+              <h2 className="relative max-w-160 mb-6 font-sans text-3xl font-bold leading-none tracking-tight text-gray-900 sm:text-4xl md:mx-auto">
                 <svg
                   viewBox="0 0 52 24"
                   fill="currentColor"
@@ -64,14 +64,14 @@ const Services = () => {
                 </span>
               </h2>
 
-              <p className="max-w-[40rem] text-md mx-auto mt-4 text-gray-500">
+              <p className="max-w-160 text-md mx-auto mt-4 text-gray-500">
                 {t("subhead")}
               </p>
             </div>
           </Fade>
         </header>
 
-        <ul className="grid gap-4 h-30 mt-6 sm:grid-cols-2   lg:grid-cols-4 ">
+        <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {SERVICE_ITEMS.map(({ key, image }) => (
             <Fade key={key}>
               <li className="bg-slate-200">

@@ -56,7 +56,7 @@ const Team = () => {
                 </span>
               </h2>
 
-              <p className="max-w-[43rem] text-md mx-auto mt-4 text-gray-600">
+              <p className="max-w-172 text-md mx-auto mt-4 text-gray-600">
                 {t("subhead")}{" "}
                 <span className=" hidden lg:inline">{t("subheadExtra")}</span>
               </p>
@@ -68,7 +68,7 @@ const Team = () => {
           {TEAM.map(({ name, image, roleKey }) => (
             <div key={name} className="w-full max-w-xs text-center">
               <img
-                className="object-cover object-center w-full h-60 mx-auto rounded-lg"
+                className="mx-auto w-full rounded-lg object-cover object-center"
                 src={image}
                 alt={name}
               />
