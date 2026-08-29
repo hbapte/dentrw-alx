@@ -7,7 +7,7 @@
   "env": {
     "builtin": true
   },
-  "ignorePatterns": ["dist/**", "next-env.d.ts"],
+  "ignorePatterns": ["dist/**", ".react-email/**", "next-env.d.ts"],
   "rules": {
     "no-array-constructor": "error",
     "no-unused-expressions": "warn",
