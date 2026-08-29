@@ -1,7 +1,7 @@
 const Sign = () => {
   return (
     <div>
-      <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-(--breakpoint-xl) px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-lg">
           <h1 className="text-center text-2xl font-bold text-indigo-600 sm:text-3xl">
             Get started today
@@ -24,11 +24,11 @@ const Sign = () => {
                   id="email"
                   name="email"
                   type="email"
-                  className="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
+                  className="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-xs"
                   placeholder="Enter email"
                 />
 
-                <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
+                <span className="absolute inset-y-0 inset-e-0 grid place-content-center px-4">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-4 w-4 text-gray-400"
@@ -56,11 +56,11 @@ const Sign = () => {
                   type="password"
                   id="password"
                   name="password"
-                  className="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
+                  className="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-xs"
                   placeholder="Enter password"
                 />
 
-                <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
+                <span className="absolute inset-y-0 inset-e-0 grid place-content-center px-4">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-4 w-4 text-gray-400"
@@ -114,7 +114,7 @@ const Sign = () => {
             <div className="flex justify-center space-x-4">
               <button
                 aria-label="Log in with Google"
-                className="p-3 rounded-sm">
+                className="p-3 rounded-xs">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 32 32"
@@ -124,7 +124,7 @@ const Sign = () => {
               </button>
               <button
                 aria-label="Log in with Twitter"
-                className="p-3 rounded-sm">
+                className="p-3 rounded-xs">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 32 32"
@@ -134,7 +134,7 @@ const Sign = () => {
               </button>
               <button
                 aria-label="Log in with GitHub"
-                className="p-3 rounded-sm">
+                className="p-3 rounded-xs">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 32 32"

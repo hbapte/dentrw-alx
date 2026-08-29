@@ -17,7 +17,7 @@ const FAQs = () => {
           {items.map((item, i) => (
             <Fade key={i}>
               <details>
-                <summary className="py-2 outline-none cursor-pointer focus:font-semibold">
+                <summary className="py-2 outline-hidden cursor-pointer focus:font-semibold">
                   {item.question}
                 </summary>
                 <div>

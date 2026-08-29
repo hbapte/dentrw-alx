@@ -52,11 +52,11 @@ const Insurance = () => {
               </span>
             </h2>
 
-            <p className="max-w-[40rem] text-md mx-auto mt-4 text-gray-500"></p>
+            <p className="max-w-160 text-md mx-auto mt-4 text-gray-500"></p>
           </div>
         </Fade>
       </header>
-      <div className="slider grid grid-cols-4 lg:grid-cols-8   shadow-md opacity-[100%] h-100 mx-auto overflow-hidden relative ">
+      <div className="slider grid grid-cols-4 lg:grid-cols-8   shadow-md opacity-100 h-100 mx-auto overflow-hidden relative ">
         {/* <div className="slide-track animate-scroll"> */}
         <div className="slide h-100 w-250">
           <img

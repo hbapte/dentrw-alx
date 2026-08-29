@@ -35,7 +35,7 @@ const Services = () => {
                   {t("eyebrow")}
                 </p>
               </div>
-              <h2 className="relative max-w-[40rem] mb-6 font-sans text-3xl font-bold leading-none tracking-tight text-gray-900 sm:text-4xl md:mx-auto">
+              <h2 className="relative max-w-160 mb-6 font-sans text-3xl font-bold leading-none tracking-tight text-gray-900 sm:text-4xl md:mx-auto">
                 <svg
                   viewBox="0 0 52 24"
                   fill="currentColor"
@@ -64,7 +64,7 @@ const Services = () => {
                 </span>
               </h2>
 
-              <p className="max-w-[40rem] text-md mx-auto mt-4 text-gray-500">
+              <p className="max-w-160 text-md mx-auto mt-4 text-gray-500">
                 {t("subhead")}
               </p>
             </div>

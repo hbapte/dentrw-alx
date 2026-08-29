@@ -18,7 +18,7 @@ const LanguageSwitcher = () => {
           onClick={() => i18n.changeLanguage(lng)}
           aria-current={current === lng ? "true" : undefined}
           className={
-            "rounded px-2 py-1 text-xs font-semibold uppercase transition-colors " +
+            "rounded-sm px-2 py-1 text-xs font-semibold uppercase transition-colors " +
             (current === lng
               ? "bg-blue-600 text-white"
               : "text-blue-900 hover:bg-blue-50")

@@ -40,7 +40,7 @@ const Navbar = () => {
 
   return (
     <header
-      className={`fixed top-[var(--announcement-height)] w-full flex items-center justify-between px-4 py-3 text-blue-900 transition-all ${
+      className={`fixed top-(--announcement-height) w-full flex items-center justify-between px-4 py-3 text-blue-900 transition-all ${
         showNavbar ? "bg-white shadow-md" : ""
       }`}
       style={{ zIndex: showMenu ? 999 : "10" }}>
@@ -93,7 +93,7 @@ const Navbar = () => {
 
       <div className="md:hidden">
         <button
-          className="flex items-center focus:outline-none"
+          className="flex items-center focus:outline-hidden"
           onClick={toggleMenu}>
           <svg
             className={`h-6 w-6 font-semibold  text-blue-900 ${
@@ -111,7 +111,7 @@ const Navbar = () => {
           </svg>
         </button>
         {showMenu && (
-          <ul className="absolute top-14 right-0 z-50 w-48 py-2 bg-white border border-gray-300 rounded shadow-md">
+          <ul className="absolute top-14 right-0 z-50 w-48 py-2 bg-white border border-gray-300 rounded-sm shadow-md">
             {links.map(({ id, link, labelKey }) => (
               <li key={id}>
                 <Link

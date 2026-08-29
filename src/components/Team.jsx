@@ -56,7 +56,7 @@ const Team = () => {
                 </span>
               </h2>
 
-              <p className="max-w-[43rem] text-md mx-auto mt-4 text-gray-600">
+              <p className="max-w-172 text-md mx-auto mt-4 text-gray-600">
                 {t("subhead")}{" "}
                 <span className=" hidden lg:inline">{t("subheadExtra")}</span>
               </p>

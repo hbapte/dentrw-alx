@@ -45,14 +45,14 @@ const Contact = () => {
   }
 
   return (
-    <div className="max-w-screen-lg mx-auto p-2">
+    <div className="max-w-(--breakpoint-lg) mx-auto p-2">
       <div className="grid grid-cols-1 md:grid-cols-12 border rounded-md">
         <div className="bg-slate-100 md:col-span-4 p-7 text-gray-900">
           <p className="mt-4 text-sm leading-7 font-regular uppercase">
             Contact
           </p>
           <h3 className="text-3xl sm:text-4xl leading-normal font-extrabold tracking-tight">
-            Get In <span className="text-[#3b82f6]">Touch</span>
+            Get In <span className="text-primary-500">Touch</span>
           </h3>
           <p className="mt-4 leading-6 text-gray-950">
             Book an appointment with our doctors, Our team is ready and waiting
@@ -132,7 +132,7 @@ const Contact = () => {
               name="user_name"
               id="user_name"
               placeholder="Full Name"
-              className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+              className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-hidden focus:border-[#6A64F1] focus:shadow-md"
               required
             />
           </div>
@@ -150,7 +150,7 @@ const Contact = () => {
                   name="user_phone"
                   id="user_phone"
                   placeholder="Enter your phone number"
-                  className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                  className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-hidden focus:border-[#6A64F1] focus:shadow-md"
                   required
                 />
               </div>
@@ -167,14 +167,14 @@ const Contact = () => {
                   name="user_email"
                   id="user_email"
                   placeholder="Enter your email"
-                  className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                  className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-hidden focus:border-[#6A64F1] focus:shadow-md"
                   required
                 />
               </div>
             </div>
           </div>
 
-          <div className="-mx-0 mb-3">
+          <div className="mx-0 mb-3">
             <label
               htmlFor="chosen_service"
               className="mb-1 block text-base font-medium text-[#07074D]">
@@ -183,7 +183,7 @@ const Contact = () => {
             <select
               name="chosen_service"
               id="chosen_service"
-              className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md">
+              className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-hidden focus:border-[#6A64F1] focus:shadow-md">
               {services.map((s) => (
                 <option key={s.value} value={s.value}>
                   {s.label}
@@ -204,7 +204,7 @@ const Contact = () => {
                   type="date"
                   name="user_date"
                   id="user_date"
-                  className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                  className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-hidden focus:border-[#6A64F1] focus:shadow-md"
                 />
               </div>
             </div>
@@ -219,7 +219,7 @@ const Contact = () => {
                   type="time"
                   name="user_time"
                   id="user_time"
-                  className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                  className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-hidden focus:border-[#6A64F1] focus:shadow-md"
                 />
               </div>
             </div>
@@ -235,7 +235,7 @@ const Contact = () => {
               id="user_message"
               name="user_message"
               rows="2"
-              className="resize-none w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"></textarea>
+              className="resize-none w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-hidden focus:border-[#6A64F1] focus:shadow-md"></textarea>
           </div>
 
           <div className="mt-4">
@@ -243,7 +243,7 @@ const Contact = () => {
               <button
                 type="submit"
                 value="Send"
-                className="hover:shadow-form hover:opacity-90 w-full rounded-md bg-blue-600 py-3 px-8 text-center text-base font-semibold text-white outline-none"
+                className="hover:shadow-form hover:opacity-90 w-full rounded-md bg-blue-600 py-3 px-8 text-center text-base font-semibold text-white outline-hidden"
                 disabled={isLoading}>
                 {isLoading ? "Booking..." : "Book Appointment"}
               </button>
