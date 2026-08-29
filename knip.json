@@ -1,4 +1,6 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
-  "tags": ["-lintignore"]
+  "tags": ["-lintignore"],
+  "entry": ["api/**/*.ts", "emails/**/*.tsx", "vite/api-plugin.mjs"],
+  "ignoreDependencies": ["@react-email/ui"]
 }

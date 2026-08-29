@@ -32,25 +32,26 @@ DentRW is a responsive web application for a dental clinic, built as the ALX Sof
 ## Features
 
 - **Responsive Design** — Fully responsive layout that works seamlessly across all screen sizes and devices.
-- **Appointment Booking** — Patients can book appointments online by selecting a service, date, and time. Form submission is handled via EmailJS.
-- **Newsletter Subscription** — Visitors can subscribe to clinic updates and announcements, powered by ConvertKit.
+- **Appointment Booking** — Patients can book appointments online by selecting a service, date, and time. Submissions are sent with Resend using React Email templates, via a Vercel serverless function (`/api/contact`).
+- **Newsletter Subscription** — Visitors can subscribe to clinic updates and announcements. The signup is forwarded to ConvertKit server-side (`/api/subscribe`) so no API key ships to the browser.
 - **Live Chat (Typebot)** — 24/7 chatbot assistant for instant support and guidance.
-- **Data Collection Automation** — EmailJS and ConvertKit handle email replies and subscriber management automatically.
+- **Data Collection Automation** — Resend delivers the appointment emails (clinic notification + patient confirmation); ConvertKit manages newsletter subscribers.
 - **Analytics** — Google Analytics tracks visitor behaviour to inform future improvements.
 
 ---
 
 ## Tech Stack
 
-| Tool                                             | Purpose                                         |
-| ------------------------------------------------ | ----------------------------------------------- |
-| [React 19](https://react.dev)                    | Component-based UI framework                    |
-| [Tailwind CSS](https://tailwindcss.com)          | Utility-first styling                           |
-| [EmailJS](https://www.emailjs.com)               | Client-side email sending for appointment forms |
-| [ConvertKit](https://convertkit.com)             | Newsletter subscription management              |
-| [Typebot](https://www.typebot.io)                | Embedded chatbot assistant                      |
-| [Google Analytics](https://analytics.google.com) | Visitor analytics and behaviour tracking        |
-| [Vercel](https://vercel.com)                     | Hosting and continuous deployment               |
+| Tool                                             | Purpose                                                  |
+| ------------------------------------------------ | -------------------------------------------------------- |
+| [React 19](https://react.dev)                    | Component-based UI framework                             |
+| [Tailwind CSS](https://tailwindcss.com)          | Utility-first styling                                    |
+| [Resend](https://resend.com)                     | Transactional email delivery (appointment notifications) |
+| [React Email](https://react.email)               | Component-based HTML email templates                     |
+| [ConvertKit](https://convertkit.com)             | Newsletter subscription management (called server-side)  |
+| [Typebot](https://www.typebot.io)                | Embedded chatbot assistant                               |
+| [Google Analytics](https://analytics.google.com) | Visitor analytics and behaviour tracking                 |
+| [Vercel](https://vercel.com)                     | Hosting and continuous deployment                        |
 
 ---
 
@@ -75,15 +76,18 @@ bun run dev   # http://localhost:3000
 
 ## Environment Variables
 
-Copy `.env.example` to `.env.local` and fill in the values. See `.env.example` for descriptions of each variable.
+Copy `.env.example` to `.env.local` and fill in the values. See `.env.example` for descriptions of each variable, and `docs/email.md` for how the email system works.
 
 ```env
-VITE_CONVERTKIT_API_KEY=
-VITE_CONVERTKIT_FORM_ID=
-VITE_EMAILJS_SERVICE_ID=
-VITE_EMAILJS_TEMPLATE_ID=
-VITE_EMAILJS_PUBLIC_KEY=
+RESEND_API_KEY=
+SENDER_EMAIL=
+SENDER_NAME=
+ADMIN_EMAIL=
+CONVERTKIT_API_KEY=
+CONVERTKIT_FORM_ID=
 ```
+
+These are server-side only (no `VITE_` prefix, so never bundled into the client) and must also be set in the Vercel project settings for production.
 
 ---
 
@@ -99,7 +103,8 @@ Thanks to the following tools and resources that made this project possible:
 
 - [Tailwind CSS](https://tailwindcss.com)
 - [React](https://reactjs.org)
-- [EmailJS](https://www.emailjs.com)
+- [Resend](https://resend.com)
+- [React Email](https://react.email)
 - [ConvertKit](https://convertkit.com)
 - [Typebot](https://www.typebot.io)
 - [Free Frontend](https://freefrontend.com) — UI component inspiration

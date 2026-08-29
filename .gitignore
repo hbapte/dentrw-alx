@@ -10,6 +10,7 @@
 
 # production
 /dist
+/.react-email
 
 # misc
 .DS_Store

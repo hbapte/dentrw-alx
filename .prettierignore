@@ -10,3 +10,4 @@ coverage
 .vitest
 node_modules
 dist
+.react-email

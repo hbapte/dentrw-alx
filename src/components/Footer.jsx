@@ -1,5 +1,4 @@
 import { useState } from "react"
-import axios from "axios"
 import { Fade } from "react-awesome-reveal"
 
 const Footer = () => {
@@ -24,22 +23,16 @@ const Footer = () => {
       return
     }
 
-    // ConvertKit API key and form ID
-    const API_KEY = import.meta.env.VITE_CONVERTKIT_API_KEY
-    const FORM_ID = import.meta.env.VITE_CONVERTKIT_FORM_ID
-
     setLoading(true)
 
     try {
-      await axios.post(
-        `https://api.convertkit.com/v3/forms/${FORM_ID}/subscribe`,
-        {
-          api_key: API_KEY,
-          email,
-        }
-      )
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ email }),
+      })
+      if (!res.ok) throw new Error(`Request failed: ${res.status}`)
       setEmail("") // Resetting the email input field after successful submission
-      setLoading(false)
       setSubscribed(true)
 
       setTimeout(() => {
@@ -47,11 +40,12 @@ const Footer = () => {
       }, 3000)
     } catch {
       setErrorMessage("Error occurred. Please try again!")
-      setLoading(false)
 
       setTimeout(() => {
         setErrorMessage("")
       }, 3000)
+    } finally {
+      setLoading(false)
     }
   }
 
