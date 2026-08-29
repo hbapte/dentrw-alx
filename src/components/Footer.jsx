@@ -321,9 +321,10 @@ const Footer = () => {
         </div>
       </div>
       <Fade>
-        <div className="flex flex-col gap-3 border-t px-1 py-3 text-sm sm:flex-row sm:items-center sm:justify-between">
-          <LanguageSwitcher variant="dropdown" />
-          <div className="text-left dark:text-gray-400">©2023 - DentRW</div>
+        <div className="flex flex-wrap justify-between  gap-3 border-t px-1 py-3 text-sm sm:flex-row sm:items-center sm:justify-between">
+          <div className="hidden sm:block">
+            <LanguageSwitcher variant="dropdown" />
+          </div>
           <div>
             Developed by{" "}
             <a
@@ -334,6 +335,11 @@ const Footer = () => {
               {" "}
               hbapte{" "}
             </a>
+          </div>
+          <div className="text-left dark:text-gray-400">©2023 - DentRW</div>
+
+          <div className="block sm:hidden mx-auto">
+            <LanguageSwitcher variant="dropdown" />
           </div>
         </div>
       </Fade>
