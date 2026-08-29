@@ -1,6 +1,8 @@
 import { useState } from "react"
 import { Fade } from "react-awesome-reveal"
 
+import LanguageSwitcher from "./LanguageSwitcher"
+
 const Footer = () => {
   const [email, setEmail] = useState("")
   const [loading, setLoading] = useState(false)
@@ -319,7 +321,8 @@ const Footer = () => {
         </div>
       </div>
       <Fade>
-        <div className="py-2 border-t text-sm px-1 flex justify-between">
+        <div className="flex flex-col gap-3 border-t px-1 py-3 text-sm sm:flex-row sm:items-center sm:justify-between">
+          <LanguageSwitcher variant="dropdown" />
           <div className="text-left dark:text-gray-400">©2023 - DentRW</div>
           <div>
             Developed by{" "}

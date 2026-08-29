@@ -146,9 +146,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: {
-          /* 50..900 blue scale */
-        },
+        primary: {/* 50..900 blue scale */},
       },
     },
   },
