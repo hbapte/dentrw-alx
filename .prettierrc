@@ -24,6 +24,7 @@
     "^[./]"
   ],
   "importOrderParserPlugins": ["typescript", "jsx", "decorators-legacy"],
+  "tailwindStylesheet": "./src/index.css",
   "plugins": [
     "prettier-plugin-tailwindcss",
     "@ianvs/prettier-plugin-sort-imports"

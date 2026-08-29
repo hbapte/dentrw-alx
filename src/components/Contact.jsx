@@ -52,7 +52,7 @@ const Contact = () => {
             Contact
           </p>
           <h3 className="text-3xl sm:text-4xl leading-normal font-extrabold tracking-tight">
-            Get In <span className="text-primary-500">Touch</span>
+            Get In <span className="text-blue-500">Touch</span>
           </h3>
           <p className="mt-4 leading-6 text-gray-950">
             Book an appointment with our doctors, Our team is ready and waiting

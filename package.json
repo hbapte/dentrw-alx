@@ -41,18 +41,11 @@
     "knip": "knip",
     "email": "email dev --dir emails --port 3001"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
+  "browserslist": [
+    "last 2 versions",
+    "not dead",
+    "fully supports es6-module"
+  ],
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json,md,yml,yaml,css}": "prettier --write",
     "*.{js,jsx,ts,tsx}": "oxlint --fix"
@@ -60,12 +53,10 @@
   "devDependencies": {
     "@commitlint/cli": "^21.0.0",
     "@commitlint/config-conventional": "^21.0.0",
-    "@tailwindcss/forms": "^0.5.3",
-    "@tailwindcss/postcss": "^4.3.3",
+    "@tailwindcss/vite": "4",
     "@types/node": "^26.0.0",
     "@vitejs/plugin-react": "^6.1.1",
     "jsdom": "^30.0.1",
-    "postcss": "^8.5.26",
     "react-email": "^6.9.3",
     "tailwindcss": "^4.3.3",
     "typescript": "^7.0.0",
