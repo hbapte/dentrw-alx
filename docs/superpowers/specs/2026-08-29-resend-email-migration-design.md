@@ -1,4 +1,4 @@
-# Resend + React Email migration — design
+# Resend + React Email migration - design
 
 **Date:** 2026-08-29
 **Status:** Approved (design)
@@ -13,16 +13,16 @@ bundled into the client.
 
 We want to move appointment email to **Resend** with **React Email** templates. Resend's
 API key is a secret and cannot be called from the browser, so this requires introducing
-server-side code — which the project (a client-only Vite SPA on Vercel) does not have today.
+server-side code - which the project (a client-only Vite SPA on Vercel) does not have today.
 
 ## Decisions
 
 | Question                               | Decision                                                                                                                             |
 | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | Which emails on booking                | Admin notification **and** patient confirmation                                                                                      |
-| Language for the new server/email code | **`.ts` / `.tsx`** for `api/`, `emails/`, `config/` only — no type annotations, no CI type-check. Everything in `src/` stays `.jsx`. |
+| Language for the new server/email code | **`.ts` / `.tsx`** for `api/`, `emails/`, `config/` only - no type annotations, no CI type-check. Everything in `src/` stays `.jsx`. |
 | Newsletter (ConvertKit)                | Move the call **server-side**, keep ConvertKit as the provider                                                                       |
-| Email branding                         | Text wordmark "DentRW" in brand blue `#2563eb` — no logo image                                                                       |
+| Email branding                         | Text wordmark "DentRW" in brand blue `#2563eb` - no logo image                                                                       |
 | Spam protection                        | Hidden honeypot field + best-effort in-memory per-IP rate limit                                                                      |
 | Email localization                     | English only for now (site is EN/FR; localization is a follow-up)                                                                    |
 | Server hosting                         | Vercel serverless functions in `/api`, logic shared with a Vite dev middleware                                                       |
@@ -30,7 +30,7 @@ server-side code — which the project (a client-only Vite SPA on Vercel) does n
 ### Why a TS surface
 
 Vercel's serverless bundler (`@vercel/node`) compiles imported `.ts` / `.tsx` files but
-copies `.jsx` files **raw** — a `.jsx` React Email template imported by an `/api` function
+copies `.jsx` files **raw** - a `.jsx` React Email template imported by an `/api` function
 would crash at runtime (Node cannot parse JSX). The transform also needs a `tsconfig.json`
 with `jsx: "react-jsx"`. So the email/API layer must be `.ts` / `.tsx`.
 
@@ -38,7 +38,7 @@ This is **not** a TypeScript adoption: the files carry no type annotations (they
 same JS with an `x`/`ts` extension), the repo's existing `typescript` + `@types/node`
 devDependencies already cover it, and **no `tsc` / type-check step is added to any npm
 script or to CI**. The added `tsconfig.json` is a build-tool hint consumed by Vercel's
-bundler, Vite/esbuild, and editors — nothing runs it.
+bundler, Vite/esbuild, and editors - nothing runs it.
 
 ## Approach (chosen: A)
 
@@ -50,13 +50,13 @@ and dev/prod run identical logic.
 
 Rejected:
 
-- **`vercel dev` for local** — requires the Vercel CLI, `vercel link`, and a login; changes
+- **`vercel dev` for local** - requires the Vercel CLI, `vercel link`, and a login; changes
   the documented single-command `bun run dev` workflow the CRA→Vite migration worked to keep.
-- **Standalone Hono/Express service** — two endpoints do not justify a second deploy
+- **Standalone Hono/Express service** - two endpoints do not justify a second deploy
   target, CORS config, and a separate env surface.
-- **`.jsx` templates + a prebuild esbuild step** — makes dev import source while prod
+- **`.jsx` templates + a prebuild esbuild step** - makes dev import source while prod
   imports compiled output, plus a build script to maintain.
-- **`.js` templates with `React.createElement`** — portable but verbose and inconsistent
+- **`.js` templates with `React.createElement`** - portable but verbose and inconsistent
   with how the rest of the repo writes components.
 
 ## File layout
@@ -65,7 +65,7 @@ Rejected:
 tsconfig.json                    # build-only: jsx + module resolution for the TS surface
 config/
   brand.ts                       # name, url, brand blue, clinic phone/email/address/hours
-  services.ts                    # [{ value, label }] — single source for <select> + email labels
+  services.ts                    # [{ value, label }] - single source for <select> + email labels
 api/
   contact.ts                     # Vercel fn: method + body + IP plumbing -> processContact()
   subscribe.ts                   # Vercel fn: -> processSubscribe()
@@ -95,7 +95,7 @@ docs/
   (`import { sendJson } from "./http.js"` from a `.ts` file). This is the `NodeNext`
   convention: TS resolves `.js` → the `.ts`/`.tsx` source, and the name Vercel emits and
   Node runs at runtime is `.js`. Vite/esbuild resolve it too.
-- `vite/api-plugin.mjs` is `.mjs` (ESM) — it is only ever loaded by Vite's config, and it
+- `vite/api-plugin.mjs` is `.mjs` (ESM) - it is only ever loaded by Vite's config, and it
   uses `server.ssrLoadModule` (below) so it needs no compilation of its own. (`.mjs` rather
   than `.js` because the repo has no `"type": "module"`; a `.js` here triggers a Vite
   config-loader warning.)
@@ -122,7 +122,7 @@ docs/
 
 Deliberately minimal: `module` / `moduleResolution` do not affect Vite/esbuild transforms,
 so the client build is unchanged, and `jsx: "react-jsx"` already matches
-`@vitejs/plugin-react`. Not referenced by any script — `bun run build` stays `vite build`;
+`@vitejs/plugin-react`. Not referenced by any script - `bun run build` stays `vite build`;
 CI stays `format` / `lint` / `test` / `build`. Vercel's `@vercel/node` compiles the
 functions to CommonJS (a `.ts` entrypoint with no `"type": "module"`), which the plain
 `import` / `export` source emits to cleanly.
@@ -163,7 +163,7 @@ export const services = [
 ]
 
 export function serviceLabel(value) {
-  return services.find((s) => s.value === value)?.label ?? value ?? "—"
+  return services.find((s) => s.value === value)?.label ?? value ?? "-"
 }
 ```
 
@@ -190,19 +190,19 @@ export const ADMIN = process.env.ADMIN_EMAIL ?? "ijbapte@gmail.com"
 ```
 
 - Errors are returned, not thrown (`{ success: false, error }`).
-- No top-level throw when `RESEND_API_KEY` is missing — the send call surfaces the error so
+- No top-level throw when `RESEND_API_KEY` is missing - the send call surfaces the error so
   a misconfigured deploy returns a clean 500 instead of crashing on import.
 
 ### `api/_lib/http.ts`
 
-- `readJsonBody(req)` — returns `req.body` if already an object (Vercel pre-parses JSON),
+- `readJsonBody(req)` - returns `req.body` if already an object (Vercel pre-parses JSON),
   else reads the stream and `JSON.parse`s it (Vite dev). Throws on malformed JSON.
-- `sendJson(res, status, body)` — sets status + `content-type: application/json`, ends.
-- `clientIp(req)` — first entry of `x-forwarded-for`, else `req.socket?.remoteAddress ?? ""`.
+- `sendJson(res, status, body)` - sets status + `content-type: application/json`, ends.
+- `clientIp(req)` - first entry of `x-forwarded-for`, else `req.socket?.remoteAddress ?? ""`.
 
 ### `api/_lib/rate-limit.ts`
 
-- `rateLimit(key, { max = 5, windowMs = 60_000 } = {})` — module-scoped
+- `rateLimit(key, { max = 5, windowMs = 60_000 } = {})` - module-scoped
   `Map<string, number[]>` of timestamps; prunes entries older than `windowMs`; returns
   `{ ok: boolean }`. `key` is `"<route>:<ip>"`.
 - **Known limitation:** serverless instances are ephemeral and not shared, so the window
@@ -278,7 +278,7 @@ export default async function handler(req, res) {
 ```
 
 Loading handlers through `server.ssrLoadModule` means Vite transpiles the `.ts`/`.tsx`
-chain (including the email templates) on demand — the plugin itself needs no build step.
+chain (including the email templates) on demand - the plugin itself needs no build step.
 Added to `vite.config.mjs` `plugins` after `react()`.
 
 ## Client changes
@@ -326,31 +326,31 @@ from `package.json` in the same step that drops `@emailjs/browser`.
 
 - `@react-email/components`, `<Tailwind>` with `pixelBasedPreset`, `<Head />` inside
   `<Tailwind>`, `<Preview>` first inside `<Body>`, container ~600px, no images.
-- `EmailLayout.tsx` — props `{ preview, children }`. Header: "DentRW" bold text in
+- `EmailLayout.tsx` - props `{ preview, children }`. Header: "DentRW" bold text in
   `#2563eb`. Footer: clinic phone, email, address from `config/brand.ts`.
-- **AppointmentRequest.tsx** — props `{ name, email, phone, service, date, time, message }`.
+- **AppointmentRequest.tsx** - props `{ name, email, phone, service, date, time, message }`.
   "New appointment request" + a `<Section>` of label/value rows.
-- **AppointmentConfirmation.tsx** — props `{ name, service, date, time }`. "We received
+- **AppointmentConfirmation.tsx** - props `{ name, service, date, time }`. "We received
   your request" + restates service/date/time, clinic hours + phone, "the clinic will
   contact you to confirm".
 - Each exports `PreviewProps` with realistic sample data for `bun run email`.
 
 ## Environment variables
 
-All server-side — **no `VITE_` prefix**, so never bundled into the client.
+All server-side - **no `VITE_` prefix**, so never bundled into the client.
 
 | var                  | default in code               | notes                                                                  |
 | -------------------- | ----------------------------- | ---------------------------------------------------------------------- |
-| `RESEND_API_KEY`     | —                             | already in `.env.local`; **rotate** — it was exposed in a chat session |
+| `RESEND_API_KEY`     | -                             | already in `.env.local`; **rotate** - it was exposed in a chat session |
 | `SENDER_EMAIL`       | `dentrwrw@updates.hbapte.com` | domain must be verified in Resend                                      |
 | `SENDER_NAME`        | `DentRW`                      |                                                                        |
 | `ADMIN_EMAIL`        | `ijbapte@gmail.com`           | booking notifications land here                                        |
-| `CONVERTKIT_API_KEY` | —                             | renamed from `VITE_CONVERTKIT_API_KEY`                                 |
-| `CONVERTKIT_FORM_ID` | —                             | renamed from `VITE_CONVERTKIT_FORM_ID`                                 |
+| `CONVERTKIT_API_KEY` | -                             | renamed from `VITE_CONVERTKIT_API_KEY`                                 |
+| `CONVERTKIT_FORM_ID` | -                             | renamed from `VITE_CONVERTKIT_FORM_ID`                                 |
 
 Removed: `VITE_EMAILJS_SERVICE_ID`, `VITE_EMAILJS_TEMPLATE_ID`, `VITE_EMAILJS_PUBLIC_KEY`.
 
-`.env.example` updated to match (committed). `.env.local` is the developer's own file —
+`.env.example` updated to match (committed). `.env.local` is the developer's own file -
 set the same six vars there for local dev. The six vars must also be added in the Vercel
 project dashboard before the branch is merged.
 
@@ -358,11 +358,11 @@ project dashboard before the branch is merged.
 
 - **add** `resend`, `@react-email/components`
 - **add dev** `react-email` (the `email` CLI)
-- **remove** `@emailjs/browser`, and `axios` (as-built — it was already dead after the
+- **remove** `@emailjs/browser`, and `axios` (as-built - it was already dead after the
   Footer change)
 - already present, reused: `typescript`, `@types/node`, `react`, `react-dom`
 - `render` for tests is imported from `@react-email/components` (it re-exports
-  `@react-email/render`) — no separate dep
+  `@react-email/render`) - no separate dep
 - new script: `"email": "email dev --dir emails --port 3001"` (3000 is Vite's)
 - `knip.json` (as-built): `entry` = `api/**/*.ts`, `emails/**/*.tsx`, `vite/api-plugin.mjs`;
   `ignoreDependencies` = `["@react-email/ui"]` (a phantom import knip finds inside

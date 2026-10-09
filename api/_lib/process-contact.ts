@@ -43,7 +43,7 @@ export async function processContact(body, { ip }) {
   const adminResult = await sendEmail({
     to: ADMIN,
     replyTo: email,
-    subject: `New appointment request — ${name}`,
+    subject: `New appointment request - ${name}`,
     react: createElement(AppointmentRequest, details),
   })
   if (!adminResult.success) {

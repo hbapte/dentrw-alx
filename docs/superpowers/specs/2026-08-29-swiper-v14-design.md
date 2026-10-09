@@ -1,4 +1,4 @@
-# Swiper 9 → 14 upgrade — design
+# Swiper 9 → 14 upgrade - design
 
 **Date:** 2026-08-29
 **Status:** Approved (design)
@@ -37,7 +37,7 @@ Swiper 11 moved module imports from `"swiper"` to `"swiper/modules"`:
 ```
 
 `swiper/react`, the three `swiper/css*` imports, and every `<Swiper>` / `<SwiperSlide>`
-prop used here are unchanged through v14. Swiper 14 is ESM-only (`.mjs`) — Vite/Vitest
+prop used here are unchanged through v14. Swiper 14 is ESM-only (`.mjs`) - Vite/Vitest
 handle that already.
 
 ## Decisions
@@ -63,18 +63,18 @@ minimum Swiper wants (`slidesPerView * 2 <= slides`). If the console logs a
 
 ## Verification
 
-- `bun run build` / `lint` / `format` / `test` (35 — there is no Swiper test; this only
+- `bun run build` / `lint` / `format` / `test` (35 - there is no Swiper test; this only
   confirms nothing else regressed).
 - Dev server: the carousel autoplays (4s), pagination bullets render and are clickable, the
   custom prev/next arrow buttons advance it, the 768 / 1524 breakpoints change
   slides-per-view, and `loop` wraps cleanly across the 6 testimonials.
 - Browser console: no Swiper deprecation warnings.
-- Eyeball the default pagination bullets / theme colour — Swiper's defaults shifted slightly
+- Eyeball the default pagination bullets / theme colour - Swiper's defaults shifted slightly
   between v9 and v14 and this component uses them as-is.
 - Vercel preview.
 
 ## Out of scope
 
-- Swiper Element / web-component API (not used — this is the React component API).
+- Swiper Element / web-component API (not used - this is the React component API).
 - Restyling the pagination or navigation.
 - Adding a Testimonials component test.

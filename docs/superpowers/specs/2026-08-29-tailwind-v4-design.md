@@ -1,4 +1,4 @@
-# Tailwind CSS v3 → v4 upgrade — design
+# Tailwind CSS v3 → v4 upgrade - design
 
 **Date:** 2026-08-29
 **Status:** Approved (design)
@@ -24,10 +24,10 @@ Current state worth noting:
 
 | Question              | Decision                                                                                                                                   |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| Browser-support floor | Adopt v4's baseline (Safari 16.4+, Chrome 111+, Firefox 128+ — pre-2023 browsers drop). Update the `package.json` `browserslist` to match. |
+| Browser-support floor | Adopt v4's baseline (Safari 16.4+, Chrome 111+, Firefox 128+ - pre-2023 browsers drop). Update the `package.json` `browserslist` to match. |
 | Build integration     | `@tailwindcss/vite` plugin. Delete `postcss.config.js`; remove `postcss` + `autoprefixer` (v4 vendor-prefixes via Lightning CSS).          |
-| Config file           | Delete `tailwind.config.js` — nothing to migrate. No `@config` directive.                                                                  |
-| `@tailwindcss/forms`  | Remove — it was never active.                                                                                                              |
+| Config file           | Delete `tailwind.config.js` - nothing to migrate. No `@config` directive.                                                                  |
+| `@tailwindcss/forms`  | Remove - it was never active.                                                                                                              |
 
 ## Approach
 
@@ -92,7 +92,7 @@ stays at `^0.8.1` (already v4-aware).
 - **add** `tailwindcss@4`, `@tailwindcss/vite@4` (dev)
 - **remove** `autoprefixer`, `postcss`, `@tailwindcss/forms`
 - `browserslist` → a modern baseline, e.g.
-  `["last 2 versions", "not dead", "fully supports es6-module"]` (documentation only — no
+  `["last 2 versions", "not dead", "fully supports es6-module"]` (documentation only - no
   tool consumes it once autoprefixer is gone)
 
 ### Deletions
@@ -103,20 +103,20 @@ stays at `^0.8.1` (already v4-aware).
 ## Not migrated / left alone
 
 - `top-[var(--announcement-height)]` / `mt-[calc(var(--announcement-height)+3rem)]` /
-  `animate-[announcement-slide-down_200ms_ease-out]` — arbitrary-value syntax still works in
+  `animate-[announcement-slide-down_200ms_ease-out]` - arbitrary-value syntax still works in
   v4; no need to convert to the `top-(--var)` shorthand.
-- `bg-blue-gray-*` / `text-blue-gray-*` classes (5 uses) — `blue-gray` is undefined in v3
+- `bg-blue-gray-*` / `text-blue-gray-*` classes (5 uses) - `blue-gray` is undefined in v3
   too, so these are already no-ops; v4 changes nothing.
-- `@keyframes` stays as plain CSS rather than moving to `@theme { --animate-* }` — it works
+- `@keyframes` stays as plain CSS rather than moving to `@theme { --animate-* }` - it works
   and the arbitrary `animate-[…]` reference resolves to it.
 
 ## Verification
 
-- `bun run build` — the Vite build produces a CSS bundle; check its size is comparable.
+- `bun run build` - the Vite build produces a CSS bundle; check its size is comparable.
 - `bun run test` (35), `bun run lint`, `bun run format`.
 - `npx tailwindcss` is not invoked directly anywhere; the only entry point is the Vite
   plugin.
-- **Visual regression** — dev server, before/after screenshots at desktop **and** mobile
+- **Visual regression** - dev server, before/after screenshots at desktop **and** mobile
   width of: Hero, Services, Contact form, Footer (newsletter input + `focus:ring`),
   Testimonials, the announcement bar. v4's changes to shadows, `ring` default width
   (3px → 1px), and the `space-*` / `divide-*` selector (`> * + *` → `:not(:last-child)`)
@@ -125,16 +125,16 @@ stays at `^0.8.1` (already v4-aware).
 
 ## Risks
 
-- **Vite 8** — `@tailwindcss/vite@4.3.3` peer-declares `vite: ^5.2 || ^6 || ^7 || ^8`;
+- **Vite 8** - `@tailwindcss/vite@4.3.3` peer-declares `vite: ^5.2 || ^6 || ^7 || ^8`;
   still, exercise `bun run dev` and `bun run build` immediately after wiring the plugin.
-- **`space-*` / `divide-*` selector change** — present in Hero/Footer/FAQs/Navbar. Usually
+- **`space-*` / `divide-*` selector change** - present in Hero/Footer/FAQs/Navbar. Usually
   transparent; the screenshot pass is the safety net. If something breaks, the fix is
   local (swap to `gap-*` on a flex/grid parent).
-- **vitest CSS handling** (`css: true` in `vite.config.mjs` `test`) — the shared Vite config
+- **vitest CSS handling** (`css: true` in `vite.config.mjs` `test`) - the shared Vite config
   means the Tailwind plugin runs during tests too. If it slows the suite or errors on
   `@import "tailwindcss"`, set `test.css = false` (the tests assert on DOM/text, not
   computed styles).
-- **`focus:outline-none` → `focus:outline-hidden`** on the Footer newsletter input — the
+- **`focus:outline-none` → `focus:outline-hidden`** on the Footer newsletter input - the
   codemod handles the rename; verify the focus ring still shows.
 
 ## Out of scope

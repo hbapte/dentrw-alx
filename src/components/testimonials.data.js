@@ -2,7 +2,7 @@ import Olivier from "./Images/olivier.png"
 
 // Patient testimonials shown in the Testimonials carousel.
 // `rating` is out of 5 and may be a half (e.g. 4.5).
-// NOTE: content is carried over verbatim from the previous markup — the
+// NOTE: content is carried over verbatim from the previous markup - the
 // NDIKUMANA and RUSHATI quotes are identical in the source, and a few typos
 // remain. Left as-is for this refactor; worth a copy pass separately.
 export const testimonials = [

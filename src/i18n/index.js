@@ -5,7 +5,7 @@ import { initReactI18next } from "react-i18next"
 export const SUPPORTED_LANGUAGES = ["en", "fr"]
 
 // Auto-load every locale namespace: src/i18n/locales/<lng>/<namespace>.json
-// Adding a namespace is just adding the two JSON files — no edit here.
+// Adding a namespace is just adding the two JSON files - no edit here.
 const modules = import.meta.glob("./locales/*/*.json", { eager: true })
 const resources = {}
 for (const [path, mod] of Object.entries(modules)) {

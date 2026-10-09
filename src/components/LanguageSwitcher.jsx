@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next"
 
 import { SUPPORTED_LANGUAGES } from "../i18n"
 
-// Inline SVGs so the flags render identically on every OS — Windows ships no
+// Inline SVGs so the flags render identically on every OS - Windows ships no
 // emoji flag glyphs and would show "GB" / "FR" as letters instead.
 // Both use a 3:2 viewBox so they share a baseline. The hairline ring keeps the
 // white areas from disappearing against a white background.

@@ -51,6 +51,6 @@ bun run knip         # dead code / unused exports
 
 ## Pull requests
 
-- Keep PRs focused on one thing — open multiple small PRs rather than one large one
+- Keep PRs focused on one thing - open multiple small PRs rather than one large one
 - CI must pass before merging (lint, format, tests)
 - Use the PR template in `.github/pull_request_template.md`

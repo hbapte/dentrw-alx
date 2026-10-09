@@ -1,9 +1,9 @@
-# Plan 002: Remove dead code — unused deps and orphan files
+# Plan 002: Remove dead code - unused deps and orphan files
 
 > **Executor instructions**: Follow this plan step by step. Run every
 > verification command and confirm the expected result before moving to the
 > next step. If anything in the "STOP conditions" section occurs, stop and
-> report — do not improvise. When done, update the status row for this plan
+> report - do not improvise. When done, update the status row for this plan
 > in `plans/README.md`.
 >
 > **Drift check (run first)**:
@@ -29,13 +29,13 @@ repo has four orphan component files plus a `reportWebVitals.js` that is both
 unused and broken against the installed `web-vitals` v6 API. Every one of these
 unused deps is surface area for Renovate PRs, `bun audit` noise, and reviewer
 confusion (there have already been multiple Renovate PRs bumping
-`react-router-dom` and `web-vitals` — churn on code that does nothing). Removing
+`react-router-dom` and `web-vitals` - churn on code that does nothing). Removing
 them shrinks the dependency tree, kills the churn, and makes the Vite migration
 (plan 003) smaller.
 
 ## Current state
 
-### Unused dependencies (verified — zero import sites)
+### Unused dependencies (verified - zero import sites)
 
 `grep -rn 'from "react-hook-form"\|from "react-router-dom"\|from "@emotion/react"\|from "web-vitals"' src/`
 returns **nothing**. Cross-checked: the complete set of bare (non-relative)
@@ -46,15 +46,15 @@ imports in `src/` is:
 react-dom/client, react-scroll, swiper, swiper/react
 ```
 
-- `react-hook-form` — never imported. `Contact.js` uses a plain `useRef` form;
+- `react-hook-form` - never imported. `Contact.js` uses a plain `useRef` form;
   `Footer.js` uses `useState`.
-- `react-router-dom` — never imported. `src/App.js` renders a flat page, no
+- `react-router-dom` - never imported. `src/App.js` renders a flat page, no
   routing.
-- `@emotion/react` — never imported. (Was likely a transitive assumption; not
-  needed — the project uses Tailwind, not Emotion.)
-- `web-vitals` — imported only by `src/reportWebVitals.js` (see below).
+- `@emotion/react` - never imported. (Was likely a transitive assumption; not
+  needed - the project uses Tailwind, not Emotion.)
+- `web-vitals` - imported only by `src/reportWebVitals.js` (see below).
 
-`package.json` dependency lines (do not copy versions elsewhere — just delete
+`package.json` dependency lines (do not copy versions elsewhere - just delete
 these keys):
 
 ```json
@@ -64,7 +64,7 @@ these keys):
     "web-vitals": "^6.0.0",
 ```
 
-### `src/reportWebVitals.js` — unused and broken
+### `src/reportWebVitals.js` - unused and broken
 
 Entire file:
 
@@ -114,18 +114,18 @@ root.render(
 reportWebVitals()
 ```
 
-### Orphan component files (verified — imported nowhere)
+### Orphan component files (verified - imported nowhere)
 
 `grep -rn "components/404\|components/Sign\|components/Subscribe\|components/Terms" src/`
 returns **nothing**.
 
-- `src/components/404.js` — 7 lines, stub.
-- `src/components/Terms.js` — 7 lines, stub.
-- `src/components/Subscribe.js` — 89 lines, **mostly commented-out code**; a dead
+- `src/components/404.js` - 7 lines, stub.
+- `src/components/Terms.js` - 7 lines, stub.
+- `src/components/Subscribe.js` - 89 lines, **mostly commented-out code**; a dead
   duplicate of the newsletter form that already lives (working) in
   `src/components/Footer.js`.
-- `src/components/Sign.js` — 159 lines, a real login-form UI. **KEEP THIS ONE.**
-  The README roadmap lists "User accounts — Patient login"; this file is the
+- `src/components/Sign.js` - 159 lines, a real login-form UI. **KEEP THIS ONE.**
+  The README roadmap lists "User accounts - Patient login"; this file is the
   starting point for that work. It's out of scope for deletion.
 
 ### Conventions
@@ -139,7 +139,7 @@ returns **nothing**.
 | Purpose               | Command                 | Expected on success                                 |
 | --------------------- | ----------------------- | --------------------------------------------------- |
 | Install / update lock | `bun install`           | exit 0; only `bun.lock` changes                     |
-| Dead-code check       | `bun run knip`          | exit 0 (or pre-existing findings only — see Step 4) |
+| Dead-code check       | `bun run knip`          | exit 0 (or pre-existing findings only - see Step 4) |
 | Tests                 | `CI=true bun run test`  | all pass, exit 0                                    |
 | Lint                  | `bun run lint`          | exit 0                                              |
 | Format check          | `bun run format`        | exit 0                                              |
@@ -159,12 +159,12 @@ returns **nothing**.
 
 **Out of scope** (do NOT touch):
 
-- `src/components/Sign.js` — keep; it's the seed for the roadmap's patient-portal
+- `src/components/Sign.js` - keep; it's the seed for the roadmap's patient-portal
   feature.
-- Adding a router or a 404 route — when routing is introduced later,
+- Adding a router or a 404 route - when routing is introduced later,
   `react-router-dom` gets re-added deliberately at a known-good version.
 - Any other component.
-- `web-vitals` re-implementation — if performance monitoring is wanted later,
+- `web-vitals` re-implementation - if performance monitoring is wanted later,
   it should be added fresh against the current API, not resurrected from this
   file.
 
@@ -245,14 +245,14 @@ Leave `src/components/Sign.js` in place.
 Run `bun run knip`.
 
 Expected: knip may still report pre-existing issues (for example it will now
-flag `src/components/Sign.js` as an unused file — that is **expected and
+flag `src/components/Sign.js` as an unused file - that is **expected and
 accepted**; we are deliberately keeping it). What must NOT appear: any _new_
 error caused by your edits, e.g. a broken import in `src/index.js`, or a
 reference to a file you deleted.
 
 **Verify**: `bun run knip` output contains no "Unresolved import" / "Unlisted
 dependency" entries pointing at files or packages you touched. If it does, you
-broke a reference — fix it or STOP.
+broke a reference - fix it or STOP.
 
 ### Step 5: Full verification
 
@@ -273,9 +273,9 @@ CI=true bun run build
 
 - No new tests. This plan only removes code.
 - Regression guard: the existing tests from plan 001
-  (`src/App.test.js`, `src/components/AnnouncementBar.test.js`) must still pass —
+  (`src/App.test.js`, `src/components/AnnouncementBar.test.js`) must still pass -
   they exercise the render path through `src/index.js`'s tree.
-- `CI=true bun run build` must still succeed — proves nothing that Webpack
+- `CI=true bun run build` must still succeed - proves nothing that Webpack
   bundles was actually depending on a removed package transitively in a way that
   breaks the build.
 
@@ -308,11 +308,11 @@ Stop and report back (do not improvise) if:
 ## Maintenance notes
 
 - If routing is added later (patient portal, a real 404 page, `/terms`),
-  re-add `react-router-dom` explicitly and pin a known-good version — don't
+  re-add `react-router-dom` explicitly and pin a known-good version - don't
   assume the old `^7.0.0` range.
 - `src/components/Sign.js` is intentionally retained as dead code. Whoever picks
   up the patient-accounts roadmap item should wire it to a route + auth, or
-  delete it if the design changes. `knip` will keep flagging it until then —
+  delete it if the design changes. `knip` will keep flagging it until then -
   that's fine.
 - Plan 003 (Vite) no longer needs to handle `reportWebVitals.js` or the
   `web-vitals` dep once this plan lands.

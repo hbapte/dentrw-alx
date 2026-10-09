@@ -196,7 +196,7 @@ const AnnouncementBar = () => {
     try {
       localStorage.setItem(STORAGE_KEY, ANNOUNCEMENT_ID)
     } catch {
-      // storage unavailable (private mode, disabled) — dismiss for this session only
+      // storage unavailable (private mode, disabled) - dismiss for this session only
     }
     setDismissed(true)
   }
@@ -281,7 +281,7 @@ git commit -m "feat: make the announcement bar dismissible and publish its heigh
 - Modify: `src/components/Navbar.jsx`
 - Modify: `src/components/Hero.jsx`
 
-- [ ] **Step 1: Navbar — position below the announcement bar**
+- [ ] **Step 1: Navbar - position below the announcement bar**
 
 In `src/components/Navbar.jsx`, in the `<header>` `className` template literal, change
 `fixed top-8` to `fixed top-[var(--announcement-height)]`. The line currently reads:
@@ -296,7 +296,7 @@ and becomes:
       className={`fixed top-[var(--announcement-height)] w-full flex items-center justify-between px-4 py-3 text-blue-900 transition-all ${
 ```
 
-- [ ] **Step 2: Hero — replace the magic top margin**
+- [ ] **Step 2: Hero - replace the magic top margin**
 
 In `src/components/Hero.jsx`, the `<h2>` currently reads:
 
@@ -319,7 +319,7 @@ Expected: all PASS (33+ tests; the 2 new ones included).
 
 Run `bun run dev`. In the browser at a mobile width (~390px):
 
-- The navbar (`DentRW` + hamburger) sits **below** the announcement bar, not on top of it —
+- The navbar (`DentRW` + hamburger) sits **below** the announcement bar, not on top of it -
   check in English and after switching to French (longer copy, wraps to 2 lines).
 - Click the `×`: the bar disappears and the navbar slides up to the very top; the hero
   headline still has clear space above it.
@@ -370,31 +370,31 @@ Wait for `lint`, `format`, `test`, `build` to pass on the PR.
 
 ## Self-review notes
 
-- **`useLayoutEffect` + SSR** — this is a client-only Vite SPA (`ReactDOM.createRoot`), so
+- **`useLayoutEffect` + SSR** - this is a client-only Vite SPA (`ReactDOM.createRoot`), so
   `useLayoutEffect` is safe; there is no server render to warn about.
-- **jsdom** — `ResizeObserver` and `matchMedia` are already mocked in `src/setupTests.js`, so
+- **jsdom** - `ResizeObserver` and `matchMedia` are already mocked in `src/setupTests.js`, so
   the component mounts cleanly in tests. The `ResizeObserver` mock never fires its callback;
   the component's initial synchronous `measure()` call is what matters and it is covered by
   the mount in every test.
-- **Tailwind arbitrary values** — `top-[var(--announcement-height)]` and
+- **Tailwind arbitrary values** - `top-[var(--announcement-height)]` and
   `mt-[calc(var(--announcement-height)+3rem)]` are valid Tailwind 3.3 arbitrary values; no
   `tailwind.config.js` change needed. `animate-[announcement-slide-down_200ms_ease-out]`
   references the keyframe added to `index.css` in Task 1.
-- **`motion-reduce:animate-none`** — Tailwind's built-in `prefers-reduced-motion` variant;
+- **`motion-reduce:animate-none`** - Tailwind's built-in `prefers-reduced-motion` variant;
   no extra config.
 
 ---
 
 ## As-built deviations
 
-- **Session-only dismiss** (user follow-up) — dropped `localStorage` / `ANNOUNCEMENT_ID` /
+- **Session-only dismiss** (user follow-up) - dropped `localStorage` / `ANNOUNCEMENT_ID` /
   `STORAGE_KEY` entirely. `useState(false)`; a refresh brings the bar back. Task 1's
   `announcement.dismiss` i18n key and Task 2's dismiss button are unchanged; the persistence
   test became "comes back on a fresh mount".
-- **`window.resize` listener added** alongside the `ResizeObserver` in the layout effect —
+- **`window.resize` listener added** alongside the `ResizeObserver` in the layout effect -
   belt-and-braces so the height stays correct after an orientation/viewport change even when
   the tab is backgrounded (rAF-throttled, which starves `ResizeObserver` delivery).
-- **No `src/setupTests.js` change** — the localStorage polyfill from an earlier draft was
+- **No `src/setupTests.js` change** - the localStorage polyfill from an earlier draft was
   reverted with the session-only pivot.
 - **Browser-verified** (dev server, JS measurement): 1-line bar → `--announcement-height: 36px`,
   navbar `top: 36px`, no overlap; forced 2-line bar (56px) + `resize` → var tracks to `56px`,

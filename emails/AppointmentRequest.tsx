@@ -12,7 +12,7 @@ function DetailRow({ label, value }) {
       </Column>
       <Column className="align-top">
         <Text className="m-0 py-[4px] text-[14px] text-gray-900">
-          {value || "—"}
+          {value || "-"}
         </Text>
       </Column>
     </Row>

@@ -1,20 +1,20 @@
-# Plan 005: i18n foundation — react-i18next setup + first slice
+# Plan 005: i18n foundation - react-i18next setup + first slice
 
 > **Executor instructions**: Follow this plan step by step. Run every
 > verification command and confirm the expected result before moving to the
 > next step. If anything in the "STOP conditions" section occurs, stop and
-> report — do not improvise. When done, update the status row for this plan
+> report - do not improvise. When done, update the status row for this plan
 > in `plans/README.md`.
 >
 > This is a **foundation / first-slice** plan. It sets up i18n infrastructure
 > and converts exactly ONE component as the reference pattern. It does NOT
-> translate the whole site — that's a phased follow-up documented in
+> translate the whole site - that's a phased follow-up documented in
 > `docs/i18n.md` (which this plan creates).
 >
 > **Drift check (run first)**:
 > `git diff --stat dca801b..HEAD -- src/ package.json`
 > This plan assumes plan 003 has landed (Vite; components are `.jsx`;
-> `import.meta.env`; Vitest). If `src/App.jsx` does not exist, STOP — plan 003
+> `import.meta.env`; Vitest). If `src/App.jsx` does not exist, STOP - plan 003
 > is a prerequisite.
 
 ## Status
@@ -29,17 +29,17 @@
 ## Why this matters
 
 The README's "Room for Improvement" section explicitly promises _"Multilingual
-support — Add Kinyarwanda and French translations for local accessibility."_ The
+support - Add Kinyarwanda and French translations for local accessibility."_ The
 clinic is in Kigali; a meaningful share of visitors read Kinyarwanda or French
 more comfortably than English. Right now every string is hardcoded English JSX
 across ~14 components and `<html lang>` is a static `"en"`. This plan lays the
-foundation — `react-i18next` wired up, a language switcher, `en`/`rw`/`fr`
-resource files, `<html lang>` synced to the active locale — and converts one
+foundation - `react-i18next` wired up, a language switcher, `en`/`rw`/`fr`
+resource files, `<html lang>` synced to the active locale - and converts one
 component end to end so the rest of the work is mechanical pattern-following.
 It deliberately stops there so the maintainer can decide scope and source real
 translations before a 14-component sweep.
 
-## Open questions for the maintainer (do not decide these — list them in the PR)
+## Open questions for the maintainer (do not decide these - list them in the PR)
 
 1. **Locale in the URL (`/rw/…`) or a runtime toggle?** There's no router today,
    so this plan uses a **runtime toggle + `localStorage`** (simplest, no routing
@@ -49,7 +49,7 @@ translations before a 14-component sweep.
    converted component and `rw`/`fr` as **English placeholders** so nothing
    renders blank. Real translation is a content task.
 3. **Translate the testimonial quotes in `Testimonials.jsx`?** Recommendation:
-   no — translate UI chrome only, leave user quotes in their original language.
+   no - translate UI chrome only, leave user quotes in their original language.
 
 ## Current state
 
@@ -73,7 +73,7 @@ root.render(
 )
 ```
 
-- `src/components/AnnouncementBar.jsx` — the component this plan fully converts
+- `src/components/AnnouncementBar.jsx` - the component this plan fully converts
   (small, always visible, no third-party deps):
 
 ```jsx
@@ -99,18 +99,18 @@ export default AnnouncementBar
 
 - `src/components/AnnouncementBar.test.jsx` exists (from plan 001, renamed by 003) and asserts on the strings `new features and improvements` and
   `explore now`.
-- `src/components/Navbar.jsx` — ~147 lines; renders the top nav. The executor
+- `src/components/Navbar.jsx` - ~147 lines; renders the top nav. The executor
   must read it to place the `<LanguageSwitcher>` sensibly (desktop nav + mobile
   menu).
 - The other ~13 components with hardcoded copy (for the follow-up doc):
   `Navbar`, `Hero`, `Services`, `Insurance`, `Features`, `Team`, `Testimonials`
-  (largest — 821 lines), `FAQs`, `Contact` (form labels, clinic hours, service
+  (largest - 821 lines), `FAQs`, `Contact` (form labels, clinic hours, service
   names), `Footer` (largest after Testimonials), `Sign`.
 
 ### Conventions
 
 - Prettier: no semicolons, double quotes, 2-space indent, `trailingComma: es5`.
-- Vitest with `globals: true` — tests use bare `test()`/`expect()`, no imports
+- Vitest with `globals: true` - tests use bare `test()`/`expect()`, no imports
   of the test API. Setup file `src/setupTests.js`.
 - Component style: function components, `const X = () => { ... }`, default export.
 
@@ -133,16 +133,16 @@ export default AnnouncementBar
   `src/i18n/locales/rw/common.json`, `src/i18n/locales/fr/common.json`
 - new: `src/components/LanguageSwitcher.jsx` (+ `LanguageSwitcher.test.jsx`)
 - edit: `src/index.jsx` (import i18n), `src/App.jsx` (sync `<html lang>`, or do
-  it in `src/i18n/index.js` — see Step 3)
+  it in `src/i18n/index.js` - see Step 3)
 - edit: `src/components/AnnouncementBar.jsx` (+ update its `.test.jsx`)
-- edit: `src/components/Navbar.jsx` (mount `<LanguageSwitcher>` only — do NOT
+- edit: `src/components/Navbar.jsx` (mount `<LanguageSwitcher>` only - do NOT
   translate Navbar's own strings in this plan)
 - new: `docs/i18n.md`
 
 **Out of scope** (do NOT touch):
 
 - Translating any component other than `AnnouncementBar`. `Navbar` gets the
-  switcher mounted but its labels stay hardcoded — converting them is the first
+  switcher mounted but its labels stay hardcoded - converting them is the first
   task of the follow-up sweep.
 - URL/route-based locales.
 - Real Kinyarwanda / French translations (placeholders only).
@@ -188,7 +188,7 @@ bun add i18next react-i18next i18next-browser-languagedetector
 
 `src/i18n/locales/rw/common.json` and `src/i18n/locales/fr/common.json`: **copy
 the `en` file verbatim** (same keys, English values as placeholders). Add a
-top-of-file note is not possible in JSON — instead the follow-up doc (Step 7)
+top-of-file note is not possible in JSON - instead the follow-up doc (Step 7)
 records that `rw` and `fr` values are untranslated placeholders.
 
 **Verify**: all three files `JSON.parse` cleanly; `en` and `rw` and `fr` have
@@ -333,7 +333,7 @@ export default AnnouncementBar
 
 ### Step 6: Update the affected tests
 
-`src/components/AnnouncementBar.test.jsx` — it now renders a component that calls
+`src/components/AnnouncementBar.test.jsx` - it now renders a component that calls
 `useTranslation()`, so it needs i18n initialized. Import the init module at the
 top of the test (side-effect import), and assert on the `en` strings (which are
 the default):
@@ -358,11 +358,11 @@ test("links to the v4 site in a new tab", () => {
 })
 ```
 
-`src/App.test.jsx` (the smoke test) — it renders `<App/>` which now includes
+`src/App.test.jsx` (the smoke test) - it renders `<App/>` which now includes
 `<AnnouncementBar/>` (needs i18n) and `<Navbar/>` (now includes
 `<LanguageSwitcher/>`, needs i18n). Add `import "./i18n"` near the top so the
 provider is ready. The existing assertion (`/DentRW v4 is here/i`) still matches
-the `en` placeholder text — keep it.
+the `en` placeholder text - keep it.
 
 Add `src/components/LanguageSwitcher.test.jsx`:
 
@@ -403,7 +403,7 @@ mechanical:
 - **Stack**: `i18next` + `react-i18next`, runtime language toggle, persisted in
   `localStorage` (`i18nextLng`). Init in `src/i18n/index.js`.
 - **Locales**: `en` (complete, source of truth), `rw` and `fr` (currently
-  English placeholders — real copy needed).
+  English placeholders - real copy needed).
 - **Namespaces**: one file per feature area under
   `src/i18n/locales/<lng>/<namespace>.json`. Start with `common`; add e.g.
   `contact.json`, `services.json` as components are converted. Register new
@@ -420,10 +420,10 @@ mechanical:
 - **Remaining components** (rough string counts to scope the effort), in
   suggested order: `Navbar` (~15), `Hero` (~10), `Services` (~20),
   `Insurance` (~5), `Features` (~15), `Team` (~10), `FAQs` (~20),
-  `Contact` (~30 — form labels, hours, service names), `Footer` (~40),
-  `Testimonials` (UI chrome only, ~10 — leave quotes as-is), `Sign` (~15).
+  `Contact` (~30 - form labels, hours, service names), `Footer` (~40),
+  `Testimonials` (UI chrome only, ~10 - leave quotes as-is), `Sign` (~15).
 - **`<html lang>`**: synced automatically by the `languageChanged` handler in
-  `src/i18n/index.js` — nothing to do per component.
+  `src/i18n/index.js` - nothing to do per component.
 - **Do not translate**: user-generated content (testimonial quotes), brand name
   "DentRW", external URLs.
 
@@ -449,7 +449,7 @@ for `announcement.*` or `language.*`.
 
 ## Test plan
 
-- New tests: `LanguageSwitcher.test.jsx` (2 — renders 3 buttons; click changes
+- New tests: `LanguageSwitcher.test.jsx` (2 - renders 3 buttons; click changes
   `i18n.resolvedLanguage`).
 - Updated tests: `AnnouncementBar.test.jsx` (import i18n; assertions unchanged
   since `en` placeholder text matches), `App.test.jsx` (import i18n).
@@ -480,20 +480,20 @@ Stop and report back (do not improvise) if:
 
 - `src/App.jsx` / `.jsx` components don't exist (plan 003 not landed).
 - `react-i18next` `useTranslation` throws "provider not found" in tests even
-  after the side-effect `import "../i18n"` — note the version and error.
+  after the side-effect `import "../i18n"` - note the version and error.
 - Mounting `<LanguageSwitcher>` in `Navbar.jsx` requires restructuring Navbar's
-  markup more than adding one element in two places — STOP and describe what
+  markup more than adding one element in two places - STOP and describe what
   Navbar looks like; a Navbar refactor is out of scope.
 - `bun run test` fails for the pre-existing tests in a way tied to i18n init
-  order (e.g. tests interfere via shared `i18n` singleton language state) — note
+  order (e.g. tests interfere via shared `i18n` singleton language state) - note
   it; the `changeLanguage("en")` reset in the LanguageSwitcher test is meant to
   prevent this.
 
 ## Maintenance notes
 
-- This is a foundation. The 14-component sweep is tracked in `docs/i18n.md` —
+- This is a foundation. The 14-component sweep is tracked in `docs/i18n.md` -
   each component is an independent, low-risk PR following the documented pattern.
-- Real `rw` / `fr` translations are a content deliverable, not code — until they
+- Real `rw` / `fr` translations are a content deliverable, not code - until they
   land, non-English users see English placeholders (acceptable; better than
   blank).
 - If routing is added later, reconsider URL-based locales (`/rw/…`) + `hreflang`

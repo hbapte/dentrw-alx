@@ -21,7 +21,7 @@ export default defineConfig({
         "safari-pinned-tab.svg",
       ],
       manifest: {
-        name: "DentRW — Dental Clinic",
+        name: "DentRW - Dental Clinic",
         short_name: "DentRW",
         description:
           "Book a dental appointment online with DentRW in Kigali, Rwanda.",

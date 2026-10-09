@@ -1,4 +1,4 @@
-# DentRW — Dental Clinic Website
+# DentRW - Dental Clinic Website
 
 [![Live Demo](https://img.shields.io/badge/Live-dentrw.vercel.app-blue?style=flat-square)](https://dentrw.vercel.app)
 [![v4 Live](https://img.shields.io/badge/v4-dentrw.hbapte.com-6366f1?style=flat-square)](https://dentrw.hbapte.com)
@@ -9,7 +9,7 @@
 
 ![Screenshot](/src/components/Images/screenshot.jpg)
 
-DentRW is a responsive web application for a dental clinic, built as the ALX Software Engineering Frontend final project. It covers appointment booking, newsletter subscription, live chat, and automated data collection — all in a clean, mobile-friendly interface.
+DentRW is a responsive web application for a dental clinic, built as the ALX Software Engineering Frontend final project. It covers appointment booking, newsletter subscription, live chat, and automated data collection - all in a clean, mobile-friendly interface.
 
 > **DentRW v4 is live!** Rebuilt with a new design and additional features.
 > Check it out at [dentrw.hbapte.com](https://dentrw.hbapte.com)
@@ -31,12 +31,12 @@ DentRW is a responsive web application for a dental clinic, built as the ALX Sof
 
 ## Features
 
-- **Responsive Design** — Fully responsive layout that works seamlessly across all screen sizes and devices.
-- **Appointment Booking** — Patients can book appointments online by selecting a service, date, and time. Submissions are sent with Resend using React Email templates, via a Vercel serverless function (`/api/contact`).
-- **Newsletter Subscription** — Visitors can subscribe to clinic updates and announcements. The signup is forwarded to ConvertKit server-side (`/api/subscribe`) so no API key ships to the browser.
-- **Live Chat (Typebot)** — 24/7 chatbot assistant for instant support and guidance.
-- **Data Collection Automation** — Resend delivers the appointment emails (clinic notification + patient confirmation); ConvertKit manages newsletter subscribers.
-- **Analytics** — Google Analytics tracks visitor behaviour to inform future improvements.
+- **Responsive Design** - Fully responsive layout that works seamlessly across all screen sizes and devices.
+- **Appointment Booking** - Patients can book appointments online by selecting a service, date, and time. Submissions are sent with Resend using React Email templates, via a Vercel serverless function (`/api/contact`).
+- **Newsletter Subscription** - Visitors can subscribe to clinic updates and announcements. The signup is forwarded to ConvertKit server-side (`/api/subscribe`) so no API key ships to the browser.
+- **Live Chat (Typebot)** - 24/7 chatbot assistant for instant support and guidance.
+- **Data Collection Automation** - Resend delivers the appointment emails (clinic notification + patient confirmation); ConvertKit manages newsletter subscribers.
+- **Analytics** - Google Analytics tracks visitor behaviour to inform future improvements.
 
 ---
 
@@ -107,8 +107,8 @@ Thanks to the following tools and resources that made this project possible:
 - [React Email](https://react.email)
 - [ConvertKit](https://convertkit.com)
 - [Typebot](https://www.typebot.io)
-- [Free Frontend](https://freefrontend.com) — UI component inspiration
-- [Componentland](https://component.land) — UI component inspiration
+- [Free Frontend](https://freefrontend.com) - UI component inspiration
+- [Componentland](https://component.land) - UI component inspiration
 
 Special thanks to the ALX Graduation Program for the opportunity to build and ship this project.
 
@@ -116,12 +116,12 @@ Special thanks to the ALX Graduation Program for the opportunity to build and sh
 
 ## Room for Improvement
 
-- **Online payments** — Integrate a payment gateway for deposits or consultation fees.
-- **Electronic health records** — Allow patients to view their appointment history securely.
-- **User accounts** — Patient login for managing bookings and preferences.
-- **Multilingual support** — Add Kinyarwanda and French translations for local accessibility.
+- **Online payments** - Integrate a payment gateway for deposits or consultation fees.
+- **Electronic health records** - Allow patients to view their appointment history securely.
+- **User accounts** - Patient login for managing bookings and preferences.
+- **Multilingual support** - Add Kinyarwanda and French translations for local accessibility.
 
-Suggestions and contributions are welcome — open an issue or submit a PR.
+Suggestions and contributions are welcome - open an issue or submit a PR.
 
 ---
 

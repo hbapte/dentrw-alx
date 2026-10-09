@@ -3,11 +3,11 @@
 > **Executor instructions**: Follow this plan step by step. Run every
 > verification command and confirm the expected result before moving to the
 > next step. If anything in the "STOP conditions" section occurs, stop and
-> report — do not improvise. When done, update the status row for this plan
+> report - do not improvise. When done, update the status row for this plan
 > in `plans/README.md`.
 >
 > This is a large plan (effort L). Do it on its own branch. The codebase will be
-> briefly non-runnable between Step 3 and Step 8 — that is expected; the gate is
+> briefly non-runnable between Step 3 and Step 8 - that is expected; the gate is
 > the full verification in Step 11, not intermediate runs.
 >
 > **Drift check (run first)**:
@@ -27,12 +27,12 @@
 ## Why this matters
 
 The app runs on Create React App (`react-scripts` 5.0.1), which the React team
-**officially deprecated in February 2025** — no more releases, no React 19
+**officially deprecated in February 2025** - no more releases, no React 19
 guidance, a slow Webpack dev server, and a large unmaintained transitive
 dependency tree that dominates `bun audit` output. Meanwhile this repo's CI,
 `CONTRIBUTING.md`, `.prettierignore` (`.vite`, `.vitest`, `dist`), and
 `.oxlintrc.json` (`next-env.d.ts`) were **already written for a Vite/Vitest
-stack that was never built** — so the tooling and the app disagree. This plan
+stack that was never built** - so the tooling and the app disagree. This plan
 finishes that migration: Vite for dev/build, Vitest for tests. After it, `bun
 run dev` starts in well under a second, the dependency tree shrinks
 substantially, and the CI/docs finally match reality.
@@ -50,7 +50,7 @@ substantially, and the CI/docs finally match reality.
 | `process.env.REACT_APP_*`                                    | `src/components/Contact.js` (×3), `src/components/Footer.js` (×2) | `import.meta.env.VITE_*`                         |
 | `REACT_APP_*` keys                                           | `.env.example`                                                    | `VITE_*`                                         |
 | Jest test setup                                              | `src/setupTests.js`                                               | Vitest setup (jest-dom/vitest import)            |
-| No PostCSS config (CRA built-in)                             | —                                                                 | `postcss.config.js` (tailwind + autoprefixer)    |
+| No PostCSS config (CRA built-in)                             | -                                                                 | `postcss.config.js` (tailwind + autoprefixer)    |
 | CI `test` job                                                | `.github/workflows/ci.yml`                                        | `bun run test` = `vitest run`; add a `build` job |
 
 ### Key file excerpts (today)
@@ -78,7 +78,7 @@ substantially, and the CI/docs finally match reality.
 
 (Also present: `"dev": "react-scripts start"` added by plan 001.)
 
-`src/components/Contact.js` — the EmailJS call (line numbers approximate):
+`src/components/Contact.js` - the EmailJS call (line numbers approximate):
 
 ```js
 emailjs.sendForm(
@@ -89,7 +89,7 @@ emailjs.sendForm(
 )
 ```
 
-`src/components/Footer.js` — the ConvertKit call:
+`src/components/Footer.js` - the ConvertKit call:
 
 ```js
     const API_KEY = process.env.REACT_APP_CONVERTKIT_API_KEY
@@ -107,13 +107,13 @@ emailjs.sendForm(
 `.env.example` (entire file):
 
 ```
-# ConvertKit — https://app.convertkit.com/account/edit (API Keys section)
+# ConvertKit - https://app.convertkit.com/account/edit (API Keys section)
 REACT_APP_CONVERTKIT_API_KEY=xxxxxxxxxxxxxxxxxxxxxx
 
 # Found under Forms > your form > Settings > Form ID
 REACT_APP_CONVERTKIT_FORM_ID=0000000
 
-# EmailJS — https://dashboard.emailjs.com
+# EmailJS - https://dashboard.emailjs.com
 # Found under Email Services > your service
 REACT_APP_EMAILJS_SERVICE_ID=service_xxxxxxx
 
@@ -124,7 +124,7 @@ REACT_APP_EMAILJS_TEMPLATE_ID=template_xxxxxxx
 REACT_APP_EMAILJS_PUBLIC_KEY=xxxxxxxxxxxxxxxxxxxxxx
 ```
 
-`src/setupTests.js` (after plan 001 — includes polyfills):
+`src/setupTests.js` (after plan 001 - includes polyfills):
 
 ```js
 import "@testing-library/jest-dom"
@@ -132,7 +132,7 @@ import "@testing-library/jest-dom"
 // ... matchMedia / IntersectionObserver / ResizeObserver polyfills ...
 ```
 
-`public/index.html` — CRA template: `<html lang="en">`, favicon links,
+`public/index.html` - CRA template: `<html lang="en">`, favicon links,
 **two** `<meta name="theme-color">` (`#ffffff` then `#000000`), commented-out
 manifest link, a Google Analytics `gtag.js` snippet in `<head>`, and a Typebot
 ES-module `<script>` in `<body>`. Full file is ~70 lines with CRA boilerplate
@@ -154,10 +154,10 @@ module.exports = {
 }
 ```
 
-`.gitignore` contains `/build` (keep — this plan keeps Vite's `outDir` as
+`.gitignore` contains `/build` (keep - this plan keeps Vite's `outDir` as
 `build`). `.prettierignore` already contains `dist`, `.vite`, `.vitest`.
 
-`package.json` has no `"type": "module"` — so `*.config.js` files are CommonJS
+`package.json` has no `"type": "module"` - so `*.config.js` files are CommonJS
 (`tailwind.config.js` already uses `module.exports`). Keep it that way.
 
 ### Conventions
@@ -183,7 +183,7 @@ module.exports = {
 ## Suggested executor toolkit
 
 - If a `vercel:*` or Vite skill is available in your environment, consult it for
-  the current recommended `vite.config` shape — but the config below is known to
+  the current recommended `vite.config` shape - but the config below is known to
   work for a CRA-style app with JSX in `.js`-renamed files.
 - Reference: Vite "Migration from CRA" community guides; `@vitejs/plugin-react`
   README; Vitest "Configuring Vitest" docs.
@@ -211,14 +211,14 @@ module.exports = {
 - `src/components/*.jsx` internal logic beyond the env-var lines in Contact and
   Footer. Do NOT fix the `class=`/`for=` JSX attributes, do NOT refactor
   `Testimonials.jsx`. (Separate cleanup plans.)
-- Tailwind version — stay on v3. Do NOT adopt `@tailwindcss/postcss` / v4.
+- Tailwind version - stay on v3. Do NOT adopt `@tailwindcss/postcss` / v4.
 - Swiper / react-awesome-reveal version bumps.
 - Adding TypeScript / a `tsconfig.json` / a `typecheck` CI job.
-- SEO meta tags, Open Graph, JSON-LD, PWA — that's plan 004 (it edits the
+- SEO meta tags, Open Graph, JSON-LD, PWA - that's plan 004 (it edits the
   `index.html` you create here).
-- `src/setupTests.js` polyfills — keep them exactly as plan 001 left them; only
+- `src/setupTests.js` polyfills - keep them exactly as plan 001 left them; only
   change the jest-dom import line.
-- Deploy configuration (Vercel dashboard) — see `plans/README.md` post-merge
+- Deploy configuration (Vercel dashboard) - see `plans/README.md` post-merge
   notes.
 
 ## Git workflow
@@ -289,7 +289,7 @@ module.exports = {
 ### Step 4: Rename JSX modules to `.jsx`
 
 Every file under `src/` that contains JSX must end in `.jsx` (imports don't
-reference extensions, so no import edits are needed — Vite resolves `.jsx`).
+reference extensions, so no import edits are needed - Vite resolves `.jsx`).
 
 Run this from the repo root:
 
@@ -389,7 +389,7 @@ prints `ok`. `grep -c "theme-color" index.html` → `1`.
 
 ### Step 6: Convert env vars to `import.meta.env`
 
-6a. `src/components/Contact.jsx` — replace the three
+6a. `src/components/Contact.jsx` - replace the three
 `process.env.REACT_APP_EMAILJS_*` with `import.meta.env.VITE_EMAILJS_*`:
 
 ```js
@@ -401,7 +401,7 @@ prints `ok`. `grep -c "theme-color" index.html` → `1`.
       )
 ```
 
-6b. `src/components/Footer.jsx` — replace the two `process.env.REACT_APP_CONVERTKIT_*`:
+6b. `src/components/Footer.jsx` - replace the two `process.env.REACT_APP_CONVERTKIT_*`:
 
 ```js
 const API_KEY = import.meta.env.VITE_CONVERTKIT_API_KEY
@@ -410,19 +410,19 @@ const FORM_ID = import.meta.env.VITE_CONVERTKIT_FORM_ID
 
 While you are in this file, also delete the two debug logging lines
 (`console.log("Email sent successfully!", response.data)` and
-`console.error("Error sending email:", error)`) — replace the `console.error`
+`console.error("Error sending email:", error)`) - replace the `console.error`
 line with nothing (the `catch` block already sets a user-facing error message).
 
-6c. `.env.example` — rename every key, keeping the comments:
+6c. `.env.example` - rename every key, keeping the comments:
 
 ```
-# ConvertKit — https://app.convertkit.com/account/edit (API Keys section)
+# ConvertKit - https://app.convertkit.com/account/edit (API Keys section)
 VITE_CONVERTKIT_API_KEY=xxxxxxxxxxxxxxxxxxxxxx
 
 # Found under Forms > your form > Settings > Form ID
 VITE_CONVERTKIT_FORM_ID=0000000
 
-# EmailJS — https://dashboard.emailjs.com
+# EmailJS - https://dashboard.emailjs.com
 # Found under Email Services > your service
 VITE_EMAILJS_SERVICE_ID=service_xxxxxxx
 
@@ -550,7 +550,7 @@ VITE_EMAILJS_TEMPLATE_ID=template_dummy
 VITE_EMAILJS_PUBLIC_KEY=dummy
 ```
 
-(`.env.local` is gitignored — do not commit it.)
+(`.env.local` is gitignored - do not commit it.)
 
 Run, in order, and confirm each:
 
@@ -576,22 +576,22 @@ Open `http://localhost:3000` and confirm in the browser:
 - The page renders: announcement bar, navbar, hero, services, testimonials
   carousel (Swiper), FAQ, the contact/booking form, footer.
 - Tailwind styling is applied (the announcement bar is blue, buttons are
-  styled) — if the page is unstyled, `postcss.config.js` is wrong.
+  styled) - if the page is unstyled, `postcss.config.js` is wrong.
 - Browser console has **no** errors about `import.meta`, `process is not
 defined`, or missing modules. (An EmailJS/ConvertKit network error on form
-  submit is fine — the dummy keys won't work.)
+  submit is fine - the dummy keys won't work.)
 
 Stop the dev server.
 
 ## Test plan
 
 - No new test files required. The 3 tests from plan 001 (now `App.test.jsx`,
-  `AnnouncementBar.test.jsx`) must pass unchanged under Vitest — `globals: true`
+  `AnnouncementBar.test.jsx`) must pass unchanged under Vitest - `globals: true`
   keeps the bare `test()`/`expect()` calls working.
 - Optional (nice to have, not required): add `src/components/Contact.test.jsx`
   asserting the booking form renders its fields (`getByLabelText(/full name/i)`
   etc.). Model it on `AnnouncementBar.test.jsx`. Skip if the labels aren't
-  properly associated (they use `for=` not `htmlFor=` — a separate plan fixes
+  properly associated (they use `for=` not `htmlFor=` - a separate plan fixes
   that).
 - Verification: `bun run test` → 3 (or 3+) passing, 0 failing.
 
@@ -627,11 +627,11 @@ Stop and report back (do not improvise) if:
 - `import.meta.env.VITE_*` values are `undefined` in the browser even with
   `.env.local` present and correctly prefixed.
 - `swiper` (`src/components/Testimonials.jsx`) or `react-awesome-reveal` fails
-  to bundle or throws at import time under Vite — note the exact error and STOP;
+  to bundle or throws at import time under Vite - note the exact error and STOP;
   a dependency upgrade is a separate plan.
 - `bun run test` fails for a reason other than a test assertion you can trace to
   the `.jsx` rename.
-- Tailwind pushes you toward v4 / `@tailwindcss/postcss` — do not go there in
+- Tailwind pushes you toward v4 / `@tailwindcss/postcss` - do not go there in
   this plan.
 - `bun remove react-scripts` / `bun add` changes React, react-dom, or other
   unrelated dependency versions.
@@ -647,10 +647,10 @@ Stop and report back (do not improvise) if:
   the description, wires `vite-plugin-pwa`, re-enables a manifest).
 - Plan 005 relies on `import.meta.env` and the Vitest setup.
 - The `.oxlintrc.json` still references `next-env.d.ts` and `out/**` (Next.js
-  template residue) — harmless, low priority to clean.
+  template residue) - harmless, low priority to clean.
 - `caniuse-lite` and `baseline-browser-mapping` remain in `dependencies`; they
-  were likely added to quiet CRA build warnings and may now be removable — check
+  were likely added to quiet CRA build warnings and may now be removable - check
   with `knip` in a future cleanup, not here.
 - Reviewer should scrutinize: the new `index.html` (nothing dropped from the old
-  template that mattered — GA id, Typebot config), the 5 env-var call sites, and
+  template that mattered - GA id, Typebot config), the 5 env-var call sites, and
   that the PR's CI run is green on lint/format/audit/test/build.

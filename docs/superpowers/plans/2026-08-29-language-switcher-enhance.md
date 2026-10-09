@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans. Steps use checkbox (`- [ ]`) syntax.
 
-**Goal:** Rewrite `LanguageSwitcher` with inline SVG flags and two variants — a segmented pill for the navbar and an upward dropdown for the footer — and improve its accessible names.
+**Goal:** Rewrite `LanguageSwitcher` with inline SVG flags and two variants - a segmented pill for the navbar and an upward dropdown for the footer - and improve its accessible names.
 
 **Architecture:** One component file exporting `LanguageSwitcher({ variant })`. Shared `LANGUAGES` metadata array pairs each code with its flag component. `variant="pill"` (default) keeps both existing Navbar call sites working untouched; `variant="dropdown"` is new and mounted in the Footer bottom bar.
 
@@ -114,7 +114,7 @@ describe("dropdown variant", () => {
 - [ ] **Step 2: Run the tests to verify they fail**
 
 Run: `bunx vitest run src/components/LanguageSwitcher.test.jsx`
-Expected: FAIL — the accessible names are still `"en"` / `"fr"`, and there is no dropdown
+Expected: FAIL - the accessible names are still `"en"` / `"fr"`, and there is no dropdown
 variant.
 
 - [ ] **Step 3: Write the component**
@@ -127,7 +127,7 @@ import { useTranslation } from "react-i18next"
 
 import { SUPPORTED_LANGUAGES } from "../i18n"
 
-// Inline SVGs so the flags render identically on every OS — Windows ships no
+// Inline SVGs so the flags render identically on every OS - Windows ships no
 // emoji flag glyphs and would show "GB" / "FR" as letters instead.
 // Both use a 3:2 viewBox so they share a baseline.
 const FLAG_CLASS = "h-3 w-[18px] shrink-0 rounded-[2px] ring-1 ring-black/10"
@@ -343,7 +343,7 @@ Expected: all 8 tests PASS.
 
 If the "shows the current language and starts collapsed" test fails because
 `getByRole("button", { expanded: false })` matches more than one element, the pill variant is
-leaking into that render — check that `variant="dropdown"` is being read.
+leaking into that render - check that `variant="dropdown"` is being read.
 
 - [ ] **Step 5: Full suite + lint + format**
 
@@ -412,7 +412,7 @@ git commit -m "feat: add the language switcher to the footer"
 
 - [ ] **Step 1: Start the dev server**
 
-`bun run dev`. **Confirm `window.innerWidth > 0` before trusting any measurement** — this
+`bun run dev`. **Confirm `window.innerWidth > 0` before trusting any measurement** - this
 session's automation window has repeatedly collapsed to 0px, which makes every layout
 assertion meaningless. If it is 0, close the tab, open a fresh one and resize it.
 
@@ -425,15 +425,15 @@ page. The hairline ring makes each flag distinct from the white navbar.
 - [ ] **Step 3: Navbar mobile menu**
 
 At ~390px: open the hamburger; the pill renders inside the menu without overflowing the
-48-wide dropdown (`w-48`). If it overflows, that is a real bug — report it rather than
+48-wide dropdown (`w-48`). If it overflows, that is a real bug - report it rather than
 silently restyling.
 
 - [ ] **Step 4: Footer dropdown**
 
 Scroll to the footer: the trigger shows a globe + "English" + chevron on the navy background.
-Click it — the menu opens **upward** (not clipped off the bottom of the page), lists both
+Click it - the menu opens **upward** (not clipped off the bottom of the page), lists both
 languages with flags, and shows a check on the active one. Selecting Français translates the
-site and closes the menu. Re-open and press Esc — it closes. Re-open and click elsewhere —
+site and closes the menu. Re-open and press Esc - it closes. Re-open and click elsewhere -
 it closes.
 
 - [ ] **Step 5: Screenshot the navbar pill and the open footer dropdown for the PR.**

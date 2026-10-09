@@ -3,13 +3,13 @@
 > **Executor instructions**: Follow this plan step by step. Run every
 > verification command and confirm the expected result before moving to the
 > next step. If anything in the "STOP conditions" section occurs, stop and
-> report — do not improvise. When done, update the status row for this plan
+> report - do not improvise. When done, update the status row for this plan
 > in `plans/README.md`.
 >
 > **Drift check (run first)**:
 > `git diff --stat dca801b..HEAD -- index.html vite.config.js public/ package.json`
 > This plan assumes plan 003 has landed (there is a root `index.html` and a
-> `vite.config.js`). If `index.html` does not exist at the repo root, STOP —
+> `vite.config.js`). If `index.html` does not exist at the repo root, STOP -
 > plan 003 is a hard prerequisite.
 
 ## Status
@@ -23,13 +23,13 @@
 
 ## Why this matters
 
-DentRW is a marketing site for a **local dental clinic** — its entire job is to
+DentRW is a marketing site for a **local dental clinic** - its entire job is to
 be found by people in Kigali searching for a dentist and to look credible when
 its link is shared. Today it ships almost none of the signals that make that
 work: a thin one-line `<meta description>` (with a typo), **two conflicting
 `theme-color` tags**, no `<link rel="canonical">`, no Open Graph or Twitter Card
 tags (so shared links render as a bare URL with no title/image), and no
-structured data — Google has a dedicated `Dentist`/`LocalBusiness` rich-result
+structured data - Google has a dedicated `Dentist`/`LocalBusiness` rich-result
 that this site is a textbook case for and doesn't use. The web manifest exists
 in `public/` but its `<link>` is commented out, so the site isn't installable.
 This plan adds the standard SEO head content, a `Dentist` JSON-LD block built
@@ -38,7 +38,7 @@ an offline shell via `vite-plugin-pwa`.
 
 ## Current state
 
-### `index.html` (created by plan 003) — the head is thin
+### `index.html` (created by plan 003) - the head is thin
 
 Relevant parts as plan 003 leaves them:
 
@@ -102,7 +102,7 @@ No canonical, no `og:*`, no `twitter:*`, no JSON-LD.
 
 ### `public/robots.txt`
 
-Exists; contents unknown to this plan — the executor must read it and ensure it
+Exists; contents unknown to this plan - the executor must read it and ensure it
 allows crawling and declares a sitemap (Step 4).
 
 ### Conventions
@@ -136,14 +136,14 @@ allows crawling and declares a sitemap (Step 4).
 
 **Out of scope** (do NOT touch):
 
-- Server-side rendering / prerendering / `react-helmet` — there is one route and
+- Server-side rendering / prerendering / `react-helmet` - there is one route and
   no router; per-page meta isn't needed yet. A future routing change revisits
   this.
-- Designing a real branded 1200×630 OG image (follow-up task — placeholder only
+- Designing a real branded 1200×630 OG image (follow-up task - placeholder only
   here).
-- Component source under `src/` — no JSX changes.
-- `browserconfig.xml`, `mstile-*` — leave as-is.
-- Analytics/Typebot scripts in `index.html` — leave as-is.
+- Component source under `src/` - no JSX changes.
+- `browserconfig.xml`, `mstile-*` - leave as-is.
+- Analytics/Typebot scripts in `index.html` - leave as-is.
 
 ## Git workflow
 
@@ -161,7 +161,7 @@ Replace the thin meta section. Keep charset, viewport, favicons, GA snippet, and
 the Vite entry script exactly as they are. The head should contain, in a sensible
 order:
 
-- `<title>DentRW — Dental Clinic in Kigali, Rwanda</title>`
+- `<title>DentRW - Dental Clinic in Kigali, Rwanda</title>`
 - A real description (150–160 chars), e.g.:
   `<meta name="description" content="DentRW is a dental clinic in Kigali, Rwanda offering check-ups, fillings, root canal treatment, teeth whitening, orthodontics, and implants. Book an appointment online." />`
 - `<link rel="canonical" href="https://dentrw.hbapte.com/" />`
@@ -172,10 +172,10 @@ order:
 ```html
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="DentRW" />
-<meta property="og:title" content="DentRW — Dental Clinic in Kigali, Rwanda" />
+<meta property="og:title" content="DentRW - Dental Clinic in Kigali, Rwanda" />
 <meta
   property="og:description"
-  content="Book a dental appointment online with DentRW — check-ups, fillings, root canal, whitening, orthodontics, and implants in Kigali, Rwanda." />
+  content="Book a dental appointment online with DentRW - check-ups, fillings, root canal, whitening, orthodontics, and implants in Kigali, Rwanda." />
 <meta property="og:url" content="https://dentrw.hbapte.com/" />
 <meta property="og:image" content="https://dentrw.hbapte.com/og-image.jpg" />
 <meta property="og:locale" content="en_US" />
@@ -185,7 +185,7 @@ order:
 
 ```html
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="DentRW — Dental Clinic in Kigali, Rwanda" />
+<meta name="twitter:title" content="DentRW - Dental Clinic in Kigali, Rwanda" />
 <meta
   name="twitter:description"
   content="Book a dental appointment online with DentRW in Kigali, Rwanda." />
@@ -273,7 +273,7 @@ add `Disallow` rules.
 Note: this plan does not generate `sitemap.xml` (a one-page site barely needs
 one, and generating it well needs the route list). Declaring it is harmless and
 ready for when routing lands. If you want, add a trivial static
-`public/sitemap.xml` with just the homepage `<url>` — optional.
+`public/sitemap.xml` with just the homepage `<url>` - optional.
 
 **Verify**: `grep -i "sitemap" public/robots.txt` → one match.
 
@@ -301,7 +301,7 @@ export default defineConfig({
         "safari-pinned-tab.svg",
       ],
       manifest: {
-        name: "DentRW — Dental Clinic",
+        name: "DentRW - Dental Clinic",
         short_name: "DentRW",
         description:
           "Book a dental appointment online with DentRW in Kigali, Rwanda.",
@@ -341,7 +341,7 @@ export default defineConfig({
 })
 ```
 
-(Preserve whatever `test`/`server`/`build` config plan 003 actually left — only
+(Preserve whatever `test`/`server`/`build` config plan 003 actually left - only
 add the plugin.)
 
 5c. In `index.html`, replace the commented-out manifest line with a live one
@@ -380,7 +380,7 @@ bun run preview
 
 Open the previewed URL and check in DevTools:
 
-- Application → Manifest: shows "DentRW — Dental Clinic", icons load, no errors.
+- Application → Manifest: shows "DentRW - Dental Clinic", icons load, no errors.
 - Application → Service Workers: one registered, activated.
 - Elements → `<head>`: exactly one `theme-color`, the OG/Twitter tags present,
   one `ld+json` block.
@@ -421,7 +421,7 @@ Stop and report back (do not improvise) if:
 - `vite-plugin-pwa` build fails or its API differs materially from the config
   shape above (note the version and the error).
 - The service worker aggressively caches and the previewed page won't update
-  even on hard-refresh — note it; `registerType: "autoUpdate"` should prevent
+  even on hard-refresh - note it; `registerType: "autoUpdate"` should prevent
   this, but if not, that's worth reporting rather than fighting.
 - Removing `public/manifest.json` / `site.webmanifest` breaks a reference you
   find elsewhere (`grep -rn "manifest.json\|site.webmanifest" .` first).
@@ -434,7 +434,7 @@ Stop and report back (do not improvise) if:
   / `<meta>` / canonical need a real solution (`react-helmet-async` or the
   router's document APIs), and `sitemap.xml` should be generated from the route
   list.
-- The JSON-LD lives in static HTML — if the clinic's hours/phone/address change
+- The JSON-LD lives in static HTML - if the clinic's hours/phone/address change
   in `src/components/Contact.jsx`, update the JSON-LD in `index.html` to match.
   Consider extracting these facts to a shared JSON module in a future refactor
   so there's one source of truth.

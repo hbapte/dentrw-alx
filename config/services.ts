@@ -11,5 +11,5 @@ export const services = [
 ]
 
 export function serviceLabel(value) {
-  return services.find((s) => s.value === value)?.label ?? value ?? "—"
+  return services.find((s) => s.value === value)?.label ?? value ?? "-"
 }

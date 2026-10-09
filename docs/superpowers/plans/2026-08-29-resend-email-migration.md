@@ -17,13 +17,13 @@
 - Run all tests with: `bun run test`
 - Commit messages are Conventional Commits (`feat:`, `test:`, `chore:`, `docs:`, `refactor:`).
 - The pre-commit hook runs `lint-staged` (`prettier --write` + `oxlint --fix` on staged files). Let it reformat; re-stage if it does.
-- **Relative imports inside `api/`, `emails/`, `config/` always use a `.js` suffix** even though the source file is `.ts`/`.tsx` (NodeNext convention — TS resolves `.js` → the real source, and `.js` is what Vercel emits and Node runs).
+- **Relative imports inside `api/`, `emails/`, `config/` always use a `.js` suffix** even though the source file is `.ts`/`.tsx` (NodeNext convention - TS resolves `.js` → the real source, and `.js` is what Vercel emits and Node runs).
 - Never write JSX in a `.ts` file. `api/_lib/process-contact.ts` builds elements with `createElement`, not JSX.
 - Do not commit `.env.local` (gitignored).
 
 ---
 
-## Task 1: Scaffold — tsconfig, dependencies, shared config
+## Task 1: Scaffold - tsconfig, dependencies, shared config
 
 **Files:**
 
@@ -54,7 +54,7 @@ In `package.json` `"scripts"`, add after `"knip": "knip"`:
 
 - [ ] **Step 3: Create `tsconfig.json`**
 
-Deliberately minimal — `module`/`moduleResolution` do not affect Vite/esbuild transforms
+Deliberately minimal - `module`/`moduleResolution` do not affect Vite/esbuild transforms
 (so the client build is unchanged), and `jsx: "react-jsx"` already matches what
 `@vitejs/plugin-react` does. Vercel's `@vercel/node` layers its own defaults on top.
 
@@ -110,14 +110,14 @@ export const services = [
 ]
 
 export function serviceLabel(value) {
-  return services.find((s) => s.value === value)?.label ?? value ?? "—"
+  return services.find((s) => s.value === value)?.label ?? value ?? "-"
 }
 ```
 
 - [ ] **Step 6: Verify the build still passes**
 
 Run: `bun run build`
-Expected: PASS — `dist/` is produced, no errors. (The new `tsconfig.json` only affects `jsx`/`target`, which already match `@vitejs/plugin-react`.)
+Expected: PASS - `dist/` is produced, no errors. (The new `tsconfig.json` only affects `jsx`/`target`, which already match `@vitejs/plugin-react`.)
 
 - [ ] **Step 7: Verify lint + format**
 
@@ -133,7 +133,7 @@ git commit -m "chore: add resend, react-email deps and shared config"
 
 ---
 
-## Task 2: `api/_lib/validate.ts` — email validation helper
+## Task 2: `api/_lib/validate.ts` - email validation helper
 
 **Files:**
 
@@ -168,7 +168,7 @@ describe("isEmail", () => {
 - [ ] **Step 2: Run the test to verify it fails**
 
 Run: `bunx vitest run api/_lib/validate.test.ts`
-Expected: FAIL — `Cannot find module './validate.js'`.
+Expected: FAIL - `Cannot find module './validate.js'`.
 
 - [ ] **Step 3: Write the implementation**
 
@@ -196,7 +196,7 @@ git commit -m "feat: add isEmail validation helper"
 
 ---
 
-## Task 3: `api/_lib/http.ts` — request/response plumbing
+## Task 3: `api/_lib/http.ts` - request/response plumbing
 
 **Files:**
 
@@ -272,7 +272,7 @@ describe("clientIp", () => {
 - [ ] **Step 2: Run the test to verify it fails**
 
 Run: `bunx vitest run api/_lib/http.test.ts`
-Expected: FAIL — `Cannot find module './http.js'`.
+Expected: FAIL - `Cannot find module './http.js'`.
 
 - [ ] **Step 3: Write the implementation**
 
@@ -319,7 +319,7 @@ git commit -m "feat: add http body/response helpers for api functions"
 
 ---
 
-## Task 4: `api/_lib/rate-limit.ts` — best-effort in-memory limiter
+## Task 4: `api/_lib/rate-limit.ts` - best-effort in-memory limiter
 
 **Files:**
 
@@ -370,7 +370,7 @@ describe("rateLimit", () => {
 - [ ] **Step 2: Run the test to verify it fails**
 
 Run: `bunx vitest run api/_lib/rate-limit.test.ts`
-Expected: FAIL — `Cannot find module './rate-limit.js'`.
+Expected: FAIL - `Cannot find module './rate-limit.js'`.
 
 - [ ] **Step 3: Write the implementation**
 
@@ -407,7 +407,7 @@ git commit -m "feat: add in-memory per-key rate limiter"
 
 ---
 
-## Task 5: `api/_lib/resend.ts` — Resend client + sendEmail
+## Task 5: `api/_lib/resend.ts` - Resend client + sendEmail
 
 **Files:**
 
@@ -438,7 +438,7 @@ describe("resend module", () => {
 - [ ] **Step 2: Run the test to verify it fails**
 
 Run: `bunx vitest run api/_lib/resend.test.ts`
-Expected: FAIL — `Cannot find module './resend.js'`.
+Expected: FAIL - `Cannot find module './resend.js'`.
 
 - [ ] **Step 3: Write the implementation**
 
@@ -481,7 +481,7 @@ export async function sendEmail({ to, subject, react, replyTo }) {
 - [ ] **Step 4: Run the test to verify it passes**
 
 Run: `bunx vitest run api/_lib/resend.test.ts`
-Expected: PASS (1 test). No network call happens — nothing invokes `sendEmail`.
+Expected: PASS (1 test). No network call happens - nothing invokes `sendEmail`.
 
 - [ ] **Step 5: Commit**
 
@@ -591,7 +591,7 @@ function DetailRow({ label, value }) {
       </Column>
       <Column className="align-top">
         <Text className="m-0 py-[4px] text-[14px] text-gray-900">
-          {value || "—"}
+          {value || "-"}
         </Text>
       </Column>
     </Row>
@@ -696,7 +696,7 @@ describe("AppointmentConfirmation", () => {
 - [ ] **Step 2: Run the test to verify it fails**
 
 Run: `bunx vitest run emails/AppointmentConfirmation.test.tsx`
-Expected: FAIL — `Cannot find module './AppointmentConfirmation.js'`.
+Expected: FAIL - `Cannot find module './AppointmentConfirmation.js'`.
 
 - [ ] **Step 3: Write the implementation**
 
@@ -712,7 +712,7 @@ export function AppointmentConfirmation({ name, service, date, time }) {
   return (
     <EmailLayout preview="We received your appointment request">
       <Heading as="h1" className="m-0 mb-[8px] text-[18px] text-gray-900">
-        Thanks, {name} — we received your request
+        Thanks, {name} - we received your request
       </Heading>
       <Text className="mb-[16px] mt-0 text-[14px] leading-[22px] text-gray-700">
         Our team will contact you shortly to confirm your appointment. Here is
@@ -720,17 +720,17 @@ export function AppointmentConfirmation({ name, service, date, time }) {
       </Text>
       <Section className="mb-[16px]">
         <Text className="m-0 text-[14px] text-gray-900">
-          <strong>Service:</strong> {service || "—"}
+          <strong>Service:</strong> {service || "-"}
         </Text>
         <Text className="m-0 text-[14px] text-gray-900">
-          <strong>Preferred date:</strong> {date || "—"}
+          <strong>Preferred date:</strong> {date || "-"}
         </Text>
         <Text className="m-0 text-[14px] text-gray-900">
-          <strong>Preferred time:</strong> {time || "—"}
+          <strong>Preferred time:</strong> {time || "-"}
         </Text>
       </Section>
       <Text className="m-0 text-[14px] leading-[22px] text-gray-700">
-        Clinic hours — {brand.hours.join(" · ")}. Questions? Call {brand.phone}.
+        Clinic hours - {brand.hours.join(" · ")}. Questions? Call {brand.phone}.
       </Text>
     </EmailLayout>
   )
@@ -760,7 +760,7 @@ git commit -m "feat: add patient appointment-confirmation template"
 
 ---
 
-## Task 8: `api/_lib/process-contact.ts` — contact handler logic
+## Task 8: `api/_lib/process-contact.ts` - contact handler logic
 
 **Files:**
 
@@ -876,7 +876,7 @@ describe("processContact", () => {
 - [ ] **Step 2: Run the test to verify it fails**
 
 Run: `bunx vitest run api/_lib/process-contact.test.ts`
-Expected: FAIL — `Cannot find module './process-contact.js'`.
+Expected: FAIL - `Cannot find module './process-contact.js'`.
 
 - [ ] **Step 3: Write the implementation**
 
@@ -928,7 +928,7 @@ export async function processContact(body, { ip }) {
   const adminResult = await sendEmail({
     to: ADMIN,
     replyTo: email,
-    subject: `New appointment request — ${name}`,
+    subject: `New appointment request - ${name}`,
     react: createElement(AppointmentRequest, details),
   })
   if (!adminResult.success) {
@@ -964,7 +964,7 @@ Expected: PASS (8 tests).
 - [ ] **Step 5: Run the full suite**
 
 Run: `bun run test`
-Expected: PASS — all prior tests plus these.
+Expected: PASS - all prior tests plus these.
 
 - [ ] **Step 6: Commit**
 
@@ -1075,7 +1075,7 @@ export function apiDevPlugin() {
 }
 ```
 
-Note: `/api/subscribe` is listed now but its module does not exist until Task 10 — that
+Note: `/api/subscribe` is listed now but its module does not exist until Task 10 - that
 route will 500 until then, which is fine (nothing calls it yet).
 
 - [ ] **Step 3: Wire the plugin into `vite.config.mjs`**
@@ -1110,7 +1110,7 @@ curl -i -X POST http://localhost:3000/api/contact \
   -d '{"user_name":"Test User","user_email":"you@example.com","chosen_service":"RCT","user_date":"2026-09-10","user_time":"09:00","user_message":"plan smoke test","company":""}'
 ```
 
-Expected: `HTTP/1.1 200` and `{"ok":true}` if the Resend domain is verified; or `HTTP/1.1 500` with `{"error":"Could not send..."}` and a Resend error in the dev console if the domain is not yet verified (that is acceptable at this stage — the wiring is proven). Also test the honeypot: add `"company":"x"` → expect `200` and no email. Stop the dev server.
+Expected: `HTTP/1.1 200` and `{"ok":true}` if the Resend domain is verified; or `HTTP/1.1 500` with `{"error":"Could not send..."}` and a Resend error in the dev console if the domain is not yet verified (that is acceptable at this stage - the wiring is proven). Also test the honeypot: add `"company":"x"` → expect `200` and no email. Stop the dev server.
 
 - [ ] **Step 6: Commit**
 
@@ -1121,7 +1121,7 @@ git commit -m "feat: expose /api/contact in dev and on vercel"
 
 ---
 
-## Task 10: `api/_lib/process-subscribe.ts` — newsletter handler logic
+## Task 10: `api/_lib/process-subscribe.ts` - newsletter handler logic
 
 **Files:**
 
@@ -1192,7 +1192,7 @@ describe("processSubscribe", () => {
 - [ ] **Step 2: Run the test to verify it fails**
 
 Run: `bunx vitest run api/_lib/process-subscribe.test.ts`
-Expected: FAIL — `Cannot find module './process-subscribe.js'`.
+Expected: FAIL - `Cannot find module './process-subscribe.js'`.
 
 - [ ] **Step 3: Write the implementation**
 
@@ -1296,7 +1296,7 @@ export default async function handler(req, res) {
 - [ ] **Step 2: Manual dev check**
 
 Ensure `.env.local` has `CONVERTKIT_API_KEY` and `CONVERTKIT_FORM_ID` (see Task 14 for the
-rename — if not done yet, temporarily add them). Run `bun run dev`, then:
+rename - if not done yet, temporarily add them). Run `bun run dev`, then:
 
 ```bash
 curl -i -X POST http://localhost:3000/api/subscribe \
@@ -1310,7 +1310,7 @@ curl -i -X POST http://localhost:3000/api/subscribe \
   -H 'content-type: application/json' -d '{"email":"you+test@example.com"}'
 ```
 
-Expected: `HTTP/1.1 200` `{"ok":true}` (real ConvertKit key) or `502` (dummy key) — either proves the wiring. Stop the dev server.
+Expected: `HTTP/1.1 200` `{"ok":true}` (real ConvertKit key) or `502` (dummy key) - either proves the wiring. Stop the dev server.
 
 - [ ] **Step 3: Verify tests + build**
 
@@ -1429,7 +1429,7 @@ Expected: PASS (run `bun run format:fix` if needed).
 - [ ] **Step 6: Manual dev check**
 
 Run `bun run dev`, open the site, fill the appointment form, submit.
-Expected: the "Booking..." state, then "Appointment received successfully" (or the error message if the Resend domain is not verified yet — check the dev console). Stop the dev server.
+Expected: the "Booking..." state, then "Appointment received successfully" (or the error message if the Resend domain is not verified yet - check the dev console). Stop the dev server.
 
 - [ ] **Step 7: Commit**
 
@@ -1519,7 +1519,7 @@ git commit -m "refactor: submit the newsletter form to /api/subscribe"
 
 - Modify: `package.json`, `bun.lock` (via `bun remove`)
 - Modify: `.env.example`
-- Modify: `.env.local` (local only — not committed)
+- Modify: `.env.local` (local only - not committed)
 
 - [ ] **Step 1: Remove the EmailJS dependency**
 
@@ -1534,17 +1534,17 @@ Expected: no matches (exit code 1). (`docs/` and `plans/` still reference the ol
 - [ ] **Step 3: Rewrite `.env.example`**
 
 ```
-# Resend — https://resend.com/api-keys
+# Resend - https://resend.com/api-keys
 RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxxxxx
 
-# Verified sender domain in Resend — https://resend.com/domains
+# Verified sender domain in Resend - https://resend.com/domains
 SENDER_EMAIL=dentrwrw@updates.hbapte.com
 SENDER_NAME=DentRW
 
 # Where appointment notifications are delivered
 ADMIN_EMAIL=ijbapte@gmail.com
 
-# ConvertKit (Kit) — https://app.kit.com/account_settings/developer_settings
+# ConvertKit (Kit) - https://app.kit.com/account_settings/developer_settings
 CONVERTKIT_API_KEY=xxxxxxxxxxxxxxxxxxxxxx
 CONVERTKIT_FORM_ID=0000000
 ```
@@ -1592,13 +1592,13 @@ git commit -m "chore: drop @emailjs/browser and rename env vars"
 - [ ] **Step 1: Update `README.md`**
 
 - **Features** section: change
-  `- **Appointment Booking** — ... Form submission is handled via EmailJS.`
+  `- **Appointment Booking** - ... Form submission is handled via EmailJS.`
   to
-  `- **Appointment Booking** — ... Form submissions are sent with Resend using React Email templates, via a Vercel serverless function.`
+  `- **Appointment Booking** - ... Form submissions are sent with Resend using React Email templates, via a Vercel serverless function.`
   and change
-  `- **Data Collection Automation** — EmailJS and ConvertKit handle email replies and subscriber management automatically.`
+  `- **Data Collection Automation** - EmailJS and ConvertKit handle email replies and subscriber management automatically.`
   to
-  `- **Data Collection Automation** — Resend delivers appointment emails; ConvertKit manages newsletter subscribers. Both run server-side.`
+  `- **Data Collection Automation** - Resend delivers appointment emails; ConvertKit manages newsletter subscribers. Both run server-side.`
 
 - **Tech Stack** table: replace the EmailJS row with two rows:
 
@@ -1637,17 +1637,17 @@ signup calls **ConvertKit** server-side.
 
 ## How it works
 
-- `POST /api/contact` — `Contact.jsx` submits the booking form here. The handler
+- `POST /api/contact` - `Contact.jsx` submits the booking form here. The handler
   (`api/_lib/process-contact.ts`) drops honeypot submissions, rate-limits by IP, validates,
   then sends two emails: an **AppointmentRequest** to `ADMIN_EMAIL` (reply-to = the
   patient) and an **AppointmentConfirmation** to the patient.
-- `POST /api/subscribe` — `Footer.jsx` submits the newsletter form here. The handler
+- `POST /api/subscribe` - `Footer.jsx` submits the newsletter form here. The handler
   (`api/_lib/process-subscribe.ts`) validates the email and forwards it to the ConvertKit
   form subscribe endpoint using `CONVERTKIT_API_KEY` (never exposed to the browser).
 
 Each `/api/*.ts` file is a thin Vercel function wrapper. The logic lives in `api/_lib/` as
 pure `processX(body, { ip })` functions. In `bun run dev`, `vite/api-plugin.js` mounts the
-same functions at `/api/*` — dev and prod run identical code.
+same functions at `/api/*` - dev and prod run identical code.
 
 ## Templates
 
@@ -1663,7 +1663,7 @@ then `createElement(MyEmail, props)` in a handler and pass it as `react` to `sen
 
 ## Environment variables
 
-Server-side only — no `VITE_` prefix, so never bundled into the client. Set them in
+Server-side only - no `VITE_` prefix, so never bundled into the client. Set them in
 `.env.local` for dev and in the Vercel project settings for production:
 `RESEND_API_KEY`, `SENDER_EMAIL`, `SENDER_NAME`, `ADMIN_EMAIL`, `CONVERTKIT_API_KEY`,
 `CONVERTKIT_FORM_ID`. `SENDER_EMAIL`'s domain must be a verified domain in Resend.
@@ -1671,7 +1671,7 @@ Server-side only — no `VITE_` prefix, so never bundled into the client. Set th
 ## Known limitation
 
 The rate limiter (`api/_lib/rate-limit.ts`) is in-memory per serverless instance. It resets
-on cold starts and does not coordinate across concurrent instances — it is bot friction,
+on cold starts and does not coordinate across concurrent instances - it is bot friction,
 not a hard quota.
 
 ````
@@ -1720,7 +1720,7 @@ git commit -m "docs: document the resend + react-email setup"
 - [ ] **Step 1: Clean install**
 
 Run: `bun install --frozen-lockfile`
-Expected: PASS — lockfile is in sync with `package.json`.
+Expected: PASS - lockfile is in sync with `package.json`.
 
 - [ ] **Step 2: Run every CI gate locally**
 
@@ -1776,7 +1776,7 @@ failures before requesting review.
 ## Self-review notes (for the implementer)
 
 - **Entry files `api/contact.ts` / `api/subscribe.ts`** have no dedicated unit test by
-  design — they are 6 lines of glue with no branching beyond a method check, exercised by
+  design - they are 6 lines of glue with no branching beyond a method check, exercised by
   the dev-parity middleware and the preview deploy. Everything with logic
   (`process-contact`, `process-subscribe`, `http`, `rate-limit`, `validate`, the
   confirmation template) is tested.
@@ -1788,24 +1788,24 @@ failures before requesting review.
 
 ## As-built deviations from this plan
 
-- **`vite/api-plugin.js` → `vite/api-plugin.mjs`** — a `.js` file with ESM syntax makes
+- **`vite/api-plugin.js` → `vite/api-plugin.mjs`** - a `.js` file with ESM syntax makes
   Vite's config loader warn (no `"type": "module"` in the repo). `.mjs` is clean. The
   `vite.config.mjs` import and `knip.json` entry use the `.mjs` path.
-- **`axios` removed** — the plan said keep it; a repo-wide grep confirmed the Footer was
+- **`axios` removed** - the plan said keep it; a repo-wide grep confirmed the Footer was
   its only consumer, so it was dropped alongside `@emailjs/browser` in Task 14.
 - **`tsconfig.json`** gained `target`, `lib: ["ES2022","DOM"]`, `types: ["node"]`,
   `strict: false`, `noImplicitAny: false` (two extra `chore:` commits) so
-  `bunx tsc --noEmit -p tsconfig.json` runs clean — a useful signal that Vercel's compile
+  `bunx tsc --noEmit -p tsconfig.json` runs clean - a useful signal that Vercel's compile
   will succeed. Still not wired into any npm script or CI.
-- **`knip.json`** — `react-email` did not need to be in `ignoreDependencies` (knip sees the
+- **`knip.json`** - `react-email` did not need to be in `ignoreDependencies` (knip sees the
   `email` script); the real phantom is `@react-email/ui`. `src/index.jsx` entry was
   redundant (auto-detected). Final config in Task 15.
 - **`process-subscribe.test.ts`** uses real `new Response(...)` objects instead of ad-hoc
-  `{ ok, status, text }` literals — keeps `tsc --noEmit` clean.
-- **`api/_lib/resend.ts`** — `sendEmail(options)` takes a single `options` arg and
+  `{ ok, status, text }` literals - keeps `tsc --noEmit` clean.
+- **`api/_lib/resend.ts`** - `sendEmail(options)` takes a single `options` arg and
   destructures inside, rather than destructuring in the signature, so TS does not infer
   `replyTo` as required from the first call site.
-- **`.env.local` not written by the implementer** — it is the developer's local file and
+- **`.env.local` not written by the implementer** - it is the developer's local file and
   was being edited concurrently in the IDE. `.env.example` (committed) is the reference.
 - **Both forms were verified in a real browser** (Chrome automation), not just via `curl`:
   the appointment form submitted, reset on success, and Resend accepted the send; the

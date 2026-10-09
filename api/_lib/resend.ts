@@ -8,7 +8,7 @@ const FROM = `${senderName} <${senderEmail}>`
 
 export const ADMIN = process.env.ADMIN_EMAIL ?? "ijbapte@gmail.com"
 
-// Lazily construct the client — `new Resend()` throws when the key is missing, and we
+// Lazily construct the client - `new Resend()` throws when the key is missing, and we
 // want a misconfigured deploy to surface as a failed send (clean 500), not a crash on
 // import.
 let client

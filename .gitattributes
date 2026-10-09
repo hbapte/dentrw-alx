@@ -2,7 +2,7 @@
 # Keeps Prettier's `endOfLine: "lf"` rule truthful for Windows contributors.
 * text=auto eol=lf
 
-# Binary assets — never touch.
+# Binary assets - never touch.
 *.png binary
 *.jpg binary
 *.jpeg binary

@@ -3,7 +3,7 @@
 > **Executor instructions**: Follow this plan step by step. Run every
 > verification command and confirm the expected result before moving to the
 > next step. If anything in the "STOP conditions" section occurs, stop and
-> report — do not improvise. When done, update the status row for this plan
+> report - do not improvise. When done, update the status row for this plan
 > in `plans/README.md`.
 >
 > **Drift check (run first)**:
@@ -24,13 +24,13 @@
 ## Why this matters
 
 Every push and PR to this repo triggers a CI workflow that **fails in 0 seconds**
-because the workflow file is invalid — the `test` job declares `needs:
+because the workflow file is invalid - the `test` job declares `needs:
 [lint, typecheck, format]` but there is no `typecheck` job. GitHub Actions
 rejects the whole workflow, so lint, format check, security audit, and tests
 have **never run**. On top of that, the `test` job invokes `vitest` (not a
 dependency) while the project's actual test runner is Create React App's Jest,
 and the single test file asserts text ("learn react") that does not exist in the
-app — so `bun run test` fails too. After this plan, CI runs and passes on all
+app - so `bun run test` fails too. After this plan, CI runs and passes on all
 four jobs, and there is one real test guarding the app shell. This is the
 prerequisite for every later plan.
 
@@ -38,14 +38,14 @@ prerequisite for every later plan.
 
 Files:
 
-- `.github/workflows/ci.yml` — 4 jobs: `lint` (line 16), `format` (line 34),
+- `.github/workflows/ci.yml` - 4 jobs: `lint` (line 16), `format` (line 34),
   `audit` (line 51), `test` (line 63). Uses `oven-sh/setup-bun@v2`, bun cache,
   `bun install --frozen-lockfile`.
-- `src/App.test.js` — the only test.
-- `src/setupTests.js` — Jest DOM matchers setup.
-- `package.json` — scripts + deps. Package manager is **bun** (`bun.lock` is the
+- `src/App.test.js` - the only test.
+- `src/setupTests.js` - Jest DOM matchers setup.
+- `package.json` - scripts + deps. Package manager is **bun** (`bun.lock` is the
   only lockfile).
-- `CONTRIBUTING.md`, `README.md` — say "React 18"; project is on React 19.
+- `CONTRIBUTING.md`, `README.md` - say "React 18"; project is on React 19.
 
 Excerpts as they exist today:
 
@@ -136,7 +136,7 @@ export default function App() {
 }
 ```
 
-`src/components/AnnouncementBar.js` (entire file — this is the component we will
+`src/components/AnnouncementBar.js` (entire file - this is the component we will
 test; note it has **no** third-party imports):
 
 ```js
@@ -188,15 +188,15 @@ Repo conventions:
 - `.github/workflows/ci.yml`
 - `src/App.test.js`
 - `src/setupTests.js`
-- `package.json` (add ONE script only — see Step 4)
+- `package.json` (add ONE script only - see Step 4)
 - `CONTRIBUTING.md` (version string + dev-command accuracy only)
 - `README.md` (version strings only)
 
 **Out of scope** (do NOT touch, even though they look related):
 
-- Adding a `typecheck` job or any TypeScript config — there is no TS in this
+- Adding a `typecheck` job or any TypeScript config - there is no TS in this
   repo yet; that work belongs to plan 003.
-- Adding `vitest` or migrating the test runner — plan 003.
+- Adding `vitest` or migrating the test runner - plan 003.
 - Any file under `src/components/` **except** creating `src/components/AnnouncementBar.test.js`.
 - Any other CI job's build logic beyond the two edits in Step 1.
 - Dependency version changes.
@@ -216,7 +216,7 @@ Repo conventions:
 
 In `.github/workflows/ci.yml`:
 
-1a. Line 66 — change:
+1a. Line 66 - change:
 
 ```yaml
 needs: [lint, typecheck, format]
@@ -228,7 +228,7 @@ to:
 needs: [lint, format]
 ```
 
-1b. Line 80 — change:
+1b. Line 80 - change:
 
 ```yaml
 - run: bunx vitest run --passWithNoTests
@@ -299,7 +299,7 @@ if (!window.ResizeObserver) {
 ```
 
 **Verify**: `CI=true bun run test` runs (it may still fail on the assertion in
-`App.test.js` at this point — that's fixed in Step 3 — but it must **not** error
+`App.test.js` at this point - that's fixed in Step 3 - but it must **not** error
 with `IntersectionObserver is not defined` / `matchMedia is not a function`).
 
 ### Step 3: Write real tests
@@ -346,7 +346,7 @@ If `src/App.test.js` fails because `render(<App/>)` throws from inside
 `node_modules` (a third-party component crashing in jsdom even with the Step 2
 polyfills): delete `src/App.test.js` entirely, keep only
 `AnnouncementBar.test.js`, and note this in your status update. Do **not** start
-mocking components — that's a rabbit hole for a later coverage plan.
+mocking components - that's a rabbit hole for a later coverage plan.
 
 ### Step 4: Add a `dev` script alias
 
@@ -387,17 +387,17 @@ CI=true bun run build
 
 **Verify**: every command exits 0. If `bun run format` fails, run
 `bun run format:fix` on the files you changed and re-check. If `bun run build`
-fails, that is a pre-existing problem unrelated to your changes — STOP and
+fails, that is a pre-existing problem unrelated to your changes - STOP and
 report (do not try to fix the build here).
 
 ## Test plan
 
 - New tests:
-  - `src/App.test.js` — one smoke test: `<App/>` renders and the announcement
+  - `src/App.test.js` - one smoke test: `<App/>` renders and the announcement
     text is present.
-  - `src/components/AnnouncementBar.test.js` — two unit tests: announcement copy
+  - `src/components/AnnouncementBar.test.js` - two unit tests: announcement copy
     is shown; the CTA link has the correct `href`/`target`/`rel`.
-- Structural pattern: there is no prior good example in this repo — the shape
+- Structural pattern: there is no prior good example in this repo - the shape
   above (import `render`/`screen` from `@testing-library/react`, top-level
   `test(...)`, `getByText`/`getByRole` + jest-dom matchers) is the pattern
   future tests should follow.
@@ -443,4 +443,4 @@ Stop and report back (do not improvise) if:
   "DentRW v4 is here...". If that copy changes (e.g. plan 005 moves it into i18n
   resources), update the test's matcher to the new source of truth.
 - Reviewer should confirm the CI run on the PR actually goes green on all four
-  jobs (lint / format / audit / test) — this is the first time it will have.
+  jobs (lint / format / audit / test) - this is the first time it will have.
