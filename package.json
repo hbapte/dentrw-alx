@@ -11,7 +11,7 @@
     "baseline-browser-mapping": "^2.11.20",
     "caniuse-lite": "^1.0.30001810",
     "husky": "^9.1.7",
-    "i18next": "^26.4.0",
+    "i18next": "^27.0.0",
     "i18next-browser-languagedetector": "^8.2.1",
     "knip": "^6.33.0",
     "lint-staged": "^17.4.1",
