@@ -21,7 +21,7 @@
     "react": "^19.2.8",
     "react-awesome-reveal": "^4.2.3",
     "react-dom": "^19.2.8",
-    "react-i18next": "^17.0.12",
+    "react-i18next": "^18.0.0",
     "react-scroll": "^1.9.3",
     "resend": "^6.25.0",
     "swiper": "^14.2.0"
